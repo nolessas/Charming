@@ -55,15 +55,15 @@ def main():
 
 
 
-def get_sheets_service():
+def get_credentials():
     try:
-        creds_json = st.secrets["service_account"]
-        creds = service_account.Credentials.from_service_account_info(
-            creds_json, scopes=SCOPES_SHEETS
+        service_account_info = st.secrets["service_account"]
+        credentials = service_account.Credentials.from_service_account_info(
+            service_account_info, scopes=SCOPES_SHEETS
         )
-        return gspread.authorize(creds)
+        return credentials
     except Exception as e:
-        st.error(f"Failed to get sheets service: {e}")
+        st.error(f"Error getting credentials: {e}")
         raise e
 
 
@@ -161,17 +161,9 @@ def delete_row_from_sheet(index, records):
 
 
 
-def add_item_to_sheet2(item, location):
-    service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'  # Replace with your actual spreadsheet ID
-    worksheet_name = 'Sheet2'  # The name of the worksheet where you want to add items
-    
-    try:
-        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        worksheet.append_row([item, location])
-        st.sidebar.success("Item added successfully!")
-    except Exception as e:
-        st.sidebar.error(f"Failed to add item to sheet: {str(e)}")
+def get_sheets_service():
+    credentials = get_credentials()
+    return gspread.authorize(credentials)
 
 
 
