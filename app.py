@@ -60,8 +60,7 @@ def get_sheets_service():
     creds = service_account.Credentials.from_service_account_info(
         creds_json, scopes=SCOPES_SHEETS
     )
-    service = gspread.authorize(creds)
-    return service
+    return gspread.authorize(creds)
 
 
 
@@ -271,8 +270,8 @@ def get_calendar_service():
     credentials = service_account.Credentials.from_service_account_info(
         creds_json, scopes=SCOPES_CLIENT
     )
-    service = build(API_NAME, API_VERSION, credentials=credentials)
-    return service
+    return build(API_NAME, API_VERSION, credentials=credentials)
+
 
 
 
