@@ -13,12 +13,9 @@ from google.oauth2 import service_account
 import pandas as pd
 
 
-service_account_info = st.secrets["gcp_service_account"]
+
+service_account_info = st.secrets["service_account"]
 credentials = service_account.Credentials.from_service_account_info(service_account_info)
-
-# Use the credentials to authorize the gspread client
-gc = gspread.authorize(credentials)
-
 
 
 
