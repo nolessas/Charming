@@ -20,16 +20,6 @@ credentials = service_account.Credentials.from_service_account_info(service_acco
 gc = gspread.authorize(credentials)
 
 
-# Google Calendar API credentials file
-CLIENT_SECRET_FILE = '.streamlit/Google-calendar-api.json'
-API_NAME = 'calendar'
-API_VERSION = 'v3'
-SCOPES_CLIENT = ['https://www.googleapis.com/auth/calendar']
-
-# Google Sheets API credentials file
-SHEETS_CLIENT_SECRET_FILE = '.streamlit/token_sheets.json'
-SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
-
 
 
 
