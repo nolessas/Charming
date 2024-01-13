@@ -14,12 +14,6 @@ import pandas as pd
 
 
 
-service_account_info = st.secrets["service_account"]
-credentials = service_account.Credentials.from_service_account_info(service_account_info)
-gc = gspread.authorize(credentials)
-
-
-
 
 class SessionState:
     def __init__(self, **kwargs):
