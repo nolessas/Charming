@@ -12,7 +12,7 @@ import gspread
 from google.oauth2 import service_account
 import pandas as pd
 
-
+SCOPES = ['https://www.googleapis.com/auth/calendar']
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
 service_account_info = st.secrets["Google_oauth"]
