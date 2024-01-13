@@ -32,7 +32,8 @@ credentials = flow.credentials
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
-service_account_info = st.secrets["google_oauth"]
+google_service_account_info = st.secrets['google_service_account']
+creds = ServiceAccountCredentials.from_json_keyfile_dict(google_service_account_info, scope)
 calendar_token_info = st.secrets["google_calendar_token"]
 credentials = google_auth_oauthlib.flow.InstalledAppFlow
 gc = gspread.authorize(credentials)
