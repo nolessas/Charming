@@ -13,15 +13,12 @@ from google.oauth2 import service_account
 import pandas as pd
 
 
+SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
+
 service_account_info = st.secrets["Google_oauth"]
 calendar_token_info = st.secrets["google_calendar_token"]
 credentials = service_account.Credentials.from_service_account_info(service_account_info)
 gc = gspread.authorize(credentials)
-
-# Google Sheets API credentials file
-
-SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
-
 
 
 
@@ -458,6 +455,4 @@ def register_client(date, hours, full_name, phone, email, note):
         st.sidebar.error(f"Error creating event: {str(e)}")
 
 if __name__ == "__main__":
-    print("Before main()")
     main()
-    print("After main()")
