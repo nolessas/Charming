@@ -12,6 +12,12 @@ import gspread
 from google.oauth2 import service_account
 import pandas as pd
 
+# Ensure that SCOPES are defined somewhere in your code
+SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
+SCOPES_CLIENT = ['https://www.googleapis.com/auth/calendar']
+API_NAME = 'calendar'
+API_VERSION = 'v3'
+SPREADSHEET_ID = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'  # Replace with your actual spreadsheet ID
 
 
 service_account_info = st.secrets["service_account"]
