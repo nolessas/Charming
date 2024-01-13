@@ -251,7 +251,7 @@ def delete_client(index):
         # Delete the row; add 2 to index to account for header row and 0-based indexing
         worksheet.delete_rows(index + 2)
         st.success(f"Client at row {index + 1} deleted successfully.")
-        st.experimental_rerun()  # Rerun the app to refresh the data display
+        st.rerun()  # Rerun the app to refresh the data display
     except Exception as e:
         st.error(f"Failed to delete client: {str(e)}")
 
