@@ -272,7 +272,7 @@ def delete_client(index):
 
 def get_credentials():
     try:
-        service_account_info = st.secrets["Google_oauth"]
+        service_account_info = st.secrets["google_oauth"]
         credentials = service_account.Credentials.from_service_account_info(
             service_account_info, scopes=SCOPES_SHEETS
         )
