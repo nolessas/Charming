@@ -12,6 +12,23 @@ import gspread
 from google.oauth2 import service_account
 import pandas as pd
 
+
+
+# Define your scopes and client secrets file
+scopes = ['openid', 'email', 'profile']
+client_secrets_file = 'path/to/client_secrets.json'
+
+# Create the OAuth flow instance
+flow = InstalledAppFlow.from_client_secrets_file(
+    client_secrets_file,
+    scopes=scopes
+)
+
+# Run the server to complete the authentication flow
+flow.run_local_server()
+credentials = flow.credentials
+
+
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
