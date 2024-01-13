@@ -178,7 +178,15 @@ def get_calendar_service():
     service = build('calendar', 'v3', credentials=credentials)
     return service
 
-
+def get_calendar_service():
+    creds = None
+    # Here you load your credentials from st.secrets and create a 'service' object for the Google Calendar API
+    service_account_info = st.secrets["Google_oauth"]
+    creds = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES)
+    
+    service = build('calendar', 'v3', credentials=creds)
+    return service
+    
 ####
 
 def show_registered_clients():
