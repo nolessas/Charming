@@ -14,30 +14,50 @@ import pandas as pd
 
 
 
-# Define your scopes and client secrets file
-scopes = ['openid', 'email', 'profile']
-client_secrets_file = 'path/to/client_secrets.json'
+import streamlit as st
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
 
-# Create the OAuth flow instance
-flow = InstalledAppFlow.from_client_secrets_file(
-    client_secrets_file,
-    scopes=scopes
+# Define your scopes
+SCOPES = ['https://www.googleapis.com/auth/calendar']
+
+# Use the client ID and secret from Streamlit secrets (or environment variables)
+client_id = st.secrets["google_oauth"]["client_id"]
+client_secret = st.secrets["google_oauth"]["client_secret"]
+redirect_uri = st.secrets["google_oauth"]["redirect_uris"][0]
+
+# Create the flow using the client secrets and scopes
+flow = InstalledAppFlow.from_client_config(
+    {
+        "web": {
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "redirect_uris": [redirect_uri],
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token"
+        }
+    },
+    scopes=SCOPES
 )
 
-# Run the server to complete the authentication flow
-flow.run_local_server()
-credentials = flow.credentials
+# Redirect the user to Google's OAuth 2.0 server
+auth_url, _ = flow.authorization_url(prompt='consent')
 
+# Display the authentication URL in the Streamlit app for the user to visit
+st.write('Please go to this URL and authorize access:', auth_url)
 
-SCOPES = ['https://www.googleapis.com/auth/calendar']
-SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
+# Ask the user to enter the authorization code from the redirected URL
+code = st.text_input('Enter the authorization code:')
 
-google_service_account_info = st.secrets['google_service_account']
-creds = ServiceAccountCredentials.from_json_keyfile_dict(google_service_account_info, scope)
-calendar_token_info = st.secrets["google_calendar_token"]
-credentials = google_auth_oauthlib.flow.InstalledAppFlow
-gc = gspread.authorize(credentials)
+if code:
+    flow.fetch_token(code=code)
+    credentials = flow.credentials
 
+    # Now you can use these credentials to access Google Calendar API
+    service = build('calendar', 'v3', credentials=credentials)
+    # Example: List calendar events
+    # ...
 
 
 class SessionState:
