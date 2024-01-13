@@ -50,13 +50,12 @@ def main():
 
 
 def get_sheets_service():
-    creds_json = st.secrets["gcp_service_account"]
+    creds_json = st.secrets["service_account"]
     creds = service_account.Credentials.from_service_account_info(
         creds_json, scopes=SCOPES_SHEETS
     )
     service = gspread.authorize(creds)
     return service
-
 
 
 
@@ -263,13 +262,14 @@ def delete_client(index):
 
 
 def get_calendar_service():
-    creds_json = st.secrets["gcp_service_account"]
+    creds_json = st.secrets["service_account"]
     credentials = service_account.Credentials.from_service_account_info(
         creds_json, scopes=SCOPES_CLIENT
     )
 
     service = build(API_NAME, API_VERSION, credentials=credentials)
     return service
+
 
 
 
