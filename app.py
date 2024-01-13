@@ -261,15 +261,15 @@ def delete_client(index):
 
 
 
-def get_calendar_service():
+def get_credentials():
     try:
-        creds_json = st.secrets["service_account"]
+        service_account_info = st.secrets["Google_oauth"]
         credentials = service_account.Credentials.from_service_account_info(
-            creds_json, scopes=SCOPES_CLIENT
+            service_account_info, scopes=SCOPES_SHEETS
         )
-        return build(API_NAME, API_VERSION, credentials=credentials)
+        return credentials
     except Exception as e:
-        st.error(f"Failed to get calendar service: {e}")
+        st.error(f"Error getting credentials: {e}")
         raise e
 
 
