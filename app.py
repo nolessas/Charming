@@ -67,7 +67,6 @@ def get_sheets_service():
 
 
 
-
 def write_to_sheets(data):
     service = get_sheets_service()
 
@@ -272,10 +271,8 @@ def get_calendar_service():
     credentials = service_account.Credentials.from_service_account_info(
         creds_json, scopes=SCOPES_CLIENT
     )
-
     service = build(API_NAME, API_VERSION, credentials=credentials)
     return service
-
 
 
 
