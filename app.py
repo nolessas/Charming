@@ -166,7 +166,7 @@ def get_sheets_service():
 
 def get_calendar_service():
     # Fetch your service account details from Streamlit's secrets
-    service_account_info = st.secrets["Google_oauth"]
+    service_account_info = st.secrets["google_calendar_token"]
     
     # Use the service account information to create credentials
     credentials = service_account.Credentials.from_service_account_info(
