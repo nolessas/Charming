@@ -50,12 +50,13 @@ def main():
 
 
 def get_sheets_service():
-    credentials = service_account.Credentials.from_service_account_file(
-        '.streamlit/key.json', scopes=SCOPES_SHEETS
+    creds_json = st.secrets["gcp_service_account"]
+    creds = service_account.Credentials.from_service_account_info(
+        creds_json, scopes=SCOPES_SHEETS
     )
-
-    service = gspread.authorize(credentials)
+    service = gspread.authorize(creds)
     return service
+
 
 
 
@@ -262,25 +263,16 @@ def delete_client(index):
 
 
 def get_calendar_service():
-    credentials = None
+    creds_json = st.secrets["gcp_service_account"]
+    credentials = service_account.Credentials.from_service_account_info(
+        creds_json, scopes=SCOPES_CLIENT
+    )
 
-    # Load or create credentials
-    if os.path.exists('.streamlit/token.json'):
-        credentials = Credentials.from_authorized_user_file('.streamlit/token.json')
-
-    if not credentials or not credentials.valid:
-        if credentials and credentials.expired and credentials.refresh_token:
-            credentials.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES_CLIENT)
-            credentials = flow.run_local_server(port=0)
-
-        with open('.streamlit/token.json', 'w') as token:
-            token.write(credentials.to_json())
-
-    # Build the Google Calendar service
     service = build(API_NAME, API_VERSION, credentials=credentials)
     return service
+
+
+
 
 
     # Sidebar logic
