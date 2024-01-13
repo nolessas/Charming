@@ -19,8 +19,9 @@ credentials = service_account.Credentials.from_service_account_info(service_acco
 gc = gspread.authorize(credentials)
 
 # Google Sheets API credentials file
-SHEETS_CLIENT_SECRET_FILE = 'st.secrets["google_calendar_token"]'
+
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
+
 
 
 
