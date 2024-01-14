@@ -98,19 +98,13 @@ def write_to_sheets(data):
 
 
 def fetch_data_from_sheets():
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    worksheet_name = 'Sheet2'
     try:
-        service = get_sheets_service()
-        spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-        worksheet_name = 'Sheet2'
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
         records = worksheet.get_all_records()
-
-        if not records:
-            st.write("No to-do items found.")
-            return []
-
         return records
-
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
         return []
@@ -137,20 +131,14 @@ def manage_todo_list():
 
 
 def delete_row_from_sheet(index, records):
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    worksheet_name = 'Sheet2'
     try:
-        service = get_sheets_service()
-        spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-        worksheet_name = 'Sheet2'
-
-        # Delete the row from the Google Sheets
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        worksheet.delete_rows(index + 2)  # +2 to account for the header row and 1-indexing
-
-        # Update the records list to reflect the deletion
+        worksheet.delete_rows(index + 2)  # Adjust for header row and 1-indexing
         del records[index]
-
         st.sidebar.success("Selected rows deleted successfully!")
-
     except Exception as e:
         st.sidebar.error(f"Failed to delete row from sheet: {str(e)}")
 
@@ -161,9 +149,8 @@ def delete_row_from_sheet(index, records):
 
 def add_item_to_sheet2(item, location):
     service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'  # Replace with your actual spreadsheet ID
-    worksheet_name = 'Sheet2'  # The name of the worksheet where you want to add items
-    
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    worksheet_name = 'Sheet2'
     try:
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
         worksheet.append_row([item, location])
@@ -303,41 +290,26 @@ def show_dashboard():
         # Add functionality for option 2 here
 
     elif choose_main == "option3":
+        if choose_main == "option3":
             st.title("Data from Sheet2")
-
-            # Input fields for adding new entries to Sheet2
             item_input = st.text_input("Item:")
             location_input = st.text_input("Location:")
-            if st.button("Add Entry"):
-                add_item_to_sheet2(item_input, location_input)
-
+        if st.button("Add Entry"):
+            add_item_to_sheet2(item_input, location_input)    
             records = fetch_data_from_sheets()
-            if not records:
-                st.write("No records found.")
-                return
+            if records:
+                df = pd.DataFrame(records)
+            st.write(df)
 
-            df = pd.DataFrame(records)
+        # Deletion of selected rows
+        selected_indices = st.multiselect('Select rows to delete:', df.index)
+        if st.button('Delete selected rows'):
+            for i in sorted(selected_indices, reverse=True):
+                delete_row_from_sheet(i, records)  # Deleting the row from the sheet
+            st.experimental_rerun()  # Rerun to refresh the data display
+        else:
+            st.write("No records found.")
 
-            # Handle NaN values (example: fill with default value or drop)
-            # Uncomment one of the following lines based on your requirement
-            # df.fillna('DefaultValue', inplace=True)
-            # df.dropna(subset=[sort_option], inplace=True)
-
-            # Add a selectbox for sorting options
-            sort_option = st.selectbox("Sort by:", df.columns, index=0)
-            sort_ascending = st.checkbox("Ascending Order", value=True)
-
-            # Convert sort_option column to a consistent data type if necessary
-            # df[sort_option] = df[sort_option].astype(str)  # Convert to string
-            # df[sort_option] = pd.to_numeric(df[sort_option], errors='coerce')  # Convert to numeric
-
-            # Apply sorting with error handling
-            try:
-                df = df.sort_values(by=[sort_option], ascending=sort_ascending)
-                # ... (display the DataFrame)
-
-            except Exception as e:
-                st.error(f"Error in sorting: {e}")
 
 
 
