@@ -92,7 +92,23 @@ def write_to_sheets(data):
 
 
 
+def fetch_data_from_sheets():
+    try:
+        service = get_sheets_service()
+        spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+        worksheet_name = 'Sheet1'
+        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
+        records = worksheet.get_all_records()
 
+        if not records:
+            st.write("No records found.")
+            return []
+
+        return records
+
+    except Exception as e:
+        st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
+        return []
 
 
 
@@ -270,28 +286,7 @@ def show_dashboard():
     if choose_main == "option2":
         st.title("Today's Events")
 
-        # Google Calendar API
-        service = get_calendar_service()
-
-        # Fetch today's events
-        now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-        events_result = service.events().list(
-            calendarId='primary',
-            timeMin=now,
-            timeMax=(datetime.utcnow() + timedelta(days=1)).isoformat() + 'Z',
-            singleEvents=True,
-            orderBy='startTime'
-        ).execute()
-
-        events = events_result.get('items', [])
         
-        if not events:
-            st.write("No events found.")
-        else:
-            for event in events:
-                start_time = event['start'].get('dateTime', event['start'].get('date'))
-                event_summary = event.get('summary', 'No summary provided')
-                st.write(f"{start_time} - {event_summary}")
 
     elif choose_main == "option1":
         st.write("")
