@@ -438,4 +438,6 @@ def register_client(date, hours, full_name, phone, email, note):
         st.sidebar.error(f"Error creating event: {str(e)}")
 
 if __name__ == "__main__":
+    print("Before main()")
     main()
+    print("After main()")
