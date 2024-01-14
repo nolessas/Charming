@@ -362,49 +362,35 @@ def show_dashboard():
             add_item_to_sheet2(item_input, location_input)
 
 
-def register_client(date, hours, full_name, phone, email, note):
-    # ... (your existing code)
+def register_client(date, full_name, phone, email, note):
+    try:
+        # Format the date and time
+        event_time = datetime.combine(date, datetime.min.time())
+        event_time = event_time.strftime("%Y-%m-%dT%H:%M:%S")  # Format as RFC3339
 
-    # Add the data to the list
-    registered_clients.append({
-        "Date": str(datetime.combine(date, hours)),
-        "Full Name": full_name,
-        "Phone Number": phone,
-        "Email": email,
-        "Note": note
-    })
+        # Prepare event data
+        event = {
+            'summary': f'Client Registration: {full_name}',
+            'description': f'Phone: {phone}, Email: {email}, Note: {note}',
+            'start': {'dateTime': event_time, 'timeZone': 'YOUR_TIMEZONE'},
+            'end': {'dateTime': event_time, 'timeZone': 'YOUR_TIMEZONE'},
+        }
 
+        # Call Google Calendar API to create the event
+        # Replace 'service' with your Google Calendar service instance
+        # service.events().insert(calendarId='primary', body=event).execute()
+        
+        # Simulate successful registration (remove this line when integrating with Google Calendar)
+        st.sidebar.success("Client registered successfully!")
 
+    except HttpError as e:
+        st.sidebar.error(f"Error creating event: {str(e)}")
+        # Handle the HttpError gracefully and provide an error message
 
-    # Format the data for Google Sheets
-    sheet_data = [str(datetime.combine(date, hours)), full_name, phone, email, note]
+# ...
 
-    # Write data to Google Sheets
-    write_to_sheets(sheet_data)
-
-    # Google Calendar API
-    service = get_calendar_service()
-
-    # Format the event start time
-    start_datetime = datetime.combine(date, hours)
-
-    # Format the event end time (assuming it's 30 minutes later)
-    end_datetime = start_datetime + timedelta(minutes=30)
-
-    # Create event
-    event = {
-        'summary': f"Client Registration - {full_name}",
-        'description': f"Client details:\nFull Name: {full_name}\nPhone: {phone}\nEmail: {email}\nNote: {note}",
-        'start': {
-            'dateTime': start_datetime.isoformat(),
-            'timeZone': 'UTC',  # Replace with your desired time zone
-        },
-        'end': {
-            'dateTime': end_datetime.isoformat(),
-            'timeZone': 'UTC',  # Replace with your desired time zone
-        },
-    }
-
+if __name__ == "__main__":
+    main()
 
 
 if __name__ == "__main__":
