@@ -407,7 +407,6 @@ def register_client(date, hours, full_name, phone, email, note):
     write_to_sheets(sheet_data)
 
     # Google Calendar API (Place this code inside the register_client function)
-    service = get_calendar_service()
 
     # Format the event start time
     start_datetime = datetime.combine(date, hours)
