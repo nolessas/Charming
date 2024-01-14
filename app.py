@@ -304,11 +304,9 @@ def show_dashboard():
         if records:
             df = pd.DataFrame(records)
     
-            # Create a checkbox column for each row
-            df['Select'] = [st.checkbox(f"Select Row {i}", key=f"checkbox_{i}") for i in df.index]
-    
-            # Display the DataFrame with checkboxes and a delete button in each row
+            # Display the DataFrame with select checkmarks and a delete button in each row
             for i, row in df.iterrows():
+                select_checkmark = st.checkbox(f"Select Row {i}")
                 delete_btn = st.button(f"Delete Row {i}")
                 if delete_btn:
                     delete_row_from_sheet(i, records)  # Deleting the row from the sheet
@@ -316,7 +314,7 @@ def show_dashboard():
                 st.write(f"Row {i}: Item - {row['Item']}, Location - {row['Location']}")
     
             # Deletion of selected rows
-            selected_indices = [i for i, select in enumerate(df['Select']) if select]
+            selected_indices = [i for i, select in enumerate(df.index) if df.loc[select, 'Select']]
             if st.button('Delete selected rows'):
                 for i in sorted(selected_indices, reverse=True):
                     delete_row_from_sheet(i, records)  # Deleting the row from the sheet
@@ -324,7 +322,6 @@ def show_dashboard():
     
         else:
             st.write("No records found.")
-
 
 
 
