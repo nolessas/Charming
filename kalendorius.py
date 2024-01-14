@@ -1,10 +1,8 @@
+import streamlit as st
 import streamlit_calendar as st_calendar
 import pandas as pd
 from google.oauth2 import service_account
 import gspread
-
-SCOPES = ['https://www.googleapis.com/auth/calendar']
-SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
 
 # Function to get Google Sheets service
