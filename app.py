@@ -315,11 +315,11 @@ def show_dashboard():
 
         # Fetch and display data from Google Sheets with a delete button next to each row
         records = fetch_data_from_sheets()
-        if records:
-            df = pd.DataFrame(records)
-            # Display the DataFrame with a delete button for each row
-            for index, row in df.iterrows():
-                cols = st.columns([2, 1, 1])
+if records:
+        df = pd.DataFrame(records)
+        # Display the DataFrame with a delete button for each row
+        for index, row in df.iterrows():
+            cols = st.columns([2, 1, 1])
             with cols[0]:  # Display the data
                 st.text(f"{row['Reikalingos priemones']} - {row['Kur']}")
             with cols[1]:  # Display the delete button
