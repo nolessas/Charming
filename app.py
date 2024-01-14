@@ -279,11 +279,9 @@ def show_dashboard():
     choose_main = st.radio("", ("option1", "option2", "option3"))
 
     if choose_main == "option1":
-        # Option 1: Show Registered Clients and Register New Client
-        st.title("Registered Clients")
-        show_registered_clients()
+        # Option 1: Register Client (Previously app1)
+        st.title("Register Client")
 
-        st.title("Register New Client")
         # Input fields for registration
         date_input = st.date_input("Date:")
         hours_input = st.time_input("Time:")
@@ -299,11 +297,10 @@ def show_dashboard():
 
     elif choose_main == "option2":
         # Option 2: Placeholder functionality
-        st.title("Placeholder Functionality")
-        # Add functionality for option 2 here
+        st.title("Nothing is here yet.")
 
     elif choose_main == "option3":
-        # Option 3: Add Item to Sheet2 and Display Data
+        # Option 3: Add Item to Sheet2 (Previously app2)
         st.title("Data from Sheet3")
         st.write("Reikalingos priemones ir kur jas rasti.")
 
@@ -318,10 +315,9 @@ def show_dashboard():
             df = pd.DataFrame(records)
             # Add a selectbox for sorting options
             sort_option = st.selectbox("Sort by:", df.columns, index=1)
-            sort_ascending = st.checkbox("Ascending Order", value=True)
-            df = df.sort_values(by=[sort_option], ascending=sort_ascending)
+            sort_ascending = st.checkbox("Rušiavimas", value=True)
+            df = df.sort_values(by=[sort_option], ascending=[sort_ascending])
             st.dataframe(df)
-
 
 
 
