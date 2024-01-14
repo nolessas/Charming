@@ -1,4 +1,3 @@
-#app.py
 import os
 import streamlit as st
 from authentication import is_user_logged_in, show_login, set_user_logged_in
@@ -7,10 +6,12 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
+from googleapiclient.errors import HttpError  
 from hashlib import sha256
 import gspread
 from google.oauth2 import service_account
 import pandas as pd
+
 
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
@@ -64,11 +65,6 @@ def get_credentials():
 
 
 
-def get_sheets_service():
-    credentials = get_credentials()
-    return gspread.authorize(credentials)
-
-
 
 
 def write_to_sheets(data):
@@ -99,17 +95,38 @@ def write_to_sheets(data):
 
 def fetch_data_from_sheets():
     try:
-        # Assuming you have a function get_sheets_service() that sets up the connection
         service = get_sheets_service()
         spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-        worksheet_name = 'Sheet2'  # Update this to your specific worksheet name
+        worksheet_name = 'Sheet2'  # Update this if needed
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
         records = worksheet.get_all_records()
         return records
     except Exception as e:
-        st.error(f"Error fetching data from sheets: {e}")
+        st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
         return []
 
+
+
+
+def manage_todo_list():
+    st.title("To-Do List")
+
+    # Fetch data from Google Sheets
+    records = fetch_data_from_sheets()
+
+    if not records:
+        return
+
+    df = pd.DataFrame(records)
+    st.write(df)
+
+    # Deletion of selected rows
+    selected_indices = st.multiselect('Select rows to delete:', df.index)
+    if st.button('Delete selected rows'):
+        # Reverse sort indices so we delete from the bottom of the list first
+        for i in sorted(selected_indices, reverse=True):
+            delete_row_from_sheet(i, records)  # Call function to delete the row
+        st.rerun()
 
 
 def delete_row_from_sheet(index, records):
@@ -133,6 +150,11 @@ def delete_row_from_sheet(index, records):
 
 
 
+
+
+def get_sheets_service():
+    credentials = get_credentials()
+    return gspread.authorize(credentials)
 
 
 
@@ -261,6 +283,11 @@ def show_dashboard():
 
         
 
+    elif choose_main == "option1":
+        st.write("")
+        show_registered_clients()  # Function to display clients from Google Sheets
+
+
     elif choose_main == "option3":
         st.title("Data from Sheet3")
         st.write("Reikalingos priemones ir kur jas rasti.")
@@ -269,7 +296,6 @@ def show_dashboard():
         records = fetch_data_from_sheets()
 
         if not records:
-            st.write("No records found.")
             return
 
         df = pd.DataFrame(records)
@@ -336,46 +362,24 @@ def show_dashboard():
             add_item_to_sheet2(item_input, location_input)
 
 
+
 def register_client(date, hours, full_name, phone, email, note):
-    # Placeholder function for handling client registration
-    # You can add the logic to save the client information to a database or file
-    # For now, it just prints the information
-    print(f"Registered Client:")
-    print(f"Date: {date}")
-    print(f"Hours: {hours}")
-    print(f"Full Name: {full_name}")
-    print(f"Phone Number: {phone}")
-    print(f"Email: {email}")
-    print(f"Note: {note}")
+    # Add the data to the list
+    registered_clients.append({
+        "Date": str(datetime.combine(date, hours)),
+        "Full Name": full_name,
+        "Phone Number": phone,
+        "Email": email,
+        "Note": note
+    })
 
     # Format the data for Google Sheets
     sheet_data = [str(datetime.combine(date, hours)), full_name, phone, email, note]
 
     # Write data to Google Sheets
     write_to_sheets(sheet_data)
+    st.sidebar.success("Client registered successfully!")
 
-    # Google Calendar API
-
-
-    # Format the event start time
-    start_datetime = datetime.combine(date, hours)
-
-    # Format the event end time (assuming it's 30 minutes later)
-    end_datetime = start_datetime + timedelta(minutes=30)
-
-    # Create event
-    event = {
-        'summary': f"Client Registration - {full_name}",
-        'description': f"Client details:\nFull Name: {full_name}\nPhone: {phone}\nEmail: {email}\nNote: {note}",
-        'start': {
-            'dateTime': start_datetime.isoformat(),
-            'timeZone': 'UTC',  # Replace with your desired time zone
-        },
-        'end': {
-            'dateTime': end_datetime.isoformat(),
-            'timeZone': 'UTC',  # Replace with your desired time zone
-        },
-    }
 
     try:
         service.events().insert(calendarId='primary', body=event).execute()
@@ -384,7 +388,4 @@ def register_client(date, hours, full_name, phone, email, note):
         st.sidebar.error(f"Error creating event: {str(e)}")
 
 if __name__ == "__main__":
-    print("Before main()")
     main()
-    print("After main()")
-
