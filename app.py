@@ -12,13 +12,11 @@ import gspread
 from google.oauth2 import service_account
 import pandas as pd
 
-SCOPES = ['https://www.googleapis.com/auth/calendar']
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
-
+# Get credentials for Google Sheets
 service_account_info = st.secrets["google_oauth"]
-calendar_token_info = st.secrets["google_calendar_token"]
-credentials = service_account.Credentials.from_service_account_info(service_account_info)
+credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES_SHEETS)
 gc = gspread.authorize(credentials)
 
 
