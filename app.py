@@ -381,7 +381,12 @@ def register_client(date, hours, full_name, phone, email, note):
     st.sidebar.success("Client registered successfully!")
 
 
-    
+    try:
+        # Insert the event into the calendar
+        service.events().insert(calendarId='primary', body=event).execute()
+        st.sidebar.success("Client registered successfully and event created in Google Calendar!")
+    except HttpError as e:
+        st.sidebar.error(f"Error creating event: {str(e)}")
 
 if __name__ == "__main__":
     main()
