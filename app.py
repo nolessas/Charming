@@ -304,21 +304,20 @@ def show_dashboard():
         if records:
             df = pd.DataFrame(records)
     
-            # Create a checkbox column for each row
-            df['Delete'] = [st.checkbox(f"Delete Row {i}", key=f"checkbox_{i}") for i in df.index]
-    
-            # Display the DataFrame with checkboxes
-            st.write(df)
-    
-            # Deletion of selected rows
-            selected_indices = [i for i, delete in enumerate(df['Delete']) if delete]
-            if st.button('Delete selected rows'):
-                for i in sorted(selected_indices, reverse=True):
-                    delete_row_from_sheet(i, records)  # Deleting the row from the sheet
-                st.experimental_rerun()  # Rerun to refresh the data display
+            # Display each row with a delete button
+            for i, row in df.iterrows():
+                cols = st.columns([3, 1, 1])
+                with cols[0]:
+                    st.write(f"{row['Item']} {row['Location']}")
+                with cols[1]:
+                    if st.button("✓", key=f"check_{i}"):
+                        st.write("Checkmark clicked!")  # Or any other logic you want
+                with cols[2]:
+                    if st.button("Delete", key=f"delete_{i}"):
+                        delete_row_from_sheet(i+2, records)  # Adjust the index for gspread
+                        st.experimental_rerun()
         else:
             st.write("No records found.")
-
 
 
 
