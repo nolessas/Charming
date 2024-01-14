@@ -281,7 +281,7 @@ def show_dashboard():
             timeMax=(datetime.utcnow() + timedelta(days=1)).isoformat() + 'Z',
             singleEvents=True,
             orderBy='startTime'
-        ).execute()
+        )
 
         events = events_result.get('items', [])
         
