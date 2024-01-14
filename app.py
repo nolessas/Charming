@@ -301,15 +301,17 @@ def show_dashboard():
         # Fetching and displaying data from Sheet2
         records = fetch_data_from_sheets()
         if records:
-            df = pd.DataFrame(records)
-            st.write(df)
-
-            # Deletion of selected rows
-            selected_indices = st.multiselect('Select rows to delete:', df.index)
-            if st.button('Delete selected rows'):
-                for i in sorted(selected_indices, reverse=True):
-                    delete_row_from_sheet(i, records)  # Deleting the row from the sheet
-                st.experimental_rerun()  # Rerun to refresh the data display
+            for i, record in enumerate(records):
+                item, location = record['Item'], record['Location']
+                col1, col2, col3 = st.columns([3, 3, 1])
+                with col1:
+                    st.text(item)
+                with col2:
+                    st.text(location)
+                with col3:
+                    if st.button("Delete", key=f"delete_{i}"):
+                        delete_row_from_sheet(i+2, records)  # Adjusted for header row and 1-indexing
+                        st.experimental_rerun()
         else:
             st.write("No records found.")
 
