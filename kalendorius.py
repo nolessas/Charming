@@ -23,7 +23,7 @@ def fetch_client_data_for_calendar():
     events = []
     for _, row in df.iterrows():
         event = {
-            'start': row['Date'].strftime('%H:%M')
+            'start': row['Date'].isoformat(),
             'end': (row['Date'] + pd.DateOffset(hours=1)).isoformat(),
             'color': 'blue'  # or any other color
         }
