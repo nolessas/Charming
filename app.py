@@ -325,7 +325,7 @@ def show_dashboard():
             for index, row in df.iterrows():
                 cols = st.columns([2, 1, 1])
                 with cols[0]:  # Display the data
-                    st.text(f"{row['Reikalingos priemones']} - {row['Kur']}")
+                    st.text(f"{row['']} - {row['']}")
                 with cols[1]:  # Display the delete button
                     if st.button(f"Delete Row {index}", key=f"delete_{index}"):
                         # Delete the selected row from the DataFrame
