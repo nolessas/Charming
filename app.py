@@ -179,7 +179,7 @@ def show_registered_clients():
             df['Date'] = pd.to_datetime(df['Date'])
 
             # Add radio buttons for filtering by time range (Day, Week, Month, Year)
-            time_range = st.radio("Filter by Time Range", ["Day", "Week", "Month", "Year"])
+            time_range = st.radio("", ["Day", "Week", "Month", "Year"])
 
             # Calculate the start date based on the selected time range
             if time_range == "Day":
@@ -267,7 +267,7 @@ def show_dashboard():
 
     if choose_main == "option1":
         # Option 1: Show Registered Clients and Register New Client
-        st.title("Registered Clients")
+        st.title("")
         show_registered_clients()
 
         st.title("Register New Client")
