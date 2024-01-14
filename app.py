@@ -305,7 +305,8 @@ def show_dashboard():
     elif choose_main == "option3":
         # Option 3: Add Item to Sheet2 and Display Data
         st.title("Data from Sheet3")
-        st.write("Reikalingos priemones")
+        st.write("Reikalingos priemones ir kur jas rasti.")
+
         item_input = st.text_input("Reikalingos priemones:", key="item")
         location_input = st.text_input("Kur:", key="location")
         if st.button("Add Entry", key="add"):
@@ -316,8 +317,10 @@ def show_dashboard():
         if records:
             df = pd.DataFrame(records)
             # Add a selectbox for sorting options
-            sort_option = st.selectbox("Sort by:", df.columns, index=0)
+            sort_option = st.selectbox("Sort by:", df.columns, index=1)
             sort_ascending = st.checkbox("Ascending Order", value=True)
+            df = df.sort_values(by=[sort_option], ascending=sort_ascending)
+            st.dataframe(df)
 
 
 
