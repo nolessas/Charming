@@ -4,15 +4,13 @@ from google.oauth2 import service_account
 import gspread
 from datetime import datetime, timedelta
 
-# Google Sheets and Google Calendar API scopes
+# Define the necessary scope(s) for the Google Calendar API
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
+service_account_info = st.secrets["google_oauth"]
+credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES_SHEETS)
+gc = gspread.authorize(credentials)
 
-# Load Google Sheets service account credentials from Streamlit secrets
-service_account_info_sheets = st.secrets["google_oauth"]
-credentials_sheets = service_account.Credentials.from_service_account_info(
-    service_account_info_sheets, scopes=SCOPES_SHEETS)
-gc_sheets = gspread.authorize(credentials_sheets)
 
 
 
