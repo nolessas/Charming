@@ -337,29 +337,54 @@ def show_dashboard():
 
 
 def register_client(date, hours, full_name, phone, email, note):
-    # Add the data to the list
-    registered_clients.append({
-        "Date": str(datetime.combine(date, hours)),
-        "Full Name": full_name,
-        "Phone Number": phone,
-        "Email": email,
-        "Note": note
-    })
+    # Placeholder function for handling client registration
+    # You can add the logic to save the client information to a database or file
+    # For now, it just prints the information
+    print(f"Registered Client:")
+    print(f"Date: {date}")
+    print(f"Hours: {hours}")
+    print(f"Full Name: {full_name}")
+    print(f"Phone Number: {phone}")
+    print(f"Email: {email}")
+    print(f"Note: {note}")
 
     # Format the data for Google Sheets
     sheet_data = [str(datetime.combine(date, hours)), full_name, phone, email, note]
 
     # Write data to Google Sheets
     write_to_sheets(sheet_data)
-    st.sidebar.success("Client registered successfully!")
 
+    # Google Calendar API
+
+
+    # Format the event start time
+    start_datetime = datetime.combine(date, hours)
+
+    # Format the event end time (assuming it's 30 minutes later)
+    end_datetime = start_datetime + timedelta(minutes=30)
+
+    # Create event
+    event = {
+        'summary': f"Client Registration - {full_name}",
+        'description': f"Client details:\nFull Name: {full_name}\nPhone: {phone}\nEmail: {email}\nNote: {note}",
+        'start': {
+            'dateTime': start_datetime.isoformat(),
+            'timeZone': 'UTC',  # Replace with your desired time zone
+        },
+        'end': {
+            'dateTime': end_datetime.isoformat(),
+            'timeZone': 'UTC',  # Replace with your desired time zone
+        },
+    }
 
     try:
-        # Insert the event into the calendar
         service.events().insert(calendarId='primary', body=event).execute()
         st.sidebar.success("Client registered successfully and event created in Google Calendar!")
     except HttpError as e:
         st.sidebar.error(f"Error creating event: {str(e)}")
 
 if __name__ == "__main__":
+    print("Before main()")
     main()
+    print("After main()")
+
