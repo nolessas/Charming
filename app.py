@@ -290,7 +290,7 @@ def show_dashboard():
         # Add functionality for option 2 here
 
 #######################################################################################################################################################
-      if choose_main == "option3":
+    if choose_main == "option3":
         st.title("Data from Sheet2")
     
         # Input fields for adding new entries to Sheet2
