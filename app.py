@@ -315,7 +315,7 @@ def show_dashboard():
 
         # Fetch and display data from Google Sheets with a delete button next to each row
         records = fetch_data_from_sheets()
-if records:
+    if records:
         df = pd.DataFrame(records)
         # Display the DataFrame with a delete button for each row
         for index, row in df.iterrows():
