@@ -303,21 +303,46 @@ def show_dashboard():
         # Add functionality for option 2 here
 
     elif choose_main == "option3":
-        # Option 3: Add Item to Sheet2 and Display Data
         st.title("Data from Sheet3")
         st.write("Reikalingos priemones ir kur jas rasti.")
 
-        item_input = st.text_input("Reikalingos priemones:", key="item")
-        location_input = st.text_input("Kur:", key="location")
-        if st.button("Add Entry", key="add"):
-            add_item_to_sheet2(item_input, location_input)
-
-        # Fetch and display data from Google Sheets
+        # Fetch data from Google Sheets
         records = fetch_data_from_sheets()
-        if records:
-            df = pd.DataFrame(records)
-            # Add a selectbox for sorting options
-            sort_option = st
+
+        if not records:
+            return
+
+        df = pd.DataFrame(records)
+
+        # Add a selectbox for sorting options
+        sort_option = st.selectbox("Sort by:", df.columns, index=1)  # Set index to 1 for selecting the second column
+
+        # Checkbox for sorting order
+        sort_ascending = st.checkbox("Rušiavimas", value=True)
+
+        # Sort the DataFrame based on the selected column
+        df = df.sort_values(by=[sort_option], ascending=[sort_ascending])
+
+        # Display the data frame as a list with a delete button for each row
+        for index, row in df.iterrows():
+            # Create columns for layout
+            col1, col2, col3, col4, col5 = st.columns(5)  # Create columns for layout
+            with col1:
+                if len(row) > 0:
+                    st.write(row[0])  # Display the first column of the row
+            with col2:
+                if len(row) > 1:
+                    st.write(row[1])  # Display the second column of the row
+            with col3:
+                if len(row) > 2:
+                    st.write(row[2])  # Display the third column of the row
+            with col4:
+                if len(row) > 3:
+                    st.write(row[3])  # Display the fourth column of the row
+            with col5:
+                # Add a delete button for each row in the fifth column
+                if st.button(f"Delete Row {index + 1}"):
+                    delete_row_from_sheet(index, records)  # Call function to delete the row
 
 
 
