@@ -283,6 +283,7 @@ def show_dashboard():
         if st.button("Register"):
             register_client(date_input, hours_input, full_name_input, phone_input, email_input, note_input)
             st.success("Client registered successfully!")
+            st.rerun()
 
     elif choose_main == "option2":
         # Option 2: Placeholder functionality
