@@ -1,6 +1,20 @@
 import streamlit as st
 import pandas as pd
 
+
+
+
+st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: center;} </style>', unsafe_allow_html=True)
+st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
+
+# Three radio bars with their respective options
+option1 = st.radio("Radio 1", ("Option A", "Option B", "Option C"), index=0)
+option2 = st.radio("Radio 2", ("Option X", "Option Y", "Option Z"), index=1)
+option3 = st.radio("Radio 3", ("Choice 1", "Choice 2", "Choice 3"), index=2)
+
+st.write(f"Selected Option 1: {option1}")
+st.write(f"Selected Option 2: {option2}")
+st.write(f"Selected Option 3: {option3}")
 # Streamlit app
 def main():
     st.title("Client Management App")
