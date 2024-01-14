@@ -6,7 +6,7 @@ from datetime import datetime
 import gspread
 from google.oauth2 import service_account
 import pandas as pd
-
+from calendar import display_calendar
 
 
 
@@ -338,6 +338,12 @@ def show_dashboard():
                     delete_row_from_sheet(index, records)  # Call function to delete the row
                     st.rerun()  # Rerun
 
+def show_dashboard():
+    # ... existing code ...
+
+    if choose_main == "option2":
+        st.title("Calendar")
+        display_calendar()
 
 
 def register_client(date, hours, full_name, phone, email, note):
