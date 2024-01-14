@@ -305,27 +305,19 @@ def show_dashboard():
     elif choose_main == "option3":
         # Option 3: Add Item to Sheet2 and Display Data
         st.title("Data from Sheet3")
-        st.write("Reikalingos priemones ir kur jas rasti.")
-
-        # Input fields for adding new items
+        st.write("Reikalingos priemones")
         item_input = st.text_input("Reikalingos priemones:", key="item")
         location_input = st.text_input("Kur:", key="location")
         if st.button("Add Entry", key="add"):
             add_item_to_sheet2(item_input, location_input)
 
-        # Fetch and display data from Google Sheets with a delete button next to each row
+        # Fetch and display data from Google Sheets
         records = fetch_data_from_sheets()
-    if records:
-        df = pd.DataFrame(records)
-        # Display the DataFrame with a delete button for each row
-        for index, row in df.iterrows():
-            cols = st.columns([2, 1, 1])
-            with cols[0]:  # Display the data
-                with cols[1]:  # Display the delete button
-                    if st.button('Delete', key=f"delete_{index}"):
-                        delete_row_from_sheet(index, records)
-                        st.rerun()  # Rerun the app to refresh after deletion
-              
+        if records:
+            df = pd.DataFrame(records)
+            # Add a selectbox for sorting options
+            sort_option = st.selectbox("Sort by:", df.columns, index=0)
+            sort_ascending = st.checkbox("Ascending Order", value=True)
 
 
 
