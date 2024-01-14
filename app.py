@@ -5,15 +5,17 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 import pandas as pd
 from datetime import datetime, timedelta
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
 
-# Define the necessary scope(s) for the Google Calendar API
-SCOPES = ['https://www.googleapis.com/auth/calendar']
+
+
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
 # Load Google Sheets service account credentials from Streamlit secrets
 service_account_info_sheets = st.secrets["google_sheets_credentials"]
-credentials_sheets = service_account.Credentials.from_service_account_info(
-service_account_info_sheets, scopes=SCOPES_SHEETS)
+credentials_calendar = service_account.Credentials.from_service_account_info(
+    service_account_info_calendar, scopes=SCOPES_CALENDAR)
 gc_sheets = gspread.authorize(credentials_sheets)
 
 # Load Google Calendar service account credentials from Streamlit secrets
