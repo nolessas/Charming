@@ -106,7 +106,7 @@ def fetch_data_from_sheets():
         records = worksheet.get_all_records()
 
         if not records:
-            st.write("No to-do items found.")
+            st.write("No data found.")
             return []
 
         return records
@@ -136,19 +136,16 @@ def manage_todo_list():
         st.rerun()
 
 
-def delete_row_from_sheet(row_number):
-    """Deletes a row from the Google Sheet."""
-    try:
-        service = get_sheets_service()
-        spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-        worksheet_name = 'Sheet2'  # Ensure this matches the name of your sheet
-        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        worksheet.delete_rows(row_number)
-        st.success(f"Row {row_number} deleted successfully.")
-    except Exception as e:
-        st.error(f"Failed to delete row: {str(e)}")
+def get_sheets_service():
+    # Accessing service account credentials from Streamlit secrets
+    service_account_info = st.secrets["google_oauth"]
 
+    # Creating credentials from the service account info
+    credentials = service_account.Credentials.from_service_account_info(service_account_info)
 
+    # Authorizing the gspread client with the credentials
+    service = gspread.authorize(credentials)
+    return service
 
 
 
@@ -272,47 +269,39 @@ def show_dashboard():
     st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
     choose_main = st.radio("", ("option1", "option2", "option3"))
 
-        # ... (option1 and option2 code)
-    
-    # Option 1: Show Registered Clients
     if choose_main == "option1":
+        # Option 1: Show Registered Clients and Register New Client
+        st.title("Registered Clients")
         show_registered_clients()
-        # ... (Your code for registering a new client, if necessary)
-    
-    # Option 2: Placeholder for future functionality
+
+        st.title("Register New Client")
+        # Input fields for registration
+        date_input = st.date_input("Date:")
+        hours_input = st.time_input("Time:")
+        full_name_input = st.text_input("Full Name:")
+        phone_input = st.text_input("Phone Number:")
+        email_input = st.text_input("Email:")
+        note_input = st.text_area("Note:")
+
+        # Button for registering the client
+        if st.button("Register"):
+            register_client(date_input, hours_input, full_name_input, phone_input, email_input, note_input)
+            st.success("Client registered successfully!")
+
     elif choose_main == "option2":
-        st.title("Option 2 Placeholder")
-        st.write("Additional functionalities to be added here.")
-    
-    # Option 3: List Items with Delete Functionality
-    elif choose_main == "option3":
-        st.title("Data from Sheet3")
-        st.write("Reikalingos priemones ir kur jas rasti.")
-    
-        # Input fields for adding new items
-        item_input = st.text_input("Reikalingos priemones:", key="item")
-        location_input = st.text_input("Kur:", key="location")
-    
-        if st.button("Add Entry", key="add"):
-            add_item_to_sheet2(item_input, location_input)
-    
-        # Fetch and display data from Google Sheets with a delete button next to each row
+        # Option 2: Placeholder functionality
+        st.title("Placeholder Functionality")
+        # Add functionality for option 2 here
+
+    elif choose_main == "option3":  # Corrected to match radio button label
+        st.title("Data from Google Sheets")
+        st.write("Displaying data from Google Sheets")
+
         records = fetch_data_from_sheets()
         if records:
-            df = pd.DataFrame(records)
-            # Display the DataFrame with a delete button for each row
-            for index, row in df.iterrows():
-                cols = st.columns([2, 1, 1])  # Adjust the ratio as needed
-                with cols[0]:  # Display the data
-                    st.text(f"{row['Reikalingos priemones']} - {row['Kur']}")
-                with cols[1]:  # Place the delete button
-                    if st.button('Delete', key=f"delete_{index}"):
-                        # Adjust the index if needed, +2 accounts for Google Sheets being 1-indexed and header row
-                        delete_row_from_sheet(index + 2)  
-                        st.experimental_rerun()  # Rerun the app to update the
-
-
-
+            st.write("Data from Google Sheets:")
+            for record in records:
+                st.write(record)
 
 
 
