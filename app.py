@@ -7,7 +7,17 @@ import pandas as pd
 # Streamlit app
 def main():
     st.title("Client Management App")
+def main():
+    st.title("Client Management App")
 
+    # Check if the user is logged in
+    if not is_user_logged_in():
+        show_login()  # Show the login screen if not logged in
+    else:
+        # User is logged in, show the main menu
+        show_main_menu()
+
+    
     # Create st.radio buttons for main menu options
     menu_option = st.radio("Select an option", ("Register Client", "View Registered Clients", "To-Do List"))
 
