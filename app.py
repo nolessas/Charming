@@ -279,11 +279,9 @@ def show_dashboard():
     choose_main = st.radio("", ("option1", "option2", "option3"))
 
     if choose_main == "option1":
-        # Option 1: Show Registered Clients and Register New Client
-        st.title("Registered Clients")
-        show_registered_clients()
+        # Option 1: Register Client (Previously app1)
+        st.title("Register Client")
 
-        st.title("Register New Client")
         # Input fields for registration
         date_input = st.date_input("Date:")
         hours_input = st.time_input("Time:")
@@ -299,11 +297,10 @@ def show_dashboard():
 
     elif choose_main == "option2":
         # Option 2: Placeholder functionality
-        st.title("Placeholder Functionality")
-        # Add functionality for option 2 here
+        st.title("Nothing is here yet.")
 
     elif choose_main == "option3":
-        # Option 3: Add Item to Sheet2 and Display Data
+        # Option 3: Add Item to Sheet2 (Previously app2)
         st.title("Data from Sheet3")
         st.write("Reikalingos priemones ir kur jas rasti.")
 
@@ -318,24 +315,25 @@ def show_dashboard():
             df = pd.DataFrame(records)
             # Add a selectbox for sorting options
             sort_option = st.selectbox("Sort by:", df.columns, index=1)
-            sort_ascending = st.checkbox("Ascending Order", value=True)
-            df = df.sort_values(by=[sort_option], ascending=sort_ascending)
-            
-            # Display the DataFrame with a delete button for each row
-            for index, row in df.iterrows():
-                cols = st.columns([2, 1, 1])
-                with cols[0]:  # Display the data
-                    st.text(f"{row['Reikalingos priemones']} - {row['Kur']}")
-                with cols[1]:  # Display the delete button
-                    if st.button(f"Delete Row {index}", key=f"delete_{index}"):
-                        # Delete the selected row from the DataFrame
-                        df = df.drop(index)
-                        st.success("Row deleted successfully!")
-
+            sort_ascending = st.checkbox("Rušiavimas", value=True)
+            df = df.sort_values(by=[sort_option], ascending=[sort_ascending])
             st.dataframe(df)
 
 
 
+
+
+def register_client(date, hours, full_name, phone, email, note):
+    # Placeholder function for handling client registration
+    # You can add the logic to save the client information to a database or file
+    # For now, it just prints the information
+    print(f"Registered Client:")
+    print(f"Date: {date}")
+    print(f"Hours: {hours}")
+    print(f"Full Name: {full_name}")
+    print(f"Phone Number: {phone}")
+    print(f"Email: {email}")
+    print(f"Note: {note}")
 
 
 
@@ -355,9 +353,11 @@ def register_client(date, hours, full_name, phone, email, note):
     # Write data to Google Sheets
     write_to_sheets(sheet_data)
 
-    st.success("Client registered successfully!")
+    st.sidebar.success("Client registered successfully!")
 
-# ... (rest of your existing functions)
+
+
+
 
 if __name__ == "__main__":
     print("Before main()")
