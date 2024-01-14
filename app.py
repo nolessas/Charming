@@ -98,14 +98,13 @@ def fetch_data_from_sheets():
     try:
         service = get_sheets_service()
         spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-        worksheet_name = 'Sheet2'
+        worksheet_name = 'Sheet2'  # Update this if needed
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-
-        # Add data to the worksheet
-        worksheet.append_row([item, location])
-        st.sidebar.success("Item added successfully!")
+        records = worksheet.get_all_records()
+        return records
     except Exception as e:
-        st.sidebar.error(f"Error adding item to sheet: {str(e)}")
+        st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
+        return []
 
 
 
@@ -357,11 +356,12 @@ def show_dashboard():
             register_client(date_input, hours_input, full_name_input, phone_input, email_input, note_input)
             st.sidebar.success("Client registered successfully!")
 
-    if choose_sidebar == "app2":
-        item_input = st.sidebar.text_input("Reikalingos priemones:", key="item")
-        location_input = st.sidebar.text_input("Kur:", key="location")
-        if st.sidebar.button("Add Entry", key="add"):
-            add_item_to_sheet2(item_input, location_input)
+        choose_sidebar = st.sidebar.radio("", ("app1", "app2"))
+        if choose_sidebar == "app2":
+            item_input = st.sidebar.text_input("Reikalingos priemones:", key="item")
+            location_input = st.sidebar.text_input("Kur:", key="location")
+            if st.sidebar.button("Add Entry", key="add"):
+                fetch_data_from_sheets(item_input, location_input)
 
 
 def register_client(date, hours, full_name, phone, email, note):
