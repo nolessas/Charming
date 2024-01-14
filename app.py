@@ -20,16 +20,7 @@ gc = gspread.authorize(credentials)
 
 
 
-def get_sheets_service():
-    # Accessing service account credentials from Streamlit secrets
-    service_account_info = st.secrets["google_oauth"]
 
-    # Creating credentials from the service account info
-    credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES_SHEETS)
-
-    # Authorizing the gspread client with the credentials
-    service = gspread.authorize(credentials)
-    return service
 
 
 
@@ -60,11 +51,16 @@ def main():
 
 
 
+def get_sheets_service():
+    # Accessing service account credentials from Streamlit secrets
+    service_account_info = st.secrets["google_oauth"]
 
+    # Creating credentials from the service account info
+    credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES_SHEETS)
 
-
-
-
+    # Authorizing the gspread client with the credentials
+    service = gspread.authorize(credentials)
+    return service
 
 
 
@@ -89,10 +85,6 @@ def write_to_sheets(data):
 
     except Exception as e:
         st.error(f"Error writing to Google Sheets: {str(e)}")
-
-
-
-
 
 
 
@@ -136,6 +128,21 @@ def manage_todo_list():
         st.rerun()
 
 
+
+
+def add_item_to_sheet2(item, location):
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'  # Replace with your actual spreadsheet ID
+    worksheet_name = 'Sheet2'  # The name of the worksheet where you want to add items
+    
+    try:
+        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
+        worksheet.append_row([item, location])
+        st.sidebar.success("Item added successfully!")
+    except Exception as e:
+        st.sidebar.error(f"Failed to add item to sheet: {str(e)}")
+
+
 def delete_row_from_sheet(index, records):
     try:
         service = get_sheets_service()
@@ -153,26 +160,6 @@ def delete_row_from_sheet(index, records):
 
     except Exception as e:
         st.sidebar.error(f"Failed to delete row from sheet: {str(e)}")
-
-
-
-
-
-
-def add_item_to_sheet2(item, location):
-    service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'  # Replace with your actual spreadsheet ID
-    worksheet_name = 'Sheet2'  # The name of the worksheet where you want to add items
-    
-    try:
-        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        worksheet.append_row([item, location])
-        st.sidebar.success("Item added successfully!")
-    except Exception as e:
-        st.sidebar.error(f"Failed to add item to sheet: {str(e)}")
-
-
-
 
 
 
@@ -246,9 +233,7 @@ def show_registered_clients():
 
 
 
-
-
-def delete_client(index):
+ def delete_client(index):
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
     worksheet_name = 'Sheet1'
@@ -261,12 +246,8 @@ def delete_client(index):
     except Exception as e:
         st.error(f"Failed to delete client: {str(e)}")
 
+
 ####
-
-
-
-
-
 
 
 
@@ -304,32 +285,6 @@ def show_dashboard():
 
     elif choose_main == "option3":
         st.title("Data from Sheet3")
-        st.write("Reikalingos priemones ir kur jas rasti.")
-
-        item_input = st.text_input("Reikalingos priemones:", key="item")
-        location_input = st.text_input("Kur:", key="location")
-        if st.button("Add Entry", key="add"):
-            add_item_to_sheet2(item_input, location_input)
-
-        records = fetch_data_from_sheets()
-        if records:
-            df = pd.DataFrame(records)
-
-            # Convert the data type of the problematic column
-            # Example: Convert 'Your Column' to string
-            # df['Your Column'] = df['Your Column'].astype(str)
-
-            # Add a selectbox for sorting options
-            sort_option = st.selectbox("Sort by:", df.columns, index=0)
-            sort_ascending = st.checkbox("Ascending Order", value=True)
-
-            # Apply sorting with error handling
-            try:
-                df = df.sort_values(by=[sort_option], ascending=sort_ascending)
-                st.dataframe(df)
-            except Exception as e:
-                st.error(f"Error in sorting: {e}")
-
 
 
 
@@ -351,6 +306,9 @@ def register_client(date, hours, full_name, phone, email, note):
     write_to_sheets(sheet_data)
 
     st.success("Client registered successfully!")
+
+   
+
 
 # ... (rest of your existing functions)
 
