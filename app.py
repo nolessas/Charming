@@ -278,99 +278,51 @@ def show_dashboard():
     st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
     choose_main = st.radio("", ("option1", "option2", "option3"))
 
-
-
-
-
     if choose_main == "option1":
-        st.write("")
-        show_registered_clients()  # Function to display clients from Google Sheets
+        # Option 1: Show Registered Clients and Register New Client
+        st.title("Registered Clients")
+        show_registered_clients()
+
+        st.title("Register New Client")
+        # Input fields for registration
+        date_input = st.date_input("Date:")
+        hours_input = st.time_input("Time:")
+        full_name_input = st.text_input("Full Name:")
+        phone_input = st.text_input("Phone Number:")
+        email_input = st.text_input("Email:")
+        note_input = st.text_area("Note:")
+
+        # Button for registering the client
+        if st.button("Register"):
+            register_client(date_input, hours_input, full_name_input, phone_input, email_input, note_input)
+            st.success("Client registered successfully!")
 
     elif choose_main == "option2":
-        st.title("Nothing is here yet.")
-
+        # Option 2: Placeholder functionality
+        st.title("Placeholder Functionality")
+        # Add functionality for option 2 here
 
     elif choose_main == "option3":
+        # Option 3: Add Item to Sheet2 and Display Data
         st.title("Data from Sheet3")
         st.write("Reikalingos priemones ir kur jas rasti.")
 
-        # Fetch data from Google Sheets
-        records = fetch_data_from_sheets()
-
-        if not records:
-            return
-
-        df = pd.DataFrame(records)
-
-        # Add a selectbox for sorting options
-        sort_option = st.selectbox("Sort by:", df.columns, index=1)  # Set index to 1 for selecting the second column
-
-        # Checkbox for sorting order
-        sort_ascending = st.checkbox("Rušiavimas", value=True)
-
-        # Sort the DataFrame based on the selected column
-        df = df.sort_values(by=[sort_option], ascending=[sort_ascending])
-
-        # Display the data frame as a list with a delete button for each row
-        for index, row in df.iterrows():
-            # Create columns for layout
-            col1, col2, col3, col4, col5 = st.columns(5)  # Create columns for layout
-            with col1:
-                if len(row) > 0:
-                    st.write(row[0])  # Display the first column of the row
-            with col2:
-                if len(row) > 1:
-                    st.write(row[1])  # Display the second column of the row
-            with col3:
-                if len(row) > 2:
-                    st.write(row[2])  # Display the third column of the row
-            with col4:
-                if len(row) > 3:
-                    st.write(row[3])  # Display the fourth column of the row
-            with col5:
-                # Add a delete button for each row in the fifth column
-                if st.button(f"Delete Row {index + 1}"):
-                    delete_row_from_sheet(index, records)  # Call function to delete the row
-
-
-
-
-    choose_sidebar = st.sidebar.radio("", ("app1", "app2"))
-    if choose_sidebar == "app1":
-        st.sidebar.title("Register Client")
-
-        # Input fields for registration
-        date_input = st.sidebar.date_input("Date:")
-        hours_input = st.sidebar.time_input("Time:")
-        full_name_input = st.sidebar.text_input("Full Name:")
-        phone_input = st.sidebar.text_input("Phone Number:")
-        email_input = st.sidebar.text_input("Email:")
-        note_input = st.sidebar.text_area("Note:")
-
-        # Button for registering the client
-        if st.sidebar.button("Register"):
-            # Placeholder function for handling registration
-            register_client(date_input, hours_input, full_name_input, phone_input, email_input, note_input)
-            st.sidebar.success("Client registered successfully!")
-
-    if choose_sidebar == "app2":
-        item_input = st.sidebar.text_input("Reikalingos priemones:", key="item")
-        location_input = st.sidebar.text_input("Kur:", key="location")
-        if st.sidebar.button("Add Entry", key="add"):
+        item_input = st.text_input("Reikalingos priemones:", key="item")
+        location_input = st.text_input("Kur:", key="location")
+        if st.button("Add Entry", key="add"):
             add_item_to_sheet2(item_input, location_input)
 
+        # Fetch and display data from Google Sheets
+        records = fetch_data_from_sheets()
+        if records:
+            df = pd.DataFrame(records)
+            # Add a selectbox for sorting options
+            sort_option = st.selectbox("Sort by:", df.columns, index=1)
+            sort_ascending = st.checkbox("Ascending Order", value=True)
+            df = df.sort_values(by=[sort_option], ascending=sort_ascending)
+            st.dataframe(df)
 
-def register_client(date, hours, full_name, phone, email, note):
-    # Placeholder function for handling client registration
-    # You can add the logic to save the client information to a database or file
-    # For now, it just prints the information
-    print(f"Registered Client:")
-    print(f"Date: {date}")
-    print(f"Hours: {hours}")
-    print(f"Full Name: {full_name}")
-    print(f"Phone Number: {phone}")
-    print(f"Email: {email}")
-    print(f"Note: {note}")
+
 
 
 
@@ -390,11 +342,9 @@ def register_client(date, hours, full_name, phone, email, note):
     # Write data to Google Sheets
     write_to_sheets(sheet_data)
 
-    st.sidebar.success("Client registered successfully!")
+    st.success("Client registered successfully!")
 
-
-
-
+# ... (rest of your existing functions)
 
 if __name__ == "__main__":
     print("Before main()")
