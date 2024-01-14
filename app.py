@@ -270,13 +270,33 @@ def delete_client(index):
 def show_dashboard():
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: center;} </style>', unsafe_allow_html=True)
     st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
-    choose_main = st.radio("", ("option1", "option2", "option3"))
+    choose_main = st.radio("Navigation", ("option1", "option2", "option3"))
 
-    # ... (option1 and option2 code)
+    if choose_main == "option1":
+        st.title("Register New Client")
 
-    if choose_main == "option3":
-        st.title("Data from Sheet3")
-        st.write("Reikalingos priemones ir kur jas rasti.")
+        # Input fields for registration
+        date_input = st.date_input("Date")
+        hours_input = st.time_input("Time")
+        full_name_input = st.text_input("Full Name")
+        phone_input = st.text_input("Phone Number")
+        email_input = st.text_input("Email")
+        note_input = st.text_area("Note")
+
+        # Button for registering the client
+        if st.button("Register"):
+            register_client(date_input, hours_input, full_name_input, phone_input,email_input, note_input)
+            st.success("Client registered successfully!")
+            # Display registered clients below the registration form
+            show_registered_clients()
+                            
+        elif choose_main == "option2":
+            st.title("Option 2 Placeholder")
+            st.write("Additional functionalities to be added here.")
+        
+        if choose_main == "option3":
+                st.title("Data from Sheet3")
+                st.write("Reikalingos priemones ir kur jas rasti.")
         
         # Input fields for adding new items
         item_input = st.text_input("Reikalingos priemones:", key="item")
