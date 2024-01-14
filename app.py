@@ -306,36 +306,30 @@ def show_dashboard():
         st.title("Data from Sheet3")
         st.write("Reikalingos priemones ir kur jas rasti.")
 
-        # Input fields for adding new items to the sheet
         item_input = st.text_input("Reikalingos priemones:", key="item")
         location_input = st.text_input("Kur:", key="location")
-
-        # Button to add new entry
         if st.button("Add Entry", key="add"):
             add_item_to_sheet2(item_input, location_input)
 
-        # Fetch and display data from Google Sheets
         records = fetch_data_from_sheets()
         if records:
             df = pd.DataFrame(records)
 
-            # Inspect DataFrame data types
-            st.write("DataFrame Data Types:", df.dtypes)  # Debugging line, remove after fixing data types
-
-            # Ensure that the column to sort by is of consistent data type
-            # Example: Convert a column to string if necessary
+            # Convert the data type of the problematic column
+            # Example: Convert 'Your Column' to string
             # df['Your Column'] = df['Your Column'].astype(str)
 
             # Add a selectbox for sorting options
             sort_option = st.selectbox("Sort by:", df.columns, index=0)
             sort_ascending = st.checkbox("Ascending Order", value=True)
 
-            # Apply sorting
+            # Apply sorting with error handling
             try:
                 df = df.sort_values(by=[sort_option], ascending=sort_ascending)
                 st.dataframe(df)
             except Exception as e:
                 st.error(f"Error in sorting: {e}")
+
 
 
 
