@@ -332,7 +332,7 @@ def show_dashboard():
                         df = df.drop(index)
                         st.success("Row deleted successfully!")
 
-            st.dataframe(df)
+
 
 
 
