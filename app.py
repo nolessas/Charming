@@ -1,39 +1,7 @@
-import os
 import streamlit as st
-import gspread
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
 import pandas as pd
-from datetime import datetime, timedelta
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
 
-
-
-SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
-
-# Load Google Sheets service account credentials from Streamlit secrets
-service_account_info_sheets = st.secrets["google_sheets_credentials"]
-credentials_calendar = service_account.Credentials.from_service_account_info(
-    service_account_info_calendar, scopes=SCOPES_CALENDAR)
-gc_sheets = gspread.authorize(credentials_sheets)
-
-# Load Google Calendar service account credentials from Streamlit secrets
-service_account_info_calendar = st.secrets["google_calendar_credentials"]
-credentials_calendar = service_account.Credentials.from_service_account_info(
-    service_account_info_calendar, scopes=SCOPES)
-
-# Streamlit app title
-st.title("Client Management App")
-
-class SessionState:
-    def __init__(self, **kwargs):
-        for key, val in kwargs.items():
-            setattr(self, key, val)
-
-if "registered_clients" not in st.session_state:
-    st.session_state.registered_clients = []
-
+# Streamlit app
 def main():
     st.title("Client Management App")
 
@@ -58,39 +26,41 @@ def main():
         st.header("To-Do List")
         manage_todo_list()
 
-# ... (other code)
+def register_client(date, time, full_name, phone_number, email, notes):
+    try:
+        # Create or load a DataFrame to store client data
+        if 'client_data' not in st.session_state:
+            st.session_state.client_data = pd.DataFrame(columns=["Date", "Time", "Full Name", "Phone Number", "Email", "Notes"])
+
+        # Convert date and time to datetime object
+        appointment_time = pd.to_datetime(f"{date} {time}")
+
+        # Create a new client record
+        new_client = pd.Series({
+            "Date": appointment_time.strftime("%Y-%m-%d"),
+            "Time": appointment_time.strftime("%H:%M:%S"),
+            "Full Name": full_name,
+            "Phone Number": phone_number,
+            "Email": email,
+            "Notes": notes
+        })
+
+        # Append the new client to the DataFrame
+        st.session_state.client_data = st.session_state.client_data.append(new_client, ignore_index=True)
+
+        st.success("Client registered successfully!")
+    except Exception as e:
+        st.error(f"Error registering client: {str(e)}")
+
+def view_registered_clients():
+    if 'client_data' not in st.session_state:
+        st.write("No registered clients found.")
+    else:
+        st.write(st.session_state.client_data)
 
 def manage_todo_list():
-    try:
-        worksheet = gc_sheets.open_by_key('YOUR_SPREADSHEET_ID').worksheet('Sheet2')
-        data = worksheet.get_all_records()
-
-        if not data:
-            st.write("No to-do items found.")
-        else:
-            df = pd.DataFrame(data)
-            st.write(df)
-
-            selected_indices = st.multiselect('Select rows to delete:', df.index)
-            if st.button('Delete selected rows'):
-                for i in sorted(selected_indices, reverse=True):
-                    delete_row_from_sheet(i, data)
-                st.rerun()
-
-    except Exception as e:
-        st.error(f"Error fetching to-do list: {str(e)}")
-
-def delete_row_from_sheet(index, data):
-    try:
-        worksheet = gc_sheets.open_by_key('YOUR_SPREADSHEET_ID').worksheet('Sheet2')
-        worksheet.delete_rows(index + 2)
-        del data[index]
-        st.success("Selected rows deleted successfully!")
-
-    except Exception as e:
-        st.error(f"Failed to delete row from sheet: {str(e)}")
-
-# ... (other code)
+    # Placeholder function for the to-do list
+    st.write("To-Do List functionality will be added here.")
 
 if __name__ == "__main__":
     main()
