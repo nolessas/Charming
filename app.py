@@ -280,7 +280,7 @@ def show_dashboard():
 
     if choose_main == "option1":
         # Option 1: Show Registered Clients and Register New Client
-        st.title("")
+        st.title("Registered Clients")
         show_registered_clients()
 
         st.title("Register New Client")
@@ -317,7 +317,11 @@ def show_dashboard():
         if records:
             df = pd.DataFrame(records)
             # Add a selectbox for sorting options
-            sort_option = st
+            sort_option = st.selectbox("Sort by:", df.columns, index=1)
+            sort_ascending = st.checkbox("Ascending Order", value=True)
+            df = df.sort_values(by=[sort_option], ascending=sort_ascending)
+            st.dataframe(df)
+
 
 
 
