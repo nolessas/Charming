@@ -239,7 +239,30 @@ def get_credentials():
         st.error(f"Error getting credentials: {e}")
         raise e
 
+def register_client(date, hours, full_name, phone, email, note):
+    # Add the data to the list
+    registered_clients.append({
+        "Date": str(datetime.combine(date, hours)),
+        "Full Name": full_name,
+        "Phone Number": phone,
+        "Email": email,
+        "Note": note
+    })
 
+    # Format the data for Google Sheets
+    sheet_data = [str(datetime.combine(date, hours)), full_name, phone, email, note]
+
+    # Write data to Google Sheets
+    write_to_sheets(sheet_data)
+    st.sidebar.success("Client registered successfully!")
+
+    try:
+        service.events().insert(calendarId='primary', body=event).execute()
+        st.sidebar.success("Client registered successfully and event created in Google Calendar!")
+    except HttpError as e:
+        st.sidebar.error(f"Error creating event: {str(e)}")
+
+        
 
 def show_dashboard():
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: center;} </style>', unsafe_allow_html=True)
@@ -349,30 +372,8 @@ def show_dashboard():
         if st.sidebar.button("Add Entry", key="add"):
             add_item_to_sheet2(item_input, location_input)
 
-def register_client(date, hours, full_name, phone, email, note):
-    # Add the data to the list
-    registered_clients.append({
-        "Date": str(datetime.combine(date, hours)),
-        "Full Name": full_name,
-        "Phone Number": phone,
-        "Email": email,
-        "Note": note
-    })
 
-    # Format the data for Google Sheets
-    sheet_data = [str(datetime.combine(date, hours)), full_name, phone, email, note]
 
-    # Write data to Google Sheets
-    write_to_sheets(sheet_data)
-    st.sidebar.success("Client registered successfully!")
-
-    try:
-        service.events().insert(calendarId='primary', body=event).execute()
-        st.sidebar.success("Client registered successfully and event created in Google Calendar!")
-    except HttpError as e:
-        st.sidebar.error(f"Error creating event: {str(e)}")
-
-# The rest of your code here...
 
 if __name__ == "__main__":
     main()
