@@ -7,6 +7,10 @@ import pandas as pd
 from datetime import datetime
 from datetime import timedelta
 
+
+# Define the necessary scope(s) for the Google Calendar API
+SCOPES = ['https://www.googleapis.com/auth/calendar']
+
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
 service_account_info = st.secrets["google_oauth"]
