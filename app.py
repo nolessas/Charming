@@ -252,7 +252,6 @@ def show_dashboard():
         st.title("Today's Events")
 
         # Google Calendar API
- 
 
         # Fetch today's events
         now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
@@ -277,7 +276,6 @@ def show_dashboard():
     elif choose_main == "option1":
         st.write("")
         show_registered_clients()  # Function to display clients from Google Sheets
-
 
     elif choose_main == "option3":
         st.title("Data from Sheet3")
@@ -321,7 +319,6 @@ def show_dashboard():
                 if st.button(f"Delete Row {index + 1}"):
                     delete_row_from_sheet(index, records)  # Call function to delete the row
 
-
     elif choose_main == "option4":
         st.title("Client Information")
 
@@ -352,7 +349,6 @@ def show_dashboard():
         if st.sidebar.button("Add Entry", key="add"):
             add_item_to_sheet2(item_input, location_input)
 
-
 def register_client(date, hours, full_name, phone, email, note):
     # Add the data to the list
     registered_clients.append({
@@ -370,12 +366,13 @@ def register_client(date, hours, full_name, phone, email, note):
     write_to_sheets(sheet_data)
     st.sidebar.success("Client registered successfully!")
 
-
     try:
         service.events().insert(calendarId='primary', body=event).execute()
         st.sidebar.success("Client registered successfully and event created in Google Calendar!")
     except HttpError as e:
         st.sidebar.error(f"Error creating event: {str(e)}")
+
+# The rest of your code here...
 
 if __name__ == "__main__":
     main()
