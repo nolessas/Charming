@@ -322,6 +322,21 @@ def show_dashboard():
 
 
 
+
+def register_client(date, hours, full_name, phone, email, note):
+    # Placeholder function for handling client registration
+    # You can add the logic to save the client information to a database or file
+    # For now, it just prints the information
+    print(f"Registered Client:")
+    print(f"Date: {date}")
+    print(f"Hours: {hours}")
+    print(f"Full Name: {full_name}")
+    print(f"Phone Number: {phone}")
+    print(f"Email: {email}")
+    print(f"Note: {note}")
+
+
+
 def register_client(date, hours, full_name, phone, email, note):
     # Add the data to the list
     registered_clients.append({
@@ -338,16 +353,13 @@ def register_client(date, hours, full_name, phone, email, note):
     # Write data to Google Sheets
     write_to_sheets(sheet_data)
 
-    st.success("Client registered successfully!")
+    st.sidebar.success("Client registered successfully!")
 
-# ... (rest of your existing functions)
+
+
+
 
 if __name__ == "__main__":
     print("Before main()")
     main()
     print("After main()")
-
-
-
-
-
