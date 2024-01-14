@@ -23,10 +23,10 @@ def fetch_client_data_for_calendar():
     events = []
     for _, row in df.iterrows():
         event = {
-            'title': row['Full Name'],
+            'title': row['Date'].strftime('%H:%M'),  # Display only hours and minutes
             'start': row['Date'].isoformat(),
-            'end': (row['Date'] + pd.DateOffset(days=1)).isoformat(),  # Assuming each event is one day long
-            'color': 'blue'  # You can customize the color
+            'end': (row['Date'] + pd.DateOffset(hours=1)).isoformat(),  # Assuming 1 hour duration per client
+            'color': 'blue'  # Customize color if needed
         }
         events.append(event)
     return events
