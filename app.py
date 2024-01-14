@@ -400,13 +400,8 @@ def register_client(date, hours, full_name, phone, email, note):
 def register_client(date, hours, full_name, phone, email, note):
     # ... (existing code)
 
-    # Format the data for Google Sheets
-    sheet_data = [str(datetime.combine(date, hours)), full_name, phone, email, note]
-
-    # Write data to Google Sheets
-    write_to_sheets(sheet_data)
-
     # Google Calendar API (Place this code inside the register_client function)
+    service = get_calendar_service()
 
     # Format the event start time
     start_datetime = datetime.combine(date, hours)
@@ -434,6 +429,7 @@ def register_client(date, hours, full_name, phone, email, note):
     except HttpError as e:
         st.sidebar.error(f"Error creating event: {str(e)}")
 
+# ... (other code)
 
 if __name__ == "__main__":
     main()
