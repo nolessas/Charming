@@ -11,25 +11,14 @@ from hashlib import sha256
 import gspread
 from google.oauth2 import service_account
 import pandas as pd
+from googleapiclient.errors import HttpError
 
 
-
-
-
-
-# Google Calendar API credentials file
-CLIENT_SECRET_FILE = '.streamlit/Google-calendar-api.json'
-API_NAME = 'calendar'
-API_VERSION = 'v3'
-SCOPES_CLIENT = ['https://www.googleapis.com/auth/calendar']
-
-# Google Sheets API credentials file
-SHEETS_CLIENT_SECRET_FILE = '.streamlit/token_sheets.json'
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
-
-service_account_info = st.secrets["service_account"]
-credentials = service_account.Credentials.from_service_account_info(service_account_info)
+# Get credentials for Google Sheets
+service_account_info = st.secrets["google_oauth"]
+credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES_SHEETS)
 gc = gspread.authorize(credentials)
 
 
@@ -43,6 +32,8 @@ if "registered_clients" not in st.session_state:
     st.session_state.registered_clients = []
 
 registered_clients = []
+
+
 
 
 
@@ -62,14 +53,16 @@ def main():
 
 
 
-def get_sheets_service():
-    credentials = service_account.Credentials.from_service_account_file(
-        '.streamlit/key.json', scopes=SCOPES_SHEETS
-    )
-
-    service = gspread.authorize(credentials)
-    return service
-
+def get_credentials():
+    try:
+        service_account_info = st.secrets["google_oauth"]
+        credentials = service_account.Credentials.from_service_account_info(
+            service_account_info, scopes=SCOPES_SHEETS
+        )
+        return credentials
+    except Exception as e:
+        st.error(f"Error getting credentials: {e}")
+        raise e
 
 
 
@@ -101,26 +94,20 @@ def write_to_sheets(data):
 
 
 
-
-
-
 def fetch_data_from_sheets():
     try:
         service = get_sheets_service()
         spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-        worksheet_name = 'Sheet2'
+        worksheet_name = 'Sheet2'  # Update this if needed
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
         records = worksheet.get_all_records()
-
-        if not records:
-            st.write("No to-do items found.")
-            return []
-
         return records
-
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
         return []
+
+
+
 
 def manage_todo_list():
     st.title("To-Do List")
@@ -166,19 +153,9 @@ def delete_row_from_sheet(index, records):
 
 
 
-def add_item_to_sheet2(item, location):
-    service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'  # Replace with your actual spreadsheet ID
-    worksheet_name = 'Sheet2'  # The name of the worksheet where you want to add items
-    
-    try:
-        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        worksheet.append_row([item, location])
-        st.sidebar.success("Item added successfully!")
-    except Exception as e:
-        st.sidebar.error(f"Failed to add item to sheet: {str(e)}")
-
-
+def get_sheets_service():
+    credentials = get_credentials()
+    return gspread.authorize(credentials)
 
 
 
@@ -264,7 +241,7 @@ def delete_client(index):
         # Delete the row; add 2 to index to account for header row and 0-based indexing
         worksheet.delete_rows(index + 2)
         st.success(f"Client at row {index + 1} deleted successfully.")
-        st.experimental_rerun()  # Rerun the app to refresh the data display
+        st.rerun()  # Rerun the app to refresh the data display
     except Exception as e:
         st.error(f"Failed to delete client: {str(e)}")
 
@@ -274,26 +251,19 @@ def delete_client(index):
 
 
 
-def get_calendar_service():
-    credentials = None
+def get_credentials():
+    try:
+        service_account_info = st.secrets["google_oauth"]
+        credentials = service_account.Credentials.from_service_account_info(
+            service_account_info, scopes=SCOPES_SHEETS
+        )
+        return credentials
+    except Exception as e:
+        st.error(f"Error getting credentials: {e}")
+        raise e
 
-    # Load or create credentials
-    if os.path.exists('.streamlit/token.json'):
-        credentials = Credentials.from_authorized_user_file('.streamlit/token.json')
 
-    if not credentials or not credentials.valid:
-        if credentials and credentials.expired and credentials.refresh_token:
-            credentials.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES_CLIENT)
-            credentials = flow.run_local_server(port=0)
 
-        with open('.streamlit/token.json', 'w') as token:
-            token.write(credentials.to_json())
-
-    # Build the Google Calendar service
-    service = build(API_NAME, API_VERSION, credentials=credentials)
-    return service
 
 
     # Sidebar logic
@@ -312,28 +282,7 @@ def show_dashboard():
     if choose_main == "option2":
         st.title("Today's Events")
 
-        # Google Calendar API
-        service = get_calendar_service()
-
-        # Fetch today's events
-        now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-        events_result = service.events().list(
-            calendarId='primary',
-            timeMin=now,
-            timeMax=(datetime.utcnow() + timedelta(days=1)).isoformat() + 'Z',
-            singleEvents=True,
-            orderBy='startTime'
-        ).execute()
-
-        events = events_result.get('items', [])
         
-        if not events:
-            st.write("No events found.")
-        else:
-            for event in events:
-                start_time = event['start'].get('dateTime', event['start'].get('date'))
-                event_summary = event.get('summary', 'No summary provided')
-                st.write(f"{start_time} - {event_summary}")
 
     elif choose_main == "option1":
         st.write("")
@@ -415,22 +364,6 @@ def show_dashboard():
 
 
 def register_client(date, hours, full_name, phone, email, note):
-    # Placeholder function for handling client registration
-    # You can add the logic to save the client information to a database or file
-    # For now, it just prints the information
-    print(f"Registered Client:")
-    print(f"Date: {date}")
-    print(f"Hours: {hours}")
-    print(f"Full Name: {full_name}")
-    print(f"Phone Number: {phone}")
-    print(f"Email: {email}")
-    print(f"Note: {note}")
-
-
-
-def register_client(date, hours, full_name, phone, email, note):
-    # ... (your existing code)
-
     # Add the data to the list
     registered_clients.append({
         "Date": str(datetime.combine(date, hours)),
@@ -440,44 +373,20 @@ def register_client(date, hours, full_name, phone, email, note):
         "Note": note
     })
 
-
-
     # Format the data for Google Sheets
     sheet_data = [str(datetime.combine(date, hours)), full_name, phone, email, note]
 
     # Write data to Google Sheets
     write_to_sheets(sheet_data)
+    st.sidebar.success("Client registered successfully!")
 
-    # Google Calendar API
-    service = get_calendar_service()
-
-    # Format the event start time
-    start_datetime = datetime.combine(date, hours)
-
-    # Format the event end time (assuming it's 30 minutes later)
-    end_datetime = start_datetime + timedelta(minutes=30)
-
-    # Create event
-    event = {
-        'summary': f"Client Registration - {full_name}",
-        'description': f"Client details:\nFull Name: {full_name}\nPhone: {phone}\nEmail: {email}\nNote: {note}",
-        'start': {
-            'dateTime': start_datetime.isoformat(),
-            'timeZone': 'UTC',  # Replace with your desired time zone
-        },
-        'end': {
-            'dateTime': end_datetime.isoformat(),
-            'timeZone': 'UTC',  # Replace with your desired time zone
-        },
-    }
 
     try:
+        # Insert the event into the calendar
         service.events().insert(calendarId='primary', body=event).execute()
         st.sidebar.success("Client registered successfully and event created in Google Calendar!")
     except HttpError as e:
         st.sidebar.error(f"Error creating event: {str(e)}")
 
 if __name__ == "__main__":
-    print("Before main()")
     main()
-    print("After main()")
