@@ -320,25 +320,7 @@ def show_dashboard():
             sort_option = st.selectbox("Sort by:", df.columns, index=1)
             sort_ascending = st.checkbox("Ascending Order", value=True)
             df = df.sort_values(by=[sort_option], ascending=sort_ascending)
-
-            # Display the DataFrame with checkboxes for row selection
-            st.dataframe(df.style.set_table_styles([{'selector': 'tr:hover', 'props': 'background-color: yellow;'}]))
-            
-            delete_selected_rows = st.button("Delete Selected Rows")
-            
-            if delete_selected_rows:
-                # Get the indices of selected rows
-                selected_indices = [index for index, _ in df.iterrows()]
-                
-                # Remove the selected rows from the DataFrame
-                df = df.drop(selected_indices)
-                st.success("Selected rows deleted successfully!")
-
             st.dataframe(df)
-
-
-
-
 
 
 
