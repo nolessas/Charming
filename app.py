@@ -334,8 +334,9 @@ def show_dashboard():
                     # Checkbox for marking row
                     df.at[row.Index, 'Delete'] = st.checkbox('', key=f"delete_{i}", value=row.Delete)
             
-            # Display the DataFrame without the 'Delete' column
-            st.dataframe(df.drop(columns='Delete'))
+            # Display the DataFrame without the 'Delete' columnto delete, aligned to the right
+                    df.at[row.Index, 'Delete'] = st.checkbox('', key=f"delete_{i}", value=row.Delete)
+                    st.dataframe(df.drop(columns='Delete'))
     
         else:
             st.write("No records found.")
