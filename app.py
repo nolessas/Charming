@@ -311,17 +311,20 @@ def show_dashboard():
                     delete_row_from_sheet(i, records)  # Deleting the row from the sheet
                 st.experimental_rerun()  # Rerun to refresh the data display
     
-            # Create individual items with delete buttons
+            # Create a list of rows with delete checkboxes on the right column
             for i, row in df.iterrows():
-                col1, col2 = st.columns([0.9, 0.1])
+                col1, col2 = st.columns([0.1, 0.9])
                 with col1:
-                    # Display the item and location
-                    st.write(f"Item: {row['Item']}, Location: {row['Location']}")
+                    # Create a delete checkbox for each row
+                    df.loc[i, 'Delete'] = st.checkbox('', key=f"checkbox_{i}")
                 with col2:
                     # Create a pressable button to delete the row
-                    if st.button(f"Delete Row {i}"):
+                    if st.button(f"Press to Delete Row {i}"):
                         delete_row_from_sheet(i, records)  # Deleting the row from the sheet
                         st.experimental_rerun()  # Rerun to refresh the data display
+    
+            # Display the DataFrame without the 'Delete' column
+            st.write(df.drop(columns='Delete'))
     
         else:
             st.write("No records found.")
