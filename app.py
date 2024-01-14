@@ -304,16 +304,17 @@ def show_dashboard():
         if records:
             df = pd.DataFrame(records)
     
-            # Display the DataFrame with a delete button in each row
+            # Display the DataFrame with a delete button for each row
             for i, row in df.iterrows():
                 delete_btn = st.button(f"Delete Row {i}")
                 if delete_btn:
                     delete_row_from_sheet(i, records)  # Deleting the row from the sheet
                     st.experimental_rerun()  # Rerun to refresh the data display
-                st.write(row)  # Display the row's data
+                st.text(row)  # Display the row's data as plain text
     
         else:
             st.write("No records found.")
+    
 
 
 
