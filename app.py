@@ -14,12 +14,6 @@ credentials_sheets = service_account.Credentials.from_service_account_info(
     service_account_info_sheets, scopes=SCOPES_SHEETS)
 gc_sheets = gspread.authorize(credentials_sheets)
 
-# Load Google Calendar service account credentials from Streamlit secrets
-service_account_info_calendar = st.secrets["google_calendar_credentials"]
-credentials_calendar = service_account.Credentials.from_service_account_info(
-    service_account_info_calendar, scopes=SCOPES_CALENDAR)
-
-# Function to create a Google Calendar event
 
 
 # Streamlit app
