@@ -393,12 +393,15 @@ def register_client(date, hours, full_name, phone, email, note):
 
 
 
-def register_client(date, hours, full_name, phone, email, note):
-    # ... (your existing code)
+registered_clients = []  # Add this line to initialize the registered_clients list
 
-    # Add the data to the list
+def register_client(date, hours, full_name, phone, email, note):
+    # Placeholder function for handling client registration
+    # You can add the logic to save the client information to a database or file
+    # For now, it just appends the client information to the registered_clients list
+
     registered_clients.append({
-        "Date": str(datetime.combine(date, hours)),
+        "Date": date,
         "Full Name": full_name,
         "Phone Number": phone,
         "Email": email,
