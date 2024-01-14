@@ -400,21 +400,17 @@ def register_client(date, hours, full_name, phone, email, note):
 
 
 
-registered_clients = []  # Add this line to initialize the registered_clients list
-
-def register_client(date, hours, full_name, phone, email, note):
-    # Placeholder function for handling client registration
-    # You can add the logic to save the client information to a database or file
-    # For now, it just appends the client information to the registered_clients list
-
-    registered_clients.append({
-        "Date": date,
-        "Full Name": full_name,
-        "Phone Number": phone,
-        "Email": email,
-        "Note": note
-    })
-
+    # Input fields for client registration
+    date_input = st.date_input('Date')
+    hours_input = st.time_input('Time')
+    full_name_input = st.text_input('Full Name')
+    phone_input = st.text_input('Phone')
+    email_input = st.text_input('Email')
+    note_input = st.text_area('Note')
+    
+    if st.button('Register Client'):
+        register_client(date_input, hours_input, full_name_input, phone_input, email_input, note_input)
+        st.success('Client registered successfully!')
 
 
 def register_client(date, hours, full_name, phone, email, note):
