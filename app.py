@@ -312,7 +312,7 @@ def show_dashboard():
         if st.button("Add Entry", key="add"):
             add_item_to_sheet2(item_input, location_input)
 
-        # Fetch and display data from Google Sheets
+        # Fetch and display data from Google Sheets using a DataFrame
         records = fetch_data_from_sheets()
         if records:
             df = pd.DataFrame(records)
@@ -320,8 +320,19 @@ def show_dashboard():
             sort_option = st.selectbox("Sort by:", df.columns, index=1)
             sort_ascending = st.checkbox("Ascending Order", value=True)
             df = df.sort_values(by=[sort_option], ascending=sort_ascending)
-            st.dataframe(df)
 
+            # Display the DataFrame with a "Delete" button for each row
+            for index, row in df.iterrows():
+                cols = st.columns([2, 1, 1])
+                with cols[0]:  # Display the data
+                    st.text(f"{row['Reikalingos priemones']} - {row['Kur']}")
+                with cols[2]:  # Display the "Delete" button
+                    if st.button(f"Delete Row {index + 1}"):
+                        delete_row_from_sheet(index, records)
+                        st.success(f"Row {index + 1} deleted successfully!")
+
+            # Display the updated DataFrame
+            st.dataframe(df)
 
 
 
