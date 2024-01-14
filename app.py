@@ -6,7 +6,7 @@ from datetime import datetime
 import gspread
 from google.oauth2 import service_account
 import pandas as pd
-from calendar import display_calendar
+from kalendorius import display_calendar
 
 
 
