@@ -372,7 +372,6 @@ def show_dashboard():
             add_item_to_sheet2(item_input, location_input)
 
 
-
 def register_client(date, hours, full_name, phone, email, note):
     # Add the data to the list
     registered_clients.append({
