@@ -133,20 +133,6 @@ def get_sheets_service():
 
 
 
-def get_calendar_service():
-    # Fetch your service account details from Streamlit's secrets
-    service_account_info = st.secrets["google_calendar_token"]
-    
-    # Use the service account information to create credentials
-    credentials = service_account.Credentials.from_service_account_info(
-        service_account_info,
-        scopes=SCOPES
-    )
-
-    # Build the service for the Google Calendar API
-    service = build('calendar', 'v3', credentials=credentials)
-    return service
-
 
 ####
 
@@ -284,8 +270,6 @@ def show_dashboard():
     if choose_main == "option2":
         st.title("Today's Events")
 
-        # Google Calendar API
-        service = get_calendar_service()
 
         # Fetch today's events
         now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
