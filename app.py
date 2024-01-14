@@ -320,18 +320,18 @@ def show_dashboard():
             sort_option = st.selectbox("Sort by:", df.columns, index=1)
             sort_ascending = st.checkbox("Ascending Order", value=True)
             df = df.sort_values(by=[sort_option], ascending=sort_ascending)
-            
-            # Display the DataFrame with a delete button for each row
-            df['Delete'] = df.apply(lambda x: st.button(f"Delete Row {x.name}"), axis=1)
-            st.dataframe(df.drop(columns='Delete'))
 
-            # Check which rows to delete based on button clicks
-            rows_to_delete = [index for index, row in df.iterrows() if row['Delete']]
-            if rows_to_delete:
-                df = df.drop(rows_to_delete)
-                st.success("Selected rows deleted successfully!")
-            
-            st.dataframe(df.drop(columns='Delete'))
+            # Display the DataFrame with an 'x' button to delete rows
+            for index, row in df.iterrows():
+                cols = st.columns([2, 1, 1])
+                with cols[0]:  # Display the data
+                    st.text(f"{row['Reikalingos priemones']} - {row['Kur']}")
+                with cols[1]:  # Display the 'x' button to delete
+                    if st.button('x', key=f"delete_{index}"):
+                        df = df.drop(index)
+                        st.success("Row deleted successfully!")
+
+            st.dataframe(df)
 
 
 
