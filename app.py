@@ -290,44 +290,42 @@ def show_dashboard():
         # Add functionality for option 2 here
 
 #######################################################################################################################################################
-    if choose_main == "option3":
-        st.title("Data from Sheet2")
-    
-        # Input fields for adding new entries to Sheet2
-        item_input = st.text_input("Item:")
-        location_input = st.text_input("Location:")
-        if st.button("Add Entry"):
-            add_item_to_sheet2(item_input, location_input)
-    
-        # Fetching and displaying data from Sheet2
-        records = fetch_data_from_sheets()
-        if records:
-            df = pd.DataFrame(records)
-    
-            # Create a delete button at the top
-            if st.button('Delete Selected Rows'):
-                selected_indices = [i for i, delete in enumerate(df.index) if df.loc[delete, 'Delete']]
-                for i in sorted(selected_indices, reverse=True):
+if choose_main == "option3":
+    st.title("Data from Sheet2")
+
+    # Input fields for adding new entries to Sheet2
+    item_input = st.text_input("Item:")
+    location_input = st.text_input("Location:")
+    if st.button("Add Entry"):
+        add_item_to_sheet2(item_input, location_input)
+
+    # Fetching and displaying data from Sheet2
+    records = fetch_data_from_sheets()
+    if records:
+        df = pd.DataFrame(records)
+
+        # Create a list of rows with delete checkboxes on the right column
+        for i, row in df.iterrows():
+            col1, col2 = st.columns([4, 1])  # Adjust the width ratio as needed
+            with col1:
+                # Display the item and location on the left side
+                st.write(f"Item: {row['Item']}, Location: {row['Location']}")
+            with col2:
+                # Create a delete checkbox for each row on the right side
+                if st.checkbox(f"Delete Row {i}", key=f"checkbox_{i}"):
                     delete_row_from_sheet(i, records)  # Deleting the row from the sheet
-                st.experimental_rerun()  # Rerun to refresh the data display
-    
-            # Create a list of rows with delete checkboxes on the right column
-            for i, row in df.iterrows():
-                col1, col2 = st.columns([0.1, 0.9])
-                with col1:
-                    # Create a delete checkbox for each row
-                    df.loc[i, 'Delete'] = st.checkbox('', key=f"checkbox_{i}")
-                with col2:
-                    # Create a pressable button to delete the row
-                    if st.button(f"Press to Delete Row {i}"):
-                        delete_row_from_sheet(i, records)  # Deleting the row from the sheet
-                        st.experimental_rerun()  # Rerun to refresh the data display
-    
-            # Display the DataFrame without the 'Delete' column
-            st.write(df.drop(columns='Delete'))
-    
-        else:
-            st.write("No records found.")
+                    st.experimental_rerun()  # Rerun to refresh the data display
+
+        # Display the 'Delete Selected Rows' button at the bottom
+        if st.button('Delete Selected Rows'):
+            selected_indices = [i for i, delete in enumerate(df.index) if df.loc[delete, 'Delete']]
+            for i in sorted(selected_indices, reverse=True):
+                delete_row_from_sheet(i, records)  # Deleting the row from the sheet
+            st.experimental_rerun()  # Rerun to refresh the data display
+
+    else:
+        st.write("No records found.")
+
 
 
 
