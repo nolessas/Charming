@@ -1,3 +1,4 @@
+#app.py
 import os
 import streamlit as st
 from authentication import is_user_logged_in, show_login, set_user_logged_in
@@ -6,12 +7,10 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
-from googleapiclient.errors import HttpError  
 from hashlib import sha256
 import gspread
 from google.oauth2 import service_account
 import pandas as pd
-
 
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
@@ -93,17 +92,7 @@ def write_to_sheets(data):
 
 
 
-def fetch_data_from_sheets():
-    try:
-        service = get_sheets_service()
-        spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-        worksheet_name = 'Sheet2'  # Update this if needed
-        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        records = worksheet.get_all_records()
-        return records
-    except Exception as e:
-        st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
-        return []
+
 
 
 
@@ -281,7 +270,28 @@ def show_dashboard():
     if choose_main == "option2":
         st.title("Today's Events")
 
+        # Google Calendar API
+        service = get_calendar_service()
+
+        # Fetch today's events
+        now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+        events_result = service.events().list(
+            calendarId='primary',
+            timeMin=now,
+            timeMax=(datetime.utcnow() + timedelta(days=1)).isoformat() + 'Z',
+            singleEvents=True,
+            orderBy='startTime'
+        ).execute()
+
+        events = events_result.get('items', [])
         
+        if not events:
+            st.write("No events found.")
+        else:
+            for event in events:
+                start_time = event['start'].get('dateTime', event['start'].get('date'))
+                event_summary = event.get('summary', 'No summary provided')
+                st.write(f"{start_time} - {event_summary}")
 
     elif choose_main == "option1":
         st.write("")
@@ -360,7 +370,6 @@ def show_dashboard():
         location_input = st.sidebar.text_input("Kur:", key="location")
         if st.sidebar.button("Add Entry", key="add"):
             add_item_to_sheet2(item_input, location_input)
-
 
 
 def register_client(date, hours, full_name, phone, email, note):
