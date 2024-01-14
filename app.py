@@ -319,14 +319,11 @@ def show_dashboard():
                 cols = st.columns([2, 1, 1])
                 with cols[0]:  # Display the data
                     st.text(f"{row['Reikalingos priemones']} - {row['Kur']}")
-                with cols[1]:  # Display the 'Delete' button
-                    if st.button(f"Delete Row {index + 1}"):
+                with cols[2]:  # Display the 'Delete' button
+                    if st.button('Delete', key=f"delete_{index}"):
                         delete_row_from_sheet(index, records)
                         st.success(f"Row {index + 1} deleted successfully!")
 
-        # Display the updated data
-        for row in records:
-            st.write(f"{row['Reikalingos priemones']} - {row['Kur']}")
 
 
 
