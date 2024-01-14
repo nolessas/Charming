@@ -271,7 +271,7 @@ def show_dashboard():
         st.title("Today's Events")
 
         # Google Calendar API
-        service = get_calendar_service()
+ 
 
         # Fetch today's events
         now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
