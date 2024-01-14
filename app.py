@@ -106,7 +106,7 @@ def fetch_data_from_sheets():
         records = worksheet.get_all_records()
 
         if not records:
-            st.write("No data found.")
+            st.write("No to-do items found.")
             return []
 
         return records
@@ -136,16 +136,25 @@ def manage_todo_list():
         st.rerun()
 
 
-def get_sheets_service():
-    # Accessing service account credentials from Streamlit secrets
-    service_account_info = st.secrets["google_oauth"]
+def delete_row_from_sheet(index, records):
+    try:
+        service = get_sheets_service()
+        spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+        worksheet_name = 'Sheet2'
 
-    # Creating credentials from the service account info
-    credentials = service_account.Credentials.from_service_account_info(service_account_info)
+        # Delete the row from the Google Sheets
+        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
+        worksheet.delete_rows(index + 2)  # +2 to account for the header row and 1-indexing
 
-    # Authorizing the gspread client with the credentials
-    service = gspread.authorize(credentials)
-    return service
+        # Update the records list to reflect the deletion
+        del records[index]
+
+        st.sidebar.success("Selected rows deleted successfully!")
+
+    except Exception as e:
+        st.sidebar.error(f"Failed to delete row from sheet: {str(e)}")
+
+
 
 
 
@@ -293,15 +302,28 @@ def show_dashboard():
         st.title("Placeholder Functionality")
         # Add functionality for option 2 here
 
-    elif choose_main == "option3":  # Corrected to match radio button label
-        st.title("Data from Google Sheets")
-        st.write("Displaying data from Google Sheets")
+    elif choose_main == "option3":
+        # Option 3: Add Item to Sheet2 and Display Data
+        st.title("Data from Sheet3")
+        st.write("Reikalingos priemones ir kur jas rasti.")
 
+        item_input = st.text_input("Reikalingos priemones:", key="item")
+        location_input = st.text_input("Kur:", key="location")
+        if st.button("Add Entry", key="add"):
+            add_item_to_sheet2(item_input, location_input)
+
+        # Fetch and display data from Google Sheets
         records = fetch_data_from_sheets()
         if records:
-            st.write("Data from Google Sheets:")
-            for record in records:
-                st.write(record)
+            df = pd.DataFrame(records)
+            # Add a selectbox for sorting options
+            sort_option = st.selectbox("Sort by:", df.columns, index=1)
+            sort_ascending = st.checkbox("Ascending Order", value=True)
+            df = df.sort_values(by=[sort_option], ascending=sort_ascending)
+            st.dataframe(df)
+
+
+
 
 
 
