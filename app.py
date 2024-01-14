@@ -247,6 +247,20 @@ def show_registered_clients():
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
 
+        
+
+def add_item_to_sheet2(item_input, location_input):
+    try:
+        service = get_sheets_service()
+        spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+        worksheet_name = 'Sheet2'
+
+        # Add your code to write the item and location data to Google Sheets here
+
+        st.success("Item added successfully!")  # Display a success message
+
+    except Exception as e:
+        st.error(f"Failed to add item: {str(e)}")
 
 
 
