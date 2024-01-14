@@ -96,16 +96,10 @@ def fetch_data_from_sheets():
     try:
         service = get_sheets_service()
         spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-        worksheet_name = 'Sheet1'
+        worksheet_name = 'Sheet2'  # Update this if needed
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
         records = worksheet.get_all_records()
-
-        if not records:
-            st.write("No records found.")
-            return []
-
         return records
-
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
         return []
@@ -288,11 +282,6 @@ def show_dashboard():
 
         
 
-    elif choose_main == "option1":
-        st.write("")
-        show_registered_clients()  # Function to display clients from Google Sheets
-
-
     elif choose_main == "option3":
         st.title("Data from Sheet3")
         st.write("Reikalingos priemones ir kur jas rasti.")
@@ -301,6 +290,7 @@ def show_dashboard():
         records = fetch_data_from_sheets()
 
         if not records:
+            st.write("No records found.")
             return
 
         df = pd.DataFrame(records)
