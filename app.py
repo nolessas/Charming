@@ -38,41 +38,41 @@ def main():
         st.header("To-Do List")
         manage_todo_list()
 
-def register_client(date, time, full_name, phone_number, email, notes):
-    try:
-        # Create or load a DataFrame to store client data
+    def register_client(date, time, full_name, phone_number, email, notes):
+        try:
+            # Create or load a DataFrame to store client data
+            if 'client_data' not in st.session_state:
+                st.session_state.client_data = pd.DataFrame(columns=["Date", "Time", "Full Name", "Phone Number", "Email", "Notes"])
+    
+            # Convert date and time to datetime object
+            appointment_time = pd.to_datetime(f"{date} {time}")
+    
+            # Create a new client record
+            new_client = pd.Series({
+                "Date": appointment_time.strftime("%Y-%m-%d"),
+                "Time": appointment_time.strftime("%H:%M:%S"),
+                "Full Name": full_name,
+                "Phone Number": phone_number,
+                "Email": email,
+                "Notes": notes
+            })
+    
+            # Append the new client to the DataFrame
+            st.session_state.client_data = st.session_state.client_data.append(new_client, ignore_index=True)
+    
+            st.success("Client registered successfully!")
+        except Exception as e:
+            st.error(f"Error registering client: {str(e)}")
+    
+    def view_registered_clients():
         if 'client_data' not in st.session_state:
-            st.session_state.client_data = pd.DataFrame(columns=["Date", "Time", "Full Name", "Phone Number", "Email", "Notes"])
-
-        # Convert date and time to datetime object
-        appointment_time = pd.to_datetime(f"{date} {time}")
-
-        # Create a new client record
-        new_client = pd.Series({
-            "Date": appointment_time.strftime("%Y-%m-%d"),
-            "Time": appointment_time.strftime("%H:%M:%S"),
-            "Full Name": full_name,
-            "Phone Number": phone_number,
-            "Email": email,
-            "Notes": notes
-        })
-
-        # Append the new client to the DataFrame
-        st.session_state.client_data = st.session_state.client_data.append(new_client, ignore_index=True)
-
-        st.success("Client registered successfully!")
-    except Exception as e:
-        st.error(f"Error registering client: {str(e)}")
-
-def view_registered_clients():
-    if 'client_data' not in st.session_state:
-        st.write("No registered clients found.")
-    else:
-        st.write(st.session_state.client_data)
-
-def manage_todo_list():
-    # Placeholder function for the to-do list
-    st.write("To-Do List functionality will be added here.")
+            st.write("No registered clients found.")
+        else:
+            st.write(st.session_state.client_data)
+    
+    def manage_todo_list():
+        # Placeholder function for the to-do list
+        st.write("To-Do List functionality will be added here.")
 
 if __name__ == "__main__":
     main()
