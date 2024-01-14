@@ -94,16 +94,17 @@ def write_to_sheets(data):
 
 def fetch_data_from_sheets():
     try:
-        # Assuming you have a function get_sheets_service() that sets up the connection
         service = get_sheets_service()
         spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-        worksheet_name = 'Sheet2'  # Update this to your specific worksheet name
+        worksheet_name = 'Sheet2'  # Update this if needed
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
         records = worksheet.get_all_records()
         return records
     except Exception as e:
-        st.error(f"Error fetching data from sheets: {e}")
+        st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
         return []
+
+
 
 
 
