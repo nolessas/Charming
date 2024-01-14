@@ -39,13 +39,12 @@ def main():
 
 def get_credentials():
     try:
-        service_account_info = st.secrets["google_oauth"]
         credentials = service_account.Credentials.from_service_account_info(
-            service_account_info, scopes=SCOPES_SHEETS
+            service_account_info,
+            scopes=SCOPES
         )
-        return credentials
     except Exception as e:
-        st.error(f"Error getting credentials: {e}")
+        print(f"Error initializing credentials: {e}")
         raise e
 
 # Modify the write_to_sheets function
