@@ -282,18 +282,18 @@ def show_dashboard():
 
         
 
-    elif choose_main == "option3":
-        st.title("Data from Sheet3")
-        st.write("Reikalingos priemones ir kur jas rasti.")
+elif choose_main == "option3":
+    st.title("Data from Sheet3")
+    st.write("Reikalingos priemones ir kur jas rasti.")
 
-        # Fetch data from Google Sheets
-        records = fetch_data_from_sheets()
+    # Fetch data from Google Sheets
+    records = fetch_data_from_sheets()
 
-        if not records:
-            st.write("No records found.")
-            return
+    if not records:
+        st.write("No records found.")
+        return
 
-        df = pd.DataFrame(records)
+    df = pd.DataFrame(records)
 
         # Add a selectbox for sorting options
         sort_option = st.selectbox("Sort by:", df.columns, index=1)  # Set index to 1 for selecting the second column
