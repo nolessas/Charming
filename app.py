@@ -270,9 +270,35 @@ def show_dashboard():
     choose_main = st.radio("", ("option1", "option2", "option3", "option4"))
 
     if choose_main == "option2":
-        st.title("No")
+        st.title("Today's Events")
 
+        # Google Calendar API
+        service = get_calendar_service()
+
+        # Fetch today's events
+        now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+        events_result = service.events().list(
+            calendarId='primary',
+            timeMin=now,
+            timeMax=(datetime.utcnow() + timedelta(days=1)).isoformat() + 'Z',
+            singleEvents=True,
+            orderBy='startTime'
+        ).execute()
+
+        events = events_result.get('items', [])
         
+        if not events:
+            st.write("No events found.")
+        else:
+            for event in events:
+                start_time = event['start'].get('dateTime', event['start'].get('date'))
+                event_summary = event.get('summary', 'No summary provided')
+                st.write(f"{start_time} - {event_summary}")
+
+    elif choose_main == "option1":
+        st.write("")
+        show_registered_clients()  # Function to display clients from Google Sheets
+
 
     elif choose_main == "option3":
         st.title("Data from Sheet3")
