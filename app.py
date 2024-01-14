@@ -107,6 +107,26 @@ def fetch_data_from_sheets():
 
 
 
+def manage_todo_list():
+    st.title("To-Do List")
+
+    # Fetch data from Google Sheets
+    records = fetch_data_from_sheets()
+
+    if not records:
+        return
+
+    df = pd.DataFrame(records)
+    st.write(df)
+
+    # Deletion of selected rows
+    selected_indices = st.multiselect('Select rows to delete:', df.index)
+    if st.button('Delete selected rows'):
+        # Reverse sort indices so we delete from the bottom of the list first
+        for i in sorted(selected_indices, reverse=True):
+            delete_row_from_sheet(i, records)  # Call function to delete the row
+        st.rerun()
+
 
 def delete_row_from_sheet(index, records):
     try:
