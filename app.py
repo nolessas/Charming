@@ -289,24 +289,27 @@ def show_dashboard():
         st.title("Placeholder Functionality")
         # Add functionality for option 2 here
 
-    elif choose_main == "option3":
-        if choose_main == "option3":
-            st.title("Data from Sheet2")
-            item_input = st.text_input("Item:")
-            location_input = st.text_input("Location:")
+    if choose_main == "option3":
+        st.title("Data from Sheet2")
+
+        # Input fields for adding new entries to Sheet2
+        item_input = st.text_input("Item:")
+        location_input = st.text_input("Location:")
         if st.button("Add Entry"):
-            add_item_to_sheet2(item_input, location_input)    
-            records = fetch_data_from_sheets()
-            if records:
-                df = pd.DataFrame(records)
+            add_item_to_sheet2(item_input, location_input)
+
+        # Fetching and displaying data from Sheet2
+        records = fetch_data_from_sheets()
+        if records:
+            df = pd.DataFrame(records)
             st.write(df)
 
-        # Deletion of selected rows
-        selected_indices = st.multiselect('Select rows to delete:', df.index)
-        if st.button('Delete selected rows'):
-            for i in sorted(selected_indices, reverse=True):
-                delete_row_from_sheet(i, records)  # Deleting the row from the sheet
-            st.experimental_rerun()  # Rerun to refresh the data display
+            # Deletion of selected rows
+            selected_indices = st.multiselect('Select rows to delete:', df.index)
+            if st.button('Delete selected rows'):
+                for i in sorted(selected_indices, reverse=True):
+                    delete_row_from_sheet(i, records)  # Deleting the row from the sheet
+                st.experimental_rerun()  # Rerun to refresh the data display
         else:
             st.write("No records found.")
 
@@ -334,7 +337,7 @@ def register_client(date, hours, full_name, phone, email, note):
 
     st.success("Client registered successfully!")
 
-# ... (rest of your existing functions)
+
 
 if __name__ == "__main__":
     main()
