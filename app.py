@@ -325,7 +325,7 @@ def show_dashboard():
             with cols[1]:  # Display the delete button
                 if st.button('Delete', key=f"delete_{index}"):
                     delete_row_from_sheet(index, records)
-                    st.experimental_rerun()  # Rerun the app to refresh after deletion
+                    st.rerun()  # Rerun the app to refresh after deletion
               
 
 
