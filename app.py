@@ -290,7 +290,7 @@ def show_dashboard():
         # Add functionality for option 2 here
 
 #######################################################################################################################################################
-    if choose_main == "option3":
+     if choose_main == "option3":
         st.title("Data from Sheet2")
     
         # Input fields for adding new entries to Sheet2
@@ -304,17 +304,30 @@ def show_dashboard():
         if records:
             df = pd.DataFrame(records)
     
-            # Display the DataFrame with pressable buttons for each row
-            for i, row in df.iterrows():
-                if st.button(f"Press to Delete Row {i}"):
+            # Create a delete button at the top
+            if st.button('Delete Selected Rows'):
+                selected_indices = [i for i, delete in enumerate(df.index) if df.loc[delete, 'Delete']]
+                for i in sorted(selected_indices, reverse=True):
                     delete_row_from_sheet(i, records)  # Deleting the row from the sheet
-                    st.experimental_rerun()  # Rerun to refresh the data display
+                st.experimental_rerun()  # Rerun to refresh the data display
     
-            st.write(df)  # Display the DataFrame
+            # Create a list of rows with delete checkboxes on the right column
+            for i, row in df.iterrows():
+                col1, col2 = st.columns([0.1, 0.9])
+                with col1:
+                    # Create a delete checkbox for each row
+                    df.loc[i, 'Delete'] = st.checkbox('', key=f"checkbox_{i}")
+                with col2:
+                    # Create a pressable button to delete the row
+                    if st.button(f"Press to Delete Row {i}"):
+                        delete_row_from_sheet(i, records)  # Deleting the row from the sheet
+                        st.experimental_rerun()  # Rerun to refresh the data display
+    
+            # Display the DataFrame without the 'Delete' column
+            st.write(df.drop(columns='Delete'))
     
         else:
             st.write("No records found.")
-    
 
 
 
