@@ -282,18 +282,22 @@ def show_dashboard():
 
         
 
-elif choose_main == "option3":
-    st.title("Data from Sheet3")
-    st.write("Reikalingos priemones ir kur jas rasti.")
+    elif choose_main == "option1":
+        st.write("")
+        show_registered_clients()  # Function to display clients from Google Sheets
 
-    # Fetch data from Google Sheets
-    records = fetch_data_from_sheets()
 
-    if not records:
-        st.write("No records found.")
-        return
+    elif choose_main == "option3":
+        st.title("Data from Sheet3")
+        st.write("Reikalingos priemones ir kur jas rasti.")
 
-    df = pd.DataFrame(records)
+        # Fetch data from Google Sheets
+        records = fetch_data_from_sheets()
+
+        if not records:
+            return
+
+        df = pd.DataFrame(records)
 
         # Add a selectbox for sorting options
         sort_option = st.selectbox("Sort by:", df.columns, index=1)  # Set index to 1 for selecting the second column
