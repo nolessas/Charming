@@ -177,72 +177,29 @@ def add_item_to_sheet2(item, location):
 
 
 ####
+def show_dashboard():
+    choose_main = st.radio("", ("option1", "option2", "option3"))
 
-def show_registered_clients():
-    st.title("Registered Clients")
+    if choose_main == "option1":
+        # Registration Section
+        # ... (Your existing code for registration)
 
-    service = get_sheets_service()
-
-    try:
-        worksheet = service.open_by_key('1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ').worksheet('Sheet1')
-        records = worksheet.get_all_records()
-
-        if records:
-            df = pd.DataFrame(records)
-            df['Date'] = pd.to_datetime(df['Date'])
-
-            # Add radio buttons for filtering by time range (Day, Week, Month, Year)
-            time_range = st.radio("Filter by Time Range", ["Day", "Week", "Month", "Year"])
-
-            # Calculate the start date based on the selected time range
-            if time_range == "Day":
-                start_date = pd.Timestamp.now().normalize()
-            elif time_range == "Week":
-                start_date = pd.Timestamp.now() - pd.DateOffset(weeks=1)
-            elif time_range == "Month":
-                start_date = pd.Timestamp.now() - pd.DateOffset(months=1)
-            elif time_range == "Year":
-                start_date = pd.Timestamp.now() - pd.DateOffset(years=1)
+        # Simplified Client Display
+        st.write("Displaying Registered Clients:")
+        try:
+            service = get_sheets_service()
+            worksheet = service.open_by_key('1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ').worksheet('Sheet1')
+            records = worksheet.get_all_records()
+            if records:
+                df = pd.DataFrame(records)
+                st.dataframe(df)
             else:
-                start_date = pd.Timestamp(1970, 1, 1)  # Default to a very old date
+                st.write("No registered clients found.")
+        except Exception as e:
+            st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
 
-            # Filter the dataframe based on the selected time range
-            if time_range == "Day":
-                filtered_df = df[df['Date'].dt.date == start_date.date()]
-            else:
-                filtered_df = df[df['Date'] >= start_date]
+    # ... (Rest of option2 and option3 code)
 
-            # Sort the dataframe by Date column
-            filtered_df = filtered_df.sort_values(by=["Date"])
-
-            st.write("Client Information:")
-            for index, row in filtered_df.iterrows():
-                # Create columns for layout
-                col1, col2 = st.columns([4, 1])  # Adjust the ratio as needed
-
-                # Display client information in the first column
-                with col1:
-                    st.write(f"Date: {row['Date']}")
-                    st.write(f"Full Name: {row['Full Name']}")
-                    st.write(f"Phone Number: {row['Phone Number']}")
-                    st.write(f"Email: {row['Email']}")
-                    st.write(f"Note: {row['Note']}")
-                    st.write(f"Email Sent: {row['Email Sent']}")
-
-                # Display delete button in the second column
-                with col2:
-                    delete_button_label = f"Delete {row['Full Name']}"
-                    if st.button(delete_button_label, key=f"delete_{index}"):
-                        delete_client(index)
-
-                # Add a horizontal line as a separator after each client
-                st.markdown("---")
-
-
-        else:
-            st.write("No registered clients found.")
-    except Exception as e:
-        st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
 
 
 
@@ -272,16 +229,17 @@ def delete_client(index):
 
 
 
-
 def show_dashboard():
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: center;} </style>', unsafe_allow_html=True)
     st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
     choose_main = st.radio("", ("option1", "option2", "option3"))
 
     if choose_main == "option1":
-        # Option 1: Register Client (Previously app1)
-        st.title("Register Client")
+        # Option 1: Show Registered Clients and Register New Client
+        st.title("Registered Clients")
+        show_registered_clients()
 
+        st.title("Register New Client")
         # Input fields for registration
         date_input = st.date_input("Date:")
         hours_input = st.time_input("Time:")
@@ -297,10 +255,11 @@ def show_dashboard():
 
     elif choose_main == "option2":
         # Option 2: Placeholder functionality
-        st.title("Nothing is here yet.")
+        st.title("Placeholder Functionality")
+        # Add functionality for option 2 here
 
     elif choose_main == "option3":
-        # Option 3: Add Item to Sheet2 (Previously app2)
+        # Option 3: Add Item to Sheet2 and Display Data
         st.title("Data from Sheet3")
         st.write("Reikalingos priemones ir kur jas rasti.")
 
@@ -314,10 +273,7 @@ def show_dashboard():
         if records:
             df = pd.DataFrame(records)
             # Add a selectbox for sorting options
-            sort_option = st.selectbox("Sort by:", df.columns, index=1)
-            sort_ascending = st.checkbox("Rušiavimas", value=True)
-            df = df.sort_values(by=[sort_option], ascending=[sort_ascending])
-            st.dataframe(df)
+            sort_option = st
 
 
 
