@@ -272,45 +272,33 @@ def show_dashboard():
     st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
     choose_main = st.radio("", ("option1", "option2", "option3"))
 
-        # ... (option1 and option2 code)
-    
-    # Option 1: Show Registered Clients
-    if choose_main == "option1":
-        show_registered_clients()
-        # ... (Your code for registering a new client, if necessary)
-    
-    # Option 2: Placeholder for future functionality
-    elif choose_main == "option2":
-        st.title("Option 2 Placeholder")
-        st.write("Additional functionalities to be added here.")
-    
-    # Option 3: List Items with Delete Functionality
-    elif choose_main == "option3":
+    # ... (option1 and option2 code)
+
+    if choose_main == "option3":
         st.title("Data from Sheet3")
         st.write("Reikalingos priemones ir kur jas rasti.")
-    
+        
         # Input fields for adding new items
         item_input = st.text_input("Reikalingos priemones:", key="item")
         location_input = st.text_input("Kur:", key="location")
-    
+        
         if st.button("Add Entry", key="add"):
             add_item_to_sheet2(item_input, location_input)
-    
+
         # Fetch and display data from Google Sheets with a delete button next to each row
         records = fetch_data_from_sheets()
         if records:
             df = pd.DataFrame(records)
-            # Display the DataFrame with a delete button for each row
-            for index, row in df.iterrows():
-                cols = st.columns([2, 1, 1])  # Adjust the ratio as needed
-                with cols[0]:  # Display the data
-                    st.text(f"{row['Reikalingos priemones']} - {row['Kur']}")
-                with cols[1]:  # Place the delete button
-                    if st.button('Delete', key=f"delete_{index}"):
-                        # Adjust the index if needed, +2 accounts for Google Sheets being 1-indexed and header row
-                        delete_row_from_sheet(index + 2)  
-                        st.experimental_rerun()  # Rerun the app to update the
-
+            # Creating a temporary column for delete buttons
+            df['Delete'] = 'Delete'
+            # Displaying the dataframe using Streamlit's table method
+            table = st.table(df)
+            
+            # Handling the deletion of rows
+            for index in range(len(df)):
+                if st.button('Delete', key=f"delete_{index}"):
+                    delete_row_from_sheet(index + 2) # Adjust the index accordingly if needed
+                    st.experimental_rerun() # Rerun the app to update the displayed data
 
 
 
