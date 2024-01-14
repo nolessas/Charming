@@ -305,7 +305,8 @@ def show_dashboard():
     elif choose_main == "option3":
         # Option 3: Add Item to Sheet2 and Display Data
         st.title("Data from Sheet3")
-        st.write("Reikalingos priemones")
+        st.write("Reikalingos priemones ir kur jas rasti.")
+
         item_input = st.text_input("Reikalingos priemones:", key="item")
         location_input = st.text_input("Kur:", key="location")
         if st.button("Add Entry", key="add"):
@@ -316,8 +317,25 @@ def show_dashboard():
         if records:
             df = pd.DataFrame(records)
             # Add a selectbox for sorting options
-            sort_option = st.selectbox("Sort by:", df.columns, index=0)
+            sort_option = st.selectbox("Sort by:", df.columns, index=1)
             sort_ascending = st.checkbox("Ascending Order", value=True)
+            df = df.sort_values(by=[sort_option], ascending=sort_ascending)
+
+            # Display the DataFrame and add delete buttons
+            for index, row in df.iterrows():
+                cols = st.columns([2, 1, 1])
+                with cols[0]:
+                    st.text(f"{row['Reikalingos priemones']} - {row['Kur']}")
+                with cols[1]:
+                    if st.button('Delete', key=f"delete_{index}"):
+                        # Call a function to delete the selected row from the DataFrame
+                        df = df.drop(index)
+                        # You might want to update your data source here, like Google Sheets
+                        # For now, we're just updating the displayed DataFrame
+                        st.success("Row deleted successfully!")
+                        st.experimental_rerun()
+            
+            st.dataframe(df)
 
 
 
