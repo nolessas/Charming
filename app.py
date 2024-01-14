@@ -51,7 +51,7 @@ def get_credentials():
 
 # Modify the write_to_sheets function
 def write_to_sheets(data):
-    service = get_sheets_service()
+
 
     # Replace 'YOUR_SPREADSHEET_ID' with the actual ID of your Google Sheets document
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
