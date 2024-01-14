@@ -304,19 +304,13 @@ def show_dashboard():
         if records:
             df = pd.DataFrame(records)
     
-            # Create a new column to store the selection status for each row
-            df['Selected'] = False
-    
-            # Display the DataFrame with checkboxes and a delete button in each row
+            # Display the DataFrame with a delete button in each row
             for i, row in df.iterrows():
-                df.at[i, 'Selected'] = st.checkbox(f"Delete Row {i}", key=f"checkbox_{i}", value=row['Selected'])
-                if st.button(f"Delete Row {i}"):
+                delete_btn = st.button(f"Delete Row {i}")
+                if delete_btn:
                     delete_row_from_sheet(i, records)  # Deleting the row from the sheet
                     st.experimental_rerun()  # Rerun to refresh the data display
-    
-            # Filter the DataFrame to only show selected rows
-            selected_rows = df[df['Selected']]
-            st.write(selected_rows)
+                st.write(row)  # Display the row's data
     
         else:
             st.write("No records found.")
