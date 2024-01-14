@@ -322,16 +322,16 @@ def show_dashboard():
             df = df.sort_values(by=[sort_option], ascending=sort_ascending)
             
             # Display the DataFrame with a delete button for each row
-            for index, row in df.iterrows():
-                cols = st.columns([2, 1, 1])
-                with cols[0]:  # Display the data
-                    st.text(f"{row['']} - {row['']}")
-                with cols[1]:  # Display the delete button
-                    if st.button(f"Delete Row {index}", key=f"delete_{index}"):
-                        # Delete the selected row from the DataFrame
-                        df = df.drop(index)
-                        st.success("Row deleted successfully!")
+            df['Delete'] = df.apply(lambda x: st.button(f"Delete Row {x.name}"), axis=1)
+            st.dataframe(df.drop(columns='Delete'))
 
+            # Check which rows to delete based on button clicks
+            rows_to_delete = [index for index, row in df.iterrows() if row['Delete']]
+            if rows_to_delete:
+                df = df.drop(rows_to_delete)
+                st.success("Selected rows deleted successfully!")
+            
+            st.dataframe(df.drop(columns='Delete'))
 
 
 
