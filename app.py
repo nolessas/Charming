@@ -374,6 +374,4 @@ def register_client(date, hours, full_name, phone, email, note):
 # ... (rest of your existing functions)
 
 if __name__ == "__main__":
-    print("Before main()")
     main()
-    print("After main()")
