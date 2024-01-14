@@ -64,6 +64,11 @@ def get_credentials():
 
 
 
+def get_sheets_service():
+    credentials = get_credentials()
+    return gspread.authorize(credentials)
+
+
 
 
 def write_to_sheets(data):
@@ -128,11 +133,6 @@ def delete_row_from_sheet(index, records):
 
 
 
-
-
-def get_sheets_service():
-    credentials = get_credentials()
-    return gspread.authorize(credentials)
 
 
 
