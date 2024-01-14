@@ -315,23 +315,18 @@ def show_dashboard():
         # Fetch and display data from Google Sheets
         records = fetch_data_from_sheets()
         if records:
-            rows_to_delete = []
             for index, row in enumerate(records):
                 cols = st.columns([2, 1, 1])
                 with cols[0]:  # Display the data
                     st.text(f"{row['Reikalingos priemones']} - {row['Kur']}")
                 with cols[1]:  # Display the 'x' button to delete
                     if st.button('x', key=f"delete_{index}"):
-                        rows_to_delete.append(index)
-                        st.success("Row marked for deletion!")
+                        delete_row_from_sheet(index, records)
+                        st.success("Row deleted successfully!")
 
-            # Delete marked rows from the data source
-            records = [row for index, row in enumerate(records) if index not in rows_to_delete]
-
-            # Display the updated data
-            st.write("Updated Data:")
-            for row in records:
-                st.write(f"{row['Reikalingos priemones']} - {row['Kur']}")
+        # Display the updated data
+        for row in records:
+            st.write(f"{row['Reikalingos priemones']} - {row['Kur']}")
 
 
 
