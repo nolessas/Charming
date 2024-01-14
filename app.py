@@ -278,6 +278,7 @@ def show_dashboard():
     st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
     choose_main = st.radio("", ("option1", "option2", "option3"))
 
+
     if choose_main == "option1":
         # Option 1: Show Registered Clients and Register New Client
         st.title("Registered Clients")
