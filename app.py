@@ -9,7 +9,7 @@ SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
 
 # Load Google Sheets service account credentials from Streamlit secrets
-service_account_info_sheets = st.secrets["google_sheets_credentials"]
+service_account_info_sheets = st.secrets["google_oauth"]
 credentials_sheets = service_account.Credentials.from_service_account_info(
     service_account_info_sheets, scopes=SCOPES_SHEETS)
 gc_sheets = gspread.authorize(credentials_sheets)
