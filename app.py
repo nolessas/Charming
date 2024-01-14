@@ -4,19 +4,9 @@ import pandas as pd
 
 
 
-# Create a function for the main menu
+# Streamlit app
 def main():
     st.title("Client Management App")
-
-    # Apply custom style to radio buttons
-    st.markdown("""
-    <style>
-        .radio-container .radio-item label {
-            font-size: 18px;
-            font-weight: bold;
-        }
-    </style>
-    """, unsafe_allow_html=True)
 
     # Create st.radio buttons for main menu options
     menu_option = st.radio("Select an option", ("Register Client", "View Registered Clients", "To-Do List"))
@@ -39,7 +29,6 @@ def main():
     elif menu_option == "To-Do List":
         st.header("To-Do List")
         manage_todo_list()
-
 
 def register_client(date, time, full_name, phone_number, email, notes):
     try:
