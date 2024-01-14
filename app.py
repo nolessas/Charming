@@ -303,28 +303,33 @@ def show_dashboard():
         records = fetch_data_from_sheets()
         if records:
             df = pd.DataFrame(records)
-    
+            
+            # Add a 'Delete' column to the dataframe initialized to False
+            if 'Delete' not in df.columns:
+                df['Delete'] = False
+            
             # Create a delete button at the top
             if st.button('Delete Selected Rows'):
-                selected_indices = [i for i, delete in enumerate(df.index) if df.loc[delete, 'Delete']]
-                for i in sorted(selected_indices, reverse=True):
+                # Find rows where 'Delete' column is True, these are the rows to delete
+                rows_to_delete = df[df['Delete']].index.tolist()
+                for i in sorted(rows_to_delete, reverse=True):
                     delete_row_from_sheet(i, records)  # Deleting the row from the sheet
                 st.experimental_rerun()  # Rerun to refresh the data display
-    
-            # Create a list of rows with delete checkboxes on the right column
-            for i, row in df.iterrows():
-                col1, col2 = st.columns([0.1, 0.9])
+            
+            # Create a list of rows with delete checkboxes in a separate column to the right
+            for i, row in enumerate(df.itertuples(), 1):
+                col1, col2, col3 = st.columns([0.8, 0.1, 0.1])
                 with col1:
-                    # Create a delete checkbox for each row
-                    df.loc[i, 'Delete'] = st.checkbox('', key=f"checkbox_{i}")
+                    st.text(f"{row.Item} - {row.Location}")
                 with col2:
-                    # Create a pressable button to delete the row
-                    if st.button(f"Press to Delete Row {i}"):
-                        delete_row_from_sheet(i, records)  # Deleting the row from the sheet
-                        st.experimental_rerun()  # Rerun to refresh the data display
-    
+                    # Empty space or additional data can be displayed here
+                    pass
+                with col3:
+                    # Checkbox for marking row to delete, aligned to the right
+                    df.at[row.Index, 'Delete'] = st.checkbox('', key=f"delete_{i}", value=row.Delete)
+            
             # Display the DataFrame without the 'Delete' column
-            st.write(df.drop(columns='Delete'))
+            st.dataframe(df.drop(columns='Delete'))
     
         else:
             st.write("No records found.")
