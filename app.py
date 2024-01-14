@@ -311,43 +311,34 @@ def show_dashboard():
             if st.button("Add Entry"):
                 add_item_to_sheet2(item_input, location_input)
 
-            # Fetch data from Google Sheets
             records = fetch_data_from_sheets()
-
             if not records:
                 st.write("No records found.")
                 return
 
             df = pd.DataFrame(records)
 
+            # Handle NaN values (example: fill with default value or drop)
+            # Uncomment one of the following lines based on your requirement
+            # df.fillna('DefaultValue', inplace=True)
+            # df.dropna(subset=[sort_option], inplace=True)
+
             # Add a selectbox for sorting options
-            sort_option = st.selectbox("Sort by:", df.columns, index=0)  # Adjust index as needed
+            sort_option = st.selectbox("Sort by:", df.columns, index=0)
             sort_ascending = st.checkbox("Ascending Order", value=True)
 
-            # Sort the DataFrame based on the selected column
-            df = df.sort_values(by=[sort_option], ascending=sort_ascending)
+            # Convert sort_option column to a consistent data type if necessary
+            # df[sort_option] = df[sort_option].astype(str)  # Convert to string
+            # df[sort_option] = pd.to_numeric(df[sort_option], errors='coerce')  # Convert to numeric
 
-            # Display the data frame with a delete button for each row
-            for index, row in df.iterrows():
-                # Create columns for layout
-                col1, col2, col3, col4, col5 = st.columns(5)  # Create columns for layout
-                with col1:
-                    if len(row) > 0:
-                        st.write(row[0])  # Display the first column of the row
-                with col2:
-                    if len(row) > 1:
-                        st.write(row[1])  # Display the second column of the row
-                with col3:
-                    if len(row) > 2:
-                        st.write(row[2])  # Display the third column of the row
-                with col4:
-                    if len(row) > 3:
-                        st.write(row[3])  # Display the fourth column of the row
-                with col5:
-                    # Add a delete button for each row
-                    if st.button(f"Delete Row {index + 1}", key=f"delete_{index}"):
-                        delete_row_from_sheet(index, records) # Call function to delete the row
-                        st.rerun()
+            # Apply sorting with error handling
+            try:
+                df = df.sort_values(by=[sort_option], ascending=sort_ascending)
+                # ... (display the DataFrame)
+
+            except Exception as e:
+                st.error(f"Error in sorting: {e}")
+
 
 
 
