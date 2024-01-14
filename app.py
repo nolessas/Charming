@@ -290,56 +290,47 @@ def show_dashboard():
         # Add functionality for option 2 here
 
 #######################################################################################################################################################
-    if choose_main == "option3":
-        st.title("Data from Sheet2")
-    
-        # Input fields for adding new entries to Sheet2
-        item_input = st.text_input("Item:")
-        location_input = st.text_input("Location:")
-        if st.button("Add Entry"):
-            add_item_to_sheet2(item_input, location_input)
-    
-        # Fetching and displaying data from Sheet2
+    elif choose_main == "option3":
+        st.title("Data from Sheet3")
+        st.write("Reikalingos priemones ir kur jas rasti.")
+
+        # Fetch data from Google Sheets
         records = fetch_data_from_sheets()
-        if records:
-            df = pd.DataFrame(records)
-            
-            # Verify the column names
-            expected_columns = ['Item', 'Location']
-            if not all(column in df.columns for column in expected_columns):
-                st.error("Expected columns 'Item' and 'Location' not found in the data.")
-                return
-        
-            # Add a 'Delete' column to the dataframe initialized to False
-            if 'Delete' not in df.columns:
-                df['Delete'] = False
-        
-            # Create a delete button at the top
-            if st.button('Delete Selected Rows'):
-                # Find rows where 'Delete' column is True, these are the rows to delete
-                rows_to_delete = df[df['Delete']].index.tolist()
-                for i in sorted(rows_to_delete, reverse=True):
-                    delete_row_from_sheet(i+2, records)  # Deleting the row from the sheet (adjusting index for header row)
-                st.experimental_rerun()  # Rerun to refresh the data display
-        
-            # Display each row with checkboxes
-            for i, row in df.iterrows():
-                col1, col2, col3 = st.columns([0.8, 0.1, 0.1])
-                with col1:
-                    st.text(f"{df.at[row.Index, 'Item']} - {df.at[row.Index, 'Location']}")
-                with col2:
-                    # Empty space or additional data can be displayed here
-                    pass
-                with col3:
-                    # Checkbox for marking row
-                    df.at[row.Index, 'Delete'] = st.checkbox('', key=f"delete_{i}", value=row.Delete)
-            
-            # Display the DataFrame without the 'Delete' columnto delete, aligned to the right
-                    df.at[row.Index, 'Delete'] = st.checkbox('', key=f"delete_{i}", value=row.Delete)
-                    st.dataframe(df.drop(columns='Delete'))
-    
-        else:
-            st.write("No records found.")
+
+        if not records:
+            return
+
+        df = pd.DataFrame(records)
+
+        # Add a selectbox for sorting options
+        sort_option = st.selectbox("Sort by:", df.columns, index=1)  # Set index to 1 for selecting the second column
+
+        # Checkbox for sorting order
+        sort_ascending = st.checkbox("Rušiavimas", value=True)
+
+        # Sort the DataFrame based on the selected column
+        df = df.sort_values(by=[sort_option], ascending=[sort_ascending])
+
+        # Display the data frame as a list with a delete button for each row
+        for index, row in df.iterrows():
+            # Create columns for layout
+            col1, col2, col3, col4, col5 = st.columns(5)  # Create columns for layout
+            with col1:
+                if len(row) > 0:
+                    st.write(row[0])  # Display the first column of the row
+            with col2:
+                if len(row) > 1:
+                    st.write(row[1])  # Display the second column of the row
+            with col3:
+                if len(row) > 2:
+                    st.write(row[2])  # Display the third column of the row
+            with col4:
+                if len(row) > 3:
+                    st.write(row[3])  # Display the fourth column of the row
+            with col5:
+                # Add a delete button for each row in the fifth column
+                if st.button(f"Delete Row {index + 1}"):
+                    delete_row_from_sheet(index, records)  # Call function to delete the row
 
 
 
