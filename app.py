@@ -304,23 +304,13 @@ def show_dashboard():
         if records:
             df = pd.DataFrame(records)
     
-            # Display the DataFrame with select checkmarks and a delete button in each row
+            # Display the DataFrame with pressable buttons for each row
             for i, row in df.iterrows():
-                select_checkmark = st.checkbox(f"Select Row {i}")
-                delete_btn = st.button(f"Delete Row {i}")
-                if delete_btn:
+                if st.button(f"Press to Delete Row {i}"):
                     delete_row_from_sheet(i, records)  # Deleting the row from the sheet
                     st.experimental_rerun()  # Rerun to refresh the data display
-                # Check if 'Item' and 'Location' columns exist before accessing them
-                if 'Item' in row and 'Location' in row:
-                    st.write(f"Row {i}: Item - {row['Item']}, Location - {row['Location']}")
     
-            # Deletion of selected rows
-            selected_indices = [i for i, select in enumerate(df.index) if df.loc[select, 'Select']]
-            if st.button('Delete selected rows'):
-                for i in sorted(selected_indices, reverse=True):
-                    delete_row_from_sheet(i, records)  # Deleting the row from the sheet
-                st.experimental_rerun()  # Rerun to refresh the data display
+            st.write(df)  # Display the DataFrame
     
         else:
             st.write("No records found.")
