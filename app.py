@@ -289,6 +289,7 @@ def show_dashboard():
         st.title("Placeholder Functionality")
         # Add functionality for option 2 here
 
+#######################################################################################################################################################
     if choose_main == "option3":
         st.title("Data from Sheet2")
     
@@ -303,16 +304,23 @@ def show_dashboard():
         if records:
             df = pd.DataFrame(records)
     
-            # Display the DataFrame with pressable buttons for each row
+            # Create a new column to store the selection status for each row
+            df['Selected'] = False
+    
+            # Display the DataFrame with checkboxes and a delete button in each row
             for i, row in df.iterrows():
-                if st.button(f"Press to Delete Row {i}"):
+                df.at[i, 'Selected'] = st.checkbox(f"Delete Row {i}", key=f"checkbox_{i}", value=row['Selected'])
+                if st.button(f"Delete Row {i}"):
                     delete_row_from_sheet(i, records)  # Deleting the row from the sheet
                     st.experimental_rerun()  # Rerun to refresh the data display
     
-            st.write(df)  # Display the DataFrame
+            # Filter the DataFrame to only show selected rows
+            selected_rows = df[df['Selected']]
+            st.write(selected_rows)
     
         else:
             st.write("No records found.")
+
 
 
 
