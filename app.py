@@ -280,7 +280,7 @@ def show_dashboard():
 
     if choose_main == "option1":
         # Option 1: Show Registered Clients and Register New Client
-        st.title("Registered Clients")
+        st.title("")
         show_registered_clients()
 
         st.title("Register New Client")
