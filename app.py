@@ -98,13 +98,14 @@ def fetch_data_from_sheets():
     try:
         service = get_sheets_service()
         spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-        worksheet_name = 'Sheet2'  # Update this if needed
+        worksheet_name = 'Sheet2'
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        records = worksheet.get_all_records()
-        return records
+
+        # Add data to the worksheet
+        worksheet.append_row([item, location])
+        st.sidebar.success("Item added successfully!")
     except Exception as e:
-        st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
-        return []
+        st.sidebar.error(f"Error adding item to sheet: {str(e)}")
 
 
 
