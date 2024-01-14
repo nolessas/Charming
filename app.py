@@ -103,38 +103,9 @@ def manage_todo_list():
             st.write("No to-do items found.")
         else:
             df = pd.DataFrame(data)
-
             st.write(df)
-
-            # Add functionality to add and delete items
-            item_input = st.text_input("Add item to the to-do list")
-            if st.button("Add Item") and item_input:
-                add_todo_item(item_input)
-
-            selected_indices = st.multiselect("Select items to delete", df.index)
-            if st.button("Delete Selected Items") and selected_indices:
-                delete_todo_items(selected_indices)
     except Exception as e:
         st.error(f"Error fetching to-do list: {str(e)}")
-
-def add_todo_item(item):
-    try:
-        worksheet = gc_sheets.open_by_key('YOUR_SPREADSHEET_ID').worksheet('Sheet2')
-        data = [item]
-        worksheet.append_row(data)
-        st.success(f"Added '{item}' to the to-do list.")
-    except Exception as e:
-        st.error(f"Error adding item to the to-do list: {str(e)}")
-
-def delete_todo_items(indices):
-    try:
-        worksheet = gc_sheets.open_by_key('YOUR_SPREADSHEET_ID').worksheet('Sheet2')
-        indices.sort(reverse=True)  # Reverse sort indices so we delete from the bottom of the list first
-        for i in indices:
-            worksheet.delete_rows(i + 2)  # Add 2 to account for header row and 0-based indexing
-        st.success("Selected items deleted from the to-do list.")
-    except Exception as e:
-        st.error(f"Error deleting items from the to-do list: {str(e)}")
 
 if __name__ == "__main__":
     main()
