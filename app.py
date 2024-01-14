@@ -315,23 +315,24 @@ def show_dashboard():
         # Fetch and display data from Google Sheets
         records = fetch_data_from_sheets()
         if records:
-            df = pd.DataFrame(records)
-            # Add a selectbox for sorting options
-            sort_option = st.selectbox("Sort by:", df.columns, index=1)
-            sort_ascending = st.checkbox("Ascending Order", value=True)
-            df = df.sort_values(by=[sort_option], ascending=sort_ascending)
-
-            # Display the DataFrame with an 'x' button to delete rows
-            for index, row in df.iterrows():
+            rows_to_delete = []
+            for index, row in enumerate(records):
                 cols = st.columns([2, 1, 1])
                 with cols[0]:  # Display the data
                     st.text(f"{row['Reikalingos priemones']} - {row['Kur']}")
                 with cols[1]:  # Display the 'x' button to delete
                     if st.button('x', key=f"delete_{index}"):
-                        df = df.drop(index)
-                        st.success("Row deleted successfully!")
+                        rows_to_delete.append(index)
+                        st.success("Row marked for deletion!")
 
-            st.dataframe(df)
+            # Delete marked rows from the data source
+            records = [row for index, row in enumerate(records) if index not in rows_to_delete]
+
+            # Display the updated data
+            st.write("Updated Data:")
+            for row in records:
+                st.write(f"{row['Reikalingos priemones']} - {row['Kur']}")
+
 
 
 
