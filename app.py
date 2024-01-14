@@ -311,7 +311,9 @@ def show_dashboard():
                 if delete_btn:
                     delete_row_from_sheet(i, records)  # Deleting the row from the sheet
                     st.experimental_rerun()  # Rerun to refresh the data display
-                st.write(f"Row {i}: Item - {row['Item']}, Location - {row['Location']}")
+                # Check if 'Item' and 'Location' columns exist before accessing them
+                if 'Item' in row and 'Location' in row:
+                    st.write(f"Row {i}: Item - {row['Item']}, Location - {row['Location']}")
     
             # Deletion of selected rows
             selected_indices = [i for i, select in enumerate(df.index) if df.loc[select, 'Select']]
@@ -322,7 +324,7 @@ def show_dashboard():
     
         else:
             st.write("No records found.")
-
+    
 
 
 
