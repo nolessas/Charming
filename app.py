@@ -130,23 +130,17 @@ def manage_todo_list():
         st.rerun()
 
 
-def delete_row_from_sheet(index, records):
+def add_item_to_sheet2(item, location):
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'  # Replace with your actual spreadsheet ID
+    worksheet_name = 'Sheet2'  # The name of the worksheet where you want to add items
+    
     try:
-        service = get_sheets_service()
-        spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-        worksheet_name = 'Sheet2'
-
-        # Delete the row from the Google Sheets
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        worksheet.delete_rows(index + 2)  # +2 to account for the header row and 1-indexing
-
-        # Update the records list to reflect the deletion
-        del records[index]
-
-        st.sidebar.success("Selected rows deleted successfully!")
-
+        worksheet.append_row([item, location])
+        st.sidebar.success("Item added successfully!")
     except Exception as e:
-        st.sidebar.error(f"Failed to delete row from sheet: {str(e)}")
+        st.sidebar.error(f"Failed to add item to sheet: {str(e)}")
 
 
 
@@ -356,12 +350,11 @@ def show_dashboard():
             register_client(date_input, hours_input, full_name_input, phone_input, email_input, note_input)
             st.sidebar.success("Client registered successfully!")
 
-        choose_sidebar = st.sidebar.radio("", ("app1", "app2"))
-        if choose_sidebar == "app2":
-            item_input = st.sidebar.text_input("Reikalingos priemones:", key="item")
-            location_input = st.sidebar.text_input("Kur:", key="location")
-            if st.sidebar.button("Add Entry", key="add"):
-                fetch_data_from_sheets(item_input, location_input)
+    if choose_sidebar == "app2":
+        item_input = st.sidebar.text_input("Reikalingos priemones:", key="item")
+        location_input = st.sidebar.text_input("Kur:", key="location")
+        if st.sidebar.button("Add Entry", key="add"):
+            add_item_to_sheet2(item_input, location_input)
 
 
 def register_client(date, hours, full_name, phone, email, note):
