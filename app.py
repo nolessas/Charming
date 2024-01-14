@@ -337,9 +337,6 @@ def show_dashboard():
                     delete_row_from_sheet(index, records)  # Call function to delete the row
                     st.rerun()  # Rerun
 
-def show_dashboard():
-    # ... existing code ...
-
 
 
 
