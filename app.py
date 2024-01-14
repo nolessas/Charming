@@ -65,7 +65,7 @@ def main():
 
 def register_client(date, time, full_name, phone_number, email, notes):
     try:
-        worksheet = gc_sheets.open_by_key('YOUR_SPREADSHEET_ID').worksheet('Sheet1')
+        worksheet = gc_sheets.open_by_key('1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ').worksheet('Sheet1')
 
         if worksheet.row_count == 0:
             header_row = ["Date", "Time", "Full Name", "Phone Number", "Email", "Notes"]
@@ -83,7 +83,7 @@ def register_client(date, time, full_name, phone_number, email, notes):
 
 def view_registered_clients():
     try:
-        worksheet = gc_sheets.open_by_key('YOUR_SPREADSHEET_ID').worksheet('Sheet1')
+        worksheet = gc_sheets.open_by_key('1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ').worksheet('Sheet1')
         data = worksheet.get_all_records()
 
         if not data:
