@@ -49,6 +49,29 @@ def get_credentials():
         print(f"Error initializing credentials: {e}")
         raise e
 
+
+
+
+
+
+def get_calendar_service():
+    # Fetch your service account details from Streamlit's secrets
+    service_account_info = st.secrets["google_calendar_token"]
+    
+    # Use the service account information to create credentials
+    credentials = service_account.Credentials.from_service_account_info(
+        service_account_info,
+        scopes=SCOPES
+    )
+
+    # Build the service for the Google Calendar API
+    service = build('calendar', 'v3', credentials=credentials)
+    return service
+
+
+
+
+
 # Modify the write_to_sheets function
 def write_to_sheets(data):
     service = get_sheets_service()
