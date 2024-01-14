@@ -11,6 +11,8 @@ from hashlib import sha256
 import gspread
 from google.oauth2 import service_account
 import pandas as pd
+from googleapiclient.errors import HttpError
+
 
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
