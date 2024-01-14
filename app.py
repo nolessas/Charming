@@ -11,11 +11,28 @@ import pandas as pd
 
 
 
-
-
-# Google Sheets API credentials file
-SHEETS_CLIENT_SECRET_FILE = '.streamlit/token_sheets.json'
+SCOPES = ['https://www.googleapis.com/auth/calendar']
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
+
+service_account_info = st.secrets["google_oauth"]
+credentials = service_account.Credentials.from_service_account_info(service_account_info)
+gc = gspread.authorize(credentials)
+
+
+
+def get_sheets_service():
+    # Accessing service account credentials from Streamlit secrets
+    service_account_info = st.secrets["google_oauth"]
+
+    # Creating credentials from the service account info
+    credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES_SHEETS)
+
+    # Authorizing the gspread client with the credentials
+    service = gspread.authorize(credentials)
+    return service
+
+
+
 
 class SessionState:
     def __init__(self, **kwargs):
@@ -45,13 +62,6 @@ def main():
 
 
 
-def get_sheets_service():
-    credentials = service_account.Credentials.from_service_account_file(
-        '.streamlit/key.json', scopes=SCOPES_SHEETS
-    )
-
-    service = gspread.authorize(credentials)
-    return service
 
 
 
