@@ -321,21 +321,19 @@ def show_dashboard():
             sort_ascending = st.checkbox("Ascending Order", value=True)
             df = df.sort_values(by=[sort_option], ascending=sort_ascending)
 
-            # Display the DataFrame and add delete buttons
+            # Display the DataFrame with a delete button for each row
             for index, row in df.iterrows():
                 cols = st.columns([2, 1, 1])
-                with cols[0]:
+                with cols[0]:  # Display the data
                     st.text(f"{row['Reikalingos priemones']} - {row['Kur']}")
-                with cols[1]:
+                with cols[1]:  # Display the delete button
                     if st.button('Delete', key=f"delete_{index}"):
-                        # Call a function to delete the selected row from the DataFrame
+                        # Delete the selected row from the DataFrame
                         df = df.drop(index)
-                        # You might want to update your data source here, like Google Sheets
-                        # For now, we're just updating the displayed DataFrame
                         st.success("Row deleted successfully!")
-                        st.experimental_rerun()
             
             st.dataframe(df)
+
 
 
 
