@@ -15,7 +15,9 @@ import pandas as pd
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
+
 service_account_info = st.secrets["google_oauth"]
+calendar_token_info = st.secrets["google_calendar_token"]
 credentials = service_account.Credentials.from_service_account_info(service_account_info)
 gc = gspread.authorize(credentials)
 
