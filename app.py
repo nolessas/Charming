@@ -270,7 +270,7 @@ def show_dashboard():
     choose_main = st.radio("", ("option1", "option2", "option3", "option4"))
 
     if choose_main == "option2":
-        st.title("No more")
+        st.title("No")
 
         
 
@@ -382,6 +382,8 @@ def register_client(date, hours, full_name, phone, email, note):
     # Write data to Google Sheets
     write_to_sheets(sheet_data)
 
+    # Google Calendar API
+    service = get_calendar_service()
 
     # Format the event start time
     start_datetime = datetime.combine(date, hours)
