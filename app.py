@@ -291,21 +291,26 @@ def show_dashboard():
 
     if choose_main == "option3":
         st.title("Data from Sheet2")
-
+    
         # Input fields for adding new entries to Sheet2
         item_input = st.text_input("Item:")
         location_input = st.text_input("Location:")
         if st.button("Add Entry"):
             add_item_to_sheet2(item_input, location_input)
-
+    
         # Fetching and displaying data from Sheet2
         records = fetch_data_from_sheets()
         if records:
             df = pd.DataFrame(records)
+    
+            # Create a checkbox column for each row
+            df['Delete'] = [st.checkbox(f"Delete Row {i}", key=f"checkbox_{i}") for i in df.index]
+    
+            # Display the DataFrame with checkboxes
             st.write(df)
-
+    
             # Deletion of selected rows
-            selected_indices = st.multiselect('Select rows to delete:', df.index)
+            selected_indices = [i for i, delete in enumerate(df['Delete']) if delete]
             if st.button('Delete selected rows'):
                 for i in sorted(selected_indices, reverse=True):
                     delete_row_from_sheet(i, records)  # Deleting the row from the sheet
