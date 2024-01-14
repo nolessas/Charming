@@ -6,7 +6,7 @@ import pandas as pd
 
 # Streamlit app
 def main():
-    st.title("Client Management App")
+    st.title("Client Management App!!!")
 
     # Create st.radio buttons for main menu options
     menu_option = st.radio("Select an option", ("Register Client", "View Registered Clients", "To-Do List"))
