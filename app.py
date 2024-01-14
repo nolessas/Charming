@@ -321,11 +321,10 @@ def show_dashboard():
         for index, row in df.iterrows():
             cols = st.columns([2, 1, 1])
             with cols[0]:  # Display the data
-                st.text(f"{row['Reikalingos priemones']} - {row['Kur']}")
-            with cols[1]:  # Display the delete button
-                if st.button('Delete', key=f"delete_{index}"):
-                    delete_row_from_sheet(index, records)
-                    st.rerun()  # Rerun the app to refresh after deletion
+                with cols[1]:  # Display the delete button
+                    if st.button('Delete', key=f"delete_{index}"):
+                        delete_row_from_sheet(index, records)
+                        st.rerun()  # Rerun the app to refresh after deletion
               
 
 
