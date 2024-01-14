@@ -320,6 +320,7 @@ def show_dashboard():
 
 
 
+
 def register_client(date, hours, full_name, phone, email, note):
     # Add the data to the list
     registered_clients.append({
