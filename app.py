@@ -290,40 +290,40 @@ def show_dashboard():
         # Add functionality for option 2 here
 
 #######################################################################################################################################################
-      if choose_main == "option3":
-        st.title("Data from Sheet2")
-    
-        # Input fields for adding new entries to Sheet2
-        item_input = st.text_input("Item:")
-        location_input = st.text_input("Location:")
-        if st.button("Add Entry"):
-            add_item_to_sheet2(item_input, location_input)
-    
-        # Fetching and displaying data from Sheet2
-        records = fetch_data_from_sheets()
-        if records:
-            df = pd.DataFrame(records)
-    
-            # Create a checkbox column for each row
-            df['Select'] = [st.checkbox(f"Select Row {i}", key=f"checkbox_{i}") for i in df.index]
-    
-            # Display the DataFrame with checkboxes and a delete button in each row
-            for i, row in df.iterrows():
-                delete_btn = st.button(f"Delete Row {i}")
-                if delete_btn:
-                    delete_row_from_sheet(i, records)  # Deleting the row from the sheet
-                    st.experimental_rerun()  # Rerun to refresh the data display
-                st.write(f"Row {i}: Item - {row['Item']}, Location - {row['Location']}")
-    
-            # Deletion of selected rows
-            selected_indices = [i for i, select in enumerate(df['Select']) if select]
-            if st.button('Delete selected rows'):
-                for i in sorted(selected_indices, reverse=True):
-                    delete_row_from_sheet(i, records)  # Deleting the row from the sheet
+  if choose_main == "option3":
+    st.title("Data from Sheet2")
+
+    # Input fields for adding new entries to Sheet2
+    item_input = st.text_input("Item:")
+    location_input = st.text_input("Location:")
+    if st.button("Add Entry"):
+        add_item_to_sheet2(item_input, location_input)
+
+    # Fetching and displaying data from Sheet2
+    records = fetch_data_from_sheets()
+    if records:
+        df = pd.DataFrame(records)
+
+        # Create a checkbox column for each row
+        df['Select'] = [st.checkbox(f"Select Row {i}", key=f"checkbox_{i}") for i in df.index]
+
+        # Display the DataFrame with checkboxes and a delete button in each row
+        for i, row in df.iterrows():
+            delete_btn = st.button(f"Delete Row {i}")
+            if delete_btn:
+                delete_row_from_sheet(i, records)  # Deleting the row from the sheet
                 st.experimental_rerun()  # Rerun to refresh the data display
-    
-        else:
-            st.write("No records found.")
+            st.write(f"Row {i}: Item - {row['Item']}, Location - {row['Location']}")
+
+        # Deletion of selected rows
+        selected_indices = [i for i, select in enumerate(df['Select']) if select]
+        if st.button('Delete selected rows'):
+            for i in sorted(selected_indices, reverse=True):
+                delete_row_from_sheet(i, records)  # Deleting the row from the sheet
+            st.experimental_rerun()  # Rerun to refresh the data display
+
+    else:
+        st.write("No records found.")
 
 
 
