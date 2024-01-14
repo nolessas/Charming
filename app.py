@@ -137,16 +137,17 @@ def manage_todo_list():
 
 
 def delete_row_from_sheet(row_number):
-        """Deletes a row from the Google Sheet."""
+    """Deletes a row from the Google Sheet."""
     try:
         service = get_sheets_service()
         spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-        worksheet_name = 'Sheet2' # Ensure this matches the name of your sheet
+        worksheet_name = 'Sheet2'  # Ensure this matches the name of your sheet
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
         worksheet.delete_rows(row_number)
         st.success(f"Row {row_number} deleted successfully.")
     except Exception as e:
         st.error(f"Failed to delete row: {str(e)}")
+
 
 
 
