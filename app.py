@@ -1,26 +1,15 @@
-#app.py
 import os
 import streamlit as st
 from authentication import is_user_logged_in, show_login, set_user_logged_in
-from datetime import datetime, timedelta
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from google.auth.transport.requests import Request
-from hashlib import sha256
 import gspread
 from google.oauth2 import service_account
 import pandas as pd
 
-SCOPES = ['https://www.googleapis.com/auth/calendar']
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
 service_account_info = st.secrets["google_oauth"]
-calendar_token_info = st.secrets["google_calendar_token"]
-credentials = service_account.Credentials.from_service_account_info(service_account_info)
+credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES_SHEETS)
 gc = gspread.authorize(credentials)
-
-
 
 class SessionState:
     def __init__(self, **kwargs):
@@ -29,12 +18,6 @@ class SessionState:
 
 if "registered_clients" not in st.session_state:
     st.session_state.registered_clients = []
-
-registered_clients = []
-
-
-
-
 
 def main():
     st.title("")
@@ -48,10 +31,6 @@ def main():
         # You can add your logout logic here if needed
         logout_button = st.sidebar.button("Logout", on_click=set_user_logged_in, args=(False,))
 
-
-
-
-
 def get_credentials():
     try:
         service_account_info = st.secrets["google_oauth"]
@@ -63,10 +42,7 @@ def get_credentials():
         st.error(f"Error getting credentials: {e}")
         raise e
 
-
-
-
-
+# Modify the write_to_sheets function
 def write_to_sheets(data):
     service = get_sheets_service()
 
@@ -79,22 +55,14 @@ def write_to_sheets(data):
         
         # Check if we need to write the header row (only if the worksheet is empty)
         if worksheet.row_count == 0:
-            header_row = ["Date", "Full Name", "Last Name", "Phone Number", "Note", "Email Sent"]
+            header_row = ["Date", "Full Name", "Phone Number", "Note"]
             worksheet.append_row(header_row)
         
-        # Append the new data row, including a 'No' for 'Email Sent' status
-        new_row = data + ['No']  # Add 'No' to indicate the email has not been sent
-        worksheet.append_row(new_row)
+        # Append the new data row
+        worksheet.append_row(data)
 
     except Exception as e:
         st.error(f"Error writing to Google Sheets: {str(e)}")
-
-
-
-
-
-
-
 
 def fetch_data_from_sheets():
     try:
@@ -134,7 +102,6 @@ def manage_todo_list():
             delete_row_from_sheet(i, records)  # Call function to delete the row
         st.rerun()
 
-
 def delete_row_from_sheet(index, records):
     try:
         service = get_sheets_service()
@@ -152,11 +119,6 @@ def delete_row_from_sheet(index, records):
 
     except Exception as e:
         st.sidebar.error(f"Failed to delete row from sheet: {str(e)}")
-
-
-
-
-
 
 def get_sheets_service():
     credentials = get_credentials()
@@ -247,7 +209,7 @@ def show_registered_clients():
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
 
-        
+
 
 def add_item_to_sheet2(item_input, location_input):
     try:
