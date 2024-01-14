@@ -278,7 +278,6 @@ def show_dashboard():
     st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
     choose_main = st.radio("", ("option1", "option2", "option3"))
 
-
     if choose_main == "option1":
         # Option 1: Show Registered Clients and Register New Client
         st.title("Registered Clients")
@@ -319,19 +318,6 @@ def show_dashboard():
             # Add a selectbox for sorting options
             sort_option = st.selectbox("Sort by:", df.columns, index=0)
             sort_ascending = st.checkbox("Ascending Order", value=True)
-            df = df.sort_values(by=[sort_option], ascending=sort_ascending)
-
-            # Display the data frame with a delete button for each row
-            for index, row in df.iterrows():
-                cols = st.columns([5, 1])  # Adjust the ratio as needed for your layout
-                with cols[0]:
-                    st.write(row)  # This will display the row content
-                with cols[1]:
-                    delete_btn = st.button("Delete", key=f"delete_{index}")
-                    if delete_btn:
-                        delete_row_from_sheet(index + 2)  # +2 to account for header and 1-indexing
-                        st.experimental_rerun()  # Rerun the app to reflect the deletion
-
 
 
 
