@@ -2,35 +2,20 @@
 import os
 import streamlit as st
 from authentication import is_user_logged_in, show_login, set_user_logged_in
-from datetime import datetime, timedelta
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from google.auth.transport.requests import Request
-from hashlib import sha256
+from datetime import datetime
 import gspread
 from google.oauth2 import service_account
 import pandas as pd
 
 
 
-import streamlit as st
 
 
 
-
-# Google Calendar API credentials file
-CLIENT_SECRET_FILE = '.streamlit/Google-calendar-api.json'
-API_NAME = 'calendar'
-API_VERSION = 'v3'
-SCOPES_CLIENT = ['https://www.googleapis.com/auth/calendar']
 
 # Google Sheets API credentials file
 SHEETS_CLIENT_SECRET_FILE = '.streamlit/token_sheets.json'
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
-
-
-
 
 class SessionState:
     def __init__(self, **kwargs):
@@ -45,7 +30,7 @@ registered_clients = []
 
 
 def main():
-    st.title("")
+    st.title("Hello world")
 
     # Check if the user is logged in
     if not is_user_logged_in():
@@ -272,70 +257,27 @@ def delete_client(index):
 
 
 
-def get_calendar_service():
-    credentials = None
-
-    # Load or create credentials
-    if os.path.exists('.streamlit/token.json'):
-        credentials = Credentials.from_authorized_user_file('.streamlit/token.json')
-
-    if not credentials or not credentials.valid:
-        if credentials and credentials.expired and credentials.refresh_token:
-            credentials.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES_CLIENT)
-            credentials = flow.run_local_server(port=0)
-
-        with open('.streamlit/token.json', 'w') as token:
-            token.write(credentials.to_json())
-
-    # Build the Google Calendar service
-    service = build(API_NAME, API_VERSION, credentials=credentials)
-    return service
 
 
-    # Sidebar logic
-    choose_sidebar = st.sidebar.radio("Choose an option", ("app1", "app2"))
 
-    # Main logic
-    choose_main = st.radio("View section", ("option1", "option2", "option3", "option4"))
 
 
 
 def show_dashboard():
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: center;} </style>', unsafe_allow_html=True)
     st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
-    choose_main = st.radio("", ("option1", "option2", "option3", "option4"))
+    choose_main = st.radio("", ("option1", "option2", "option3"))
 
-    if choose_main == "option2":
-        st.title("Today's Events")
 
-        # Google Calendar API
-        service = get_calendar_service()
 
-        # Fetch today's events
-        now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-        events_result = service.events().list(
-            calendarId='primary',
-            timeMin=now,
-            timeMax=(datetime.utcnow() + timedelta(days=1)).isoformat() + 'Z',
-            singleEvents=True,
-            orderBy='startTime'
-        ).execute()
 
-        events = events_result.get('items', [])
-        
-        if not events:
-            st.write("No events found.")
-        else:
-            for event in events:
-                start_time = event['start'].get('dateTime', event['start'].get('date'))
-                event_summary = event.get('summary', 'No summary provided')
-                st.write(f"{start_time} - {event_summary}")
 
-    elif choose_main == "option1":
+    if choose_main == "option1":
         st.write("")
         show_registered_clients()  # Function to display clients from Google Sheets
+
+    elif choose_main == "option2":
+        st.title("Nothing is here yet.")
 
 
     elif choose_main == "option3":
@@ -381,11 +323,7 @@ def show_dashboard():
                     delete_row_from_sheet(index, records)  # Call function to delete the row
 
 
-    elif choose_main == "option4":
-        st.title("Client Information")
 
-        # Placeholder for displaying client information
-        st.write("Client information will be displayed here.")
 
     choose_sidebar = st.sidebar.radio("", ("app1", "app2"))
     if choose_sidebar == "app1":
@@ -427,8 +365,6 @@ def register_client(date, hours, full_name, phone, email, note):
 
 
 def register_client(date, hours, full_name, phone, email, note):
-    # ... (your existing code)
-
     # Add the data to the list
     registered_clients.append({
         "Date": str(datetime.combine(date, hours)),
@@ -438,42 +374,17 @@ def register_client(date, hours, full_name, phone, email, note):
         "Note": note
     })
 
-
-
     # Format the data for Google Sheets
     sheet_data = [str(datetime.combine(date, hours)), full_name, phone, email, note]
 
     # Write data to Google Sheets
     write_to_sheets(sheet_data)
 
-    # Google Calendar API
-    service = get_calendar_service()
+    st.sidebar.success("Client registered successfully!")
 
-    # Format the event start time
-    start_datetime = datetime.combine(date, hours)
 
-    # Format the event end time (assuming it's 30 minutes later)
-    end_datetime = start_datetime + timedelta(minutes=30)
 
-    # Create event
-    event = {
-        'summary': f"Client Registration - {full_name}",
-        'description': f"Client details:\nFull Name: {full_name}\nPhone: {phone}\nEmail: {email}\nNote: {note}",
-        'start': {
-            'dateTime': start_datetime.isoformat(),
-            'timeZone': 'UTC',  # Replace with your desired time zone
-        },
-        'end': {
-            'dateTime': end_datetime.isoformat(),
-            'timeZone': 'UTC',  # Replace with your desired time zone
-        },
-    }
 
-    try:
-        service.events().insert(calendarId='primary', body=event).execute()
-        st.sidebar.success("Client registered successfully and event created in Google Calendar!")
-    except HttpError as e:
-        st.sidebar.error(f"Error creating event: {str(e)}")
 
 if __name__ == "__main__":
     print("Before main()")
