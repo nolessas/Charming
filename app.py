@@ -16,7 +16,6 @@ SCOPES = ['https://www.googleapis.com/auth/calendar']
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
 service_account_info = st.secrets["google_oauth"]
-calendar_token_info = st.secrets["google_calendar_token"]
 credentials = service_account.Credentials.from_service_account_info(service_account_info)
 gc = gspread.authorize(credentials)
 
@@ -96,23 +95,7 @@ def write_to_sheets(data):
 
 
 
-def fetch_data_from_sheets():
-    try:
-        service = get_sheets_service()
-        spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-        worksheet_name = 'Sheet2'
-        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        records = worksheet.get_all_records()
 
-        if not records:
-            st.write("No to-do items found.")
-            return []
-
-        return records
-
-    except Exception as e:
-        st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
-        return []
 
 def manage_todo_list():
     st.title("To-Do List")
@@ -164,19 +147,7 @@ def get_sheets_service():
 
 
 
-def get_calendar_service():
-    # Fetch your service account details from Streamlit's secrets
-    service_account_info = st.secrets["google_calendar_token"]
-    
-    # Use the service account information to create credentials
-    credentials = service_account.Credentials.from_service_account_info(
-        service_account_info,
-        scopes=SCOPES
-    )
 
-    # Build the service for the Google Calendar API
-    service = build('calendar', 'v3', credentials=credentials)
-    return service
 
 
 ####
@@ -299,35 +270,9 @@ def show_dashboard():
     choose_main = st.radio("", ("option1", "option2", "option3", "option4"))
 
     if choose_main == "option2":
-        st.title("Today's Events")
+        st.title("No more")
 
-        # Google Calendar API
-        service = get_calendar_service()
-
-        # Fetch today's events
-        now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-        events_result = service.events().list(
-            calendarId='primary',
-            timeMin=now,
-            timeMax=(datetime.utcnow() + timedelta(days=1)).isoformat() + 'Z',
-            singleEvents=True,
-            orderBy='startTime'
-        ).execute()
-
-        events = events_result.get('items', [])
         
-        if not events:
-            st.write("No events found.")
-        else:
-            for event in events:
-                start_time = event['start'].get('dateTime', event['start'].get('date'))
-                event_summary = event.get('summary', 'No summary provided')
-                st.write(f"{start_time} - {event_summary}")
-
-    elif choose_main == "option1":
-        st.write("")
-        show_registered_clients()  # Function to display clients from Google Sheets
-
 
     elif choose_main == "option3":
         st.title("Data from Sheet3")
@@ -437,8 +382,6 @@ def register_client(date, hours, full_name, phone, email, note):
     # Write data to Google Sheets
     write_to_sheets(sheet_data)
 
-    # Google Calendar API
-    service = get_calendar_service()
 
     # Format the event start time
     start_datetime = datetime.combine(date, hours)
