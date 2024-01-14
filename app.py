@@ -12,12 +12,15 @@ import gspread
 from google.oauth2 import service_account
 import pandas as pd
 
+SCOPES = ['https://www.googleapis.com/auth/calendar']
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
-# Get credentials for Google Sheets
 service_account_info = st.secrets["google_oauth"]
-credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES_SHEETS)
+calendar_token_info = st.secrets["google_calendar_token"]
+credentials = service_account.Credentials.from_service_account_info(service_account_info)
 gc = gspread.authorize(credentials)
+
+
 
 class SessionState:
     def __init__(self, **kwargs):
@@ -28,6 +31,10 @@ if "registered_clients" not in st.session_state:
     st.session_state.registered_clients = []
 
 registered_clients = []
+
+
+
+
 
 def main():
     st.title("")
@@ -41,17 +48,9 @@ def main():
         # You can add your logout logic here if needed
         logout_button = st.sidebar.button("Logout", on_click=set_user_logged_in, args=(False,))
 
-def fetch_data_from_sheets():
-    try:
-        service = get_sheets_service()
-        spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-        worksheet_name = 'Sheet2'  # Update this if needed
-        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        records = worksheet.get_all_records()
-        return records
-    except Exception as e:
-        st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
-        return []
+
+
+
 
 def get_credentials():
     try:
@@ -63,6 +62,10 @@ def get_credentials():
     except Exception as e:
         st.error(f"Error getting credentials: {e}")
         raise e
+
+
+
+
 
 def write_to_sheets(data):
     service = get_sheets_service()
@@ -76,7 +79,7 @@ def write_to_sheets(data):
         
         # Check if we need to write the header row (only if the worksheet is empty)
         if worksheet.row_count == 0:
-            header_row = ["Date", "Full Name", "Phone Number", "Email", "Note", "Email Sent"]
+            header_row = ["Date", "Full Name", "Last Name", "Phone Number", "Note", "Email Sent"]
             worksheet.append_row(header_row)
         
         # Append the new data row, including a 'No' for 'Email Sent' status
@@ -85,6 +88,31 @@ def write_to_sheets(data):
 
     except Exception as e:
         st.error(f"Error writing to Google Sheets: {str(e)}")
+
+
+
+
+
+
+
+
+def fetch_data_from_sheets():
+    try:
+        service = get_sheets_service()
+        spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+        worksheet_name = 'Sheet2'
+        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
+        records = worksheet.get_all_records()
+
+        if not records:
+            st.write("No to-do items found.")
+            return []
+
+        return records
+
+    except Exception as e:
+        st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
+        return []
 
 def manage_todo_list():
     st.title("To-Do List")
@@ -106,6 +134,7 @@ def manage_todo_list():
             delete_row_from_sheet(i, records)  # Call function to delete the row
         st.rerun()
 
+
 def delete_row_from_sheet(index, records):
     try:
         service = get_sheets_service()
@@ -124,9 +153,33 @@ def delete_row_from_sheet(index, records):
     except Exception as e:
         st.sidebar.error(f"Failed to delete row from sheet: {str(e)}")
 
+
+
+
+
+
 def get_sheets_service():
     credentials = get_credentials()
     return gspread.authorize(credentials)
+
+
+
+def get_calendar_service():
+    # Fetch your service account details from Streamlit's secrets
+    service_account_info = st.secrets["google_calendar_token"]
+    
+    # Use the service account information to create credentials
+    credentials = service_account.Credentials.from_service_account_info(
+        service_account_info,
+        scopes=SCOPES
+    )
+
+    # Build the service for the Google Calendar API
+    service = build('calendar', 'v3', credentials=credentials)
+    return service
+
+
+####
 
 def show_registered_clients():
     st.title("Registered Clients")
@@ -194,18 +247,7 @@ def show_registered_clients():
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
 
-def delete_client(index):
-    service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-    worksheet_name = 'Sheet1'
-    try:
-        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        # Delete the row; add 2 to index to account for header row and 0-based indexing
-        worksheet.delete_rows(index + 2)
-        st.success(f"Client at row {index + 1} deleted successfully.")
-        st.rerun()  # Rerun the app to refresh the data display
-    except Exception as e:
-        st.error(f"Failed to delete client: {str(e)}")
+
 
 
 
@@ -239,30 +281,17 @@ def get_credentials():
         st.error(f"Error getting credentials: {e}")
         raise e
 
-def register_client(date, hours, full_name, phone, email, note):
-    # Add the data to the list
-    registered_clients.append({
-        "Date": str(datetime.combine(date, hours)),
-        "Full Name": full_name,
-        "Phone Number": phone,
-        "Email": email,
-        "Note": note
-    })
 
-    # Format the data for Google Sheets
-    sheet_data = [str(datetime.combine(date, hours)), full_name, phone, email, note]
 
-    # Write data to Google Sheets
-    write_to_sheets(sheet_data)
-    st.sidebar.success("Client registered successfully!")
 
-    try:
-        service.events().insert(calendarId='primary', body=event).execute()
-        st.sidebar.success("Client registered successfully and event created in Google Calendar!")
-    except HttpError as e:
-        st.sidebar.error(f"Error creating event: {str(e)}")
 
-        
+    # Sidebar logic
+    choose_sidebar = st.sidebar.radio("Choose an option", ("app1", "app2"))
+
+    # Main logic
+    choose_main = st.radio("View section", ("option1", "option2", "option3", "option4"))
+
+
 
 def show_dashboard():
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: center;} </style>', unsafe_allow_html=True)
@@ -273,6 +302,7 @@ def show_dashboard():
         st.title("Today's Events")
 
         # Google Calendar API
+        service = get_calendar_service()
 
         # Fetch today's events
         now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
@@ -282,7 +312,7 @@ def show_dashboard():
             timeMax=(datetime.utcnow() + timedelta(days=1)).isoformat() + 'Z',
             singleEvents=True,
             orderBy='startTime'
-        )
+        ).execute()
 
         events = events_result.get('items', [])
         
@@ -294,10 +324,10 @@ def show_dashboard():
                 event_summary = event.get('summary', 'No summary provided')
                 st.write(f"{start_time} - {event_summary}")
 
-
     elif choose_main == "option1":
         st.write("")
         show_registered_clients()  # Function to display clients from Google Sheets
+
 
     elif choose_main == "option3":
         st.title("Data from Sheet3")
@@ -373,7 +403,68 @@ def show_dashboard():
             add_item_to_sheet2(item_input, location_input)
 
 
+def register_client(date, hours, full_name, phone, email, note):
+    # Placeholder function for handling client registration
+    # You can add the logic to save the client information to a database or file
+    # For now, it just prints the information
+    print(f"Registered Client:")
+    print(f"Date: {date}")
+    print(f"Hours: {hours}")
+    print(f"Full Name: {full_name}")
+    print(f"Phone Number: {phone}")
+    print(f"Email: {email}")
+    print(f"Note: {note}")
 
+
+
+def register_client(date, hours, full_name, phone, email, note):
+    # ... (your existing code)
+
+    # Add the data to the list
+    registered_clients.append({
+        "Date": str(datetime.combine(date, hours)),
+        "Full Name": full_name,
+        "Phone Number": phone,
+        "Email": email,
+        "Note": note
+    })
+
+
+
+    # Format the data for Google Sheets
+    sheet_data = [str(datetime.combine(date, hours)), full_name, phone, email, note]
+
+    # Write data to Google Sheets
+    write_to_sheets(sheet_data)
+
+    # Google Calendar API
+    service = get_calendar_service()
+
+    # Format the event start time
+    start_datetime = datetime.combine(date, hours)
+
+    # Format the event end time (assuming it's 30 minutes later)
+    end_datetime = start_datetime + timedelta(minutes=30)
+
+    # Create event
+    event = {
+        'summary': f"Client Registration - {full_name}",
+        'description': f"Client details:\nFull Name: {full_name}\nPhone: {phone}\nEmail: {email}\nNote: {note}",
+        'start': {
+            'dateTime': start_datetime.isoformat(),
+            'timeZone': 'UTC',  # Replace with your desired time zone
+        },
+        'end': {
+            'dateTime': end_datetime.isoformat(),
+            'timeZone': 'UTC',  # Replace with your desired time zone
+        },
+    }
+
+    try:
+        service.events().insert(calendarId='primary', body=event).execute()
+        st.sidebar.success("Client registered successfully and event created in Google Calendar!")
+    except HttpError as e:
+        st.sidebar.error(f"Error creating event: {str(e)}")
 
 if __name__ == "__main__":
     main()
