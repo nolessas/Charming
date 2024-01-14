@@ -1,4 +1,3 @@
-#app.py
 import os
 import streamlit as st
 from authentication import is_user_logged_in, show_login, set_user_logged_in
@@ -7,10 +6,12 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
+from googleapiclient.errors import HttpError  # Import HttpError
 from hashlib import sha256
 import gspread
 from google.oauth2 import service_account
 import pandas as pd
+
 
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
