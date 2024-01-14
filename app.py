@@ -300,7 +300,7 @@ def show_dashboard():
         st.title("Nothing is here yet.")
 
     elif choose_main == "option3":
-        # Option 3: Add Item to Sheet2 (Previously app2)
+        # Option 3: Add Item to Sheet2 and Display Data
         st.title("Data from Sheet3")
         st.write("Reikalingos priemones ir kur jas rasti.")
 
@@ -314,11 +314,7 @@ def show_dashboard():
         if records:
             df = pd.DataFrame(records)
             # Add a selectbox for sorting options
-            sort_option = st.selectbox("Sort by:", df.columns, index=1)
-            sort_ascending = st.checkbox("Rušiavimas", value=True)
-            df = df.sort_values(by=[sort_option], ascending=[sort_ascending])
-            st.dataframe(df)
-
+            sort_option = st
 
 
 
