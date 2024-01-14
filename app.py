@@ -28,7 +28,9 @@ SHEETS_CLIENT_SECRET_FILE = '.streamlit/token_sheets.json'
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
 
-
+service_account_info = st.secrets["service_account"]
+credentials = service_account.Credentials.from_service_account_info(service_account_info)
+gc = gspread.authorize(credentials)
 
 
 
