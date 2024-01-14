@@ -309,15 +309,12 @@ def show_dashboard():
         if st.button("Add Entry", key="add"):
             add_item_to_sheet2(item_input, location_input)
 
-        # Fetch and display data from Google Sheets
+        # Fetch and display data from Google Sheets as a list
         records = fetch_data_from_sheets()
         if records:
-            df = pd.DataFrame(records)
-            # Add a selectbox for sorting options
-            sort_option = st.selectbox("Sort by:", df.columns, index=1)
-            sort_ascending = st.checkbox("Ascending Order", value=True)
-            df = df.sort_values(by=[sort_option], ascending=sort_ascending)
-            st.dataframe(df)
+            for index, row in enumerate(records):
+                st.write(f"Row {index + 1}: {row['Reikalingos priemones']} - {row['Kur']}")
+
 
 
 
