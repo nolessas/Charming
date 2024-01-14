@@ -136,24 +136,17 @@ def manage_todo_list():
         st.rerun()
 
 
-def delete_row_from_sheet(index, records):
+def delete_row_from_sheet(row_number):
+        """Deletes a row from the Google Sheet."""
     try:
         service = get_sheets_service()
         spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-        worksheet_name = 'Sheet2'
-
-        # Delete the row from the Google Sheets
+        worksheet_name = 'Sheet2' # Ensure this matches the name of your sheet
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        worksheet.delete_rows(index + 2)  # +2 to account for the header row and 1-indexing
-
-        # Update the records list to reflect the deletion
-        del records[index]
-
-        st.sidebar.success("Selected rows deleted successfully!")
-
+        worksheet.delete_rows(row_number)
+        st.success(f"Row {row_number} deleted successfully.")
     except Exception as e:
-        st.sidebar.error(f"Failed to delete row from sheet: {str(e)}")
-
+        st.error(f"Failed to delete row: {str(e)}")
 
 
 
@@ -278,46 +271,33 @@ def show_dashboard():
     st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
     choose_main = st.radio("", ("option1", "option2", "option3"))
 
-    if choose_main == "option1":
-        # Option 1: Show Registered Clients and Register New Client
-        st.title("Registered Clients")
-        show_registered_clients()
+    # ... (option1 and option2 code)
 
-        st.title("Register New Client")
-        # Input fields for registration
-        date_input = st.date_input("Date:")
-        hours_input = st.time_input("Time:")
-        full_name_input = st.text_input("Full Name:")
-        phone_input = st.text_input("Phone Number:")
-        email_input = st.text_input("Email:")
-        note_input = st.text_area("Note:")
-
-        # Button for registering the client
-        if st.button("Register"):
-            register_client(date_input, hours_input, full_name_input, phone_input, email_input, note_input)
-            st.success("Client registered successfully!")
-
-    elif choose_main == "option2":
-        # Option 2: Placeholder functionality
-        st.title("Placeholder Functionality")
-        # Add functionality for option 2 here
-
-    elif choose_main == "option3":
-        # Option 3: Add Item to Sheet2 and Display Data
+    if choose_main == "option3":
         st.title("Data from Sheet3")
         st.write("Reikalingos priemones ir kur jas rasti.")
-
+        
+        # Input fields for adding new items
         item_input = st.text_input("Reikalingos priemones:", key="item")
         location_input = st.text_input("Kur:", key="location")
+        
         if st.button("Add Entry", key="add"):
             add_item_to_sheet2(item_input, location_input)
 
-        # Fetch and display data from Google Sheets
+        # Fetch and display data from Google Sheets with a delete button next to each row
         records = fetch_data_from_sheets()
         if records:
             df = pd.DataFrame(records)
-            # Add a selectbox for sorting options
-            sort_option = st
+            # Creating a temporary column for delete buttons
+            df['Delete'] = 'Delete'
+            # Displaying the dataframe using Streamlit's table method
+            table = st.table(df)
+            
+            # Handling the deletion of rows
+            for index in range(len(df)):
+                if st.button('Delete', key=f"delete_{index}"):
+                delete_row_from_sheet(index + 2) # Adjust the index accordingly if needed
+                st.experimental_rerun() # Rerun the app to update the displayed data
 
 
 
