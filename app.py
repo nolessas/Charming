@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 # Google Sheets and Google Calendar API scopes
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
-SCOPES_CALENDAR = ['https://www.googleapis.com/auth/calendar']
+
 
 # Load Google Sheets service account credentials from Streamlit secrets
 service_account_info_sheets = st.secrets["google_sheets_credentials"]
@@ -20,23 +20,7 @@ credentials_calendar = service_account.Credentials.from_service_account_info(
     service_account_info_calendar, scopes=SCOPES_CALENDAR)
 
 # Function to create a Google Calendar event
-def create_calendar_event(client_name, appointment_time):
-    service_calendar = build('calendar', 'v3', credentials=credentials_calendar)
 
-    event = {
-        'summary': f'Appointment with {client_name}',
-        'description': 'Client appointment',
-        'start': {
-            'dateTime': appointment_time.isoformat(),
-            'timeZone': 'UTC',  # Replace with your desired time zone
-        },
-        'end': {
-            'dateTime': (appointment_time + timedelta(minutes=30)).isoformat(),
-            'timeZone': 'UTC',
-        },
-    }
-
-    event = service_calendar.events().insert(calendarId='primary', body=event).execute()
 
 # Streamlit app
 def main():
@@ -65,7 +49,7 @@ def main():
 
 def register_client(date, time, full_name, phone_number, email, notes):
     try:
-        worksheet = gc_sheets.open_by_key('YOUR_SPREADSHEET_ID').worksheet('Sheet1')
+        worksheet = gc_sheets.open_by_key('1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ').worksheet('Sheet1')
 
         if worksheet.row_count == 0:
             header_row = ["Date", "Time", "Full Name", "Phone Number", "Email", "Notes"]
@@ -83,7 +67,7 @@ def register_client(date, time, full_name, phone_number, email, notes):
 
 def view_registered_clients():
     try:
-        worksheet = gc_sheets.open_by_key('YOUR_SPREADSHEET_ID').worksheet('Sheet1')
+        worksheet = gc_sheets.open_by_key('1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ').worksheet('Sheet1')
         data = worksheet.get_all_records()
 
         if not data:
@@ -96,7 +80,7 @@ def view_registered_clients():
 
 def manage_todo_list():
     try:
-        worksheet = gc_sheets.open_by_key('YOUR_SPREADSHEET_ID').worksheet('Sheet2')
+        worksheet = gc_sheets.open_by_key('1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ').worksheet('Sheet2')
         data = worksheet.get_all_records()
 
         if not data:
