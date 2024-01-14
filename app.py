@@ -321,20 +321,19 @@ def show_dashboard():
             sort_ascending = st.checkbox("Ascending Order", value=True)
             df = df.sort_values(by=[sort_option], ascending=sort_ascending)
 
-            # Display the DataFrame with a delete checkbox for each row
-            for index, row in df.iterrows():
-                cols = st.columns([2, 1, 1])
-                delete_checkbox = cols[1].checkbox(f"Delete Row {index}", key=f"delete_{index}")
-                with cols[0]:  # Display the data
-                    st.text(f"{row['Reikalingos priemones']} - {row['Kur']}")
-            
-            if st.button("Delete Selected Rows"):
+            # Create a custom table with delete buttons
+            with st.form(key="delete_form"):
+                st.table(df)
+                delete_rows = st.multiselect("Select rows to delete:", df.index)
+                delete_button = st.form_submit_button("Delete Selected Rows")
+
+            if delete_button:
                 # Delete the selected rows from the DataFrame
-                rows_to_delete = [index for index, row in df.iterrows() if st.session_state[f"delete_{index}"]]
-                df = df.drop(rows_to_delete)
+                df = df.drop(delete_rows)
                 st.success("Selected rows deleted successfully!")
 
             st.dataframe(df)
+
 
 
 
