@@ -19,8 +19,6 @@ service_account_info = st.secrets["google_oauth"]
 credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES_SHEETS)
 gc = gspread.authorize(credentials)
 
-
-
 class SessionState:
     def __init__(self, **kwargs):
         for key, val in kwargs.items():
@@ -30,10 +28,6 @@ if "registered_clients" not in st.session_state:
     st.session_state.registered_clients = []
 
 registered_clients = []
-
-
-
-
 
 def main():
     st.title("")
@@ -47,9 +41,17 @@ def main():
         # You can add your logout logic here if needed
         logout_button = st.sidebar.button("Logout", on_click=set_user_logged_in, args=(False,))
 
-
-
-
+def fetch_data_from_sheets():
+    try:
+        service = get_sheets_service()
+        spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+        worksheet_name = 'Sheet2'  # Update this if needed
+        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
+        records = worksheet.get_all_records()
+        return records
+    except Exception as e:
+        st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
+        return []
 
 def get_credentials():
     try:
@@ -61,10 +63,6 @@ def get_credentials():
     except Exception as e:
         st.error(f"Error getting credentials: {e}")
         raise e
-
-
-
-
 
 def write_to_sheets(data):
     service = get_sheets_service()
@@ -78,7 +76,7 @@ def write_to_sheets(data):
         
         # Check if we need to write the header row (only if the worksheet is empty)
         if worksheet.row_count == 0:
-            header_row = ["Date", "Full Name", "Last Name", "Phone Number", "Note", "Email Sent"]
+            header_row = ["Date", "Full Name", "Phone Number", "Email", "Note", "Email Sent"]
             worksheet.append_row(header_row)
         
         # Append the new data row, including a 'No' for 'Email Sent' status
@@ -87,25 +85,6 @@ def write_to_sheets(data):
 
     except Exception as e:
         st.error(f"Error writing to Google Sheets: {str(e)}")
-
-
-
-
-
-def fetch_data_from_sheets():
-    try:
-        service = get_sheets_service()
-        spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-        worksheet_name = 'Sheet2'  # Update this if needed
-        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        records = worksheet.get_all_records()
-        return records
-    except Exception as e:
-        st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
-        return []
-
-
-
 
 def manage_todo_list():
     st.title("To-Do List")
@@ -127,7 +106,6 @@ def manage_todo_list():
             delete_row_from_sheet(i, records)  # Call function to delete the row
         st.rerun()
 
-
 def delete_row_from_sheet(index, records):
     try:
         service = get_sheets_service()
@@ -146,19 +124,9 @@ def delete_row_from_sheet(index, records):
     except Exception as e:
         st.sidebar.error(f"Failed to delete row from sheet: {str(e)}")
 
-
-
-
-
-
 def get_sheets_service():
     credentials = get_credentials()
     return gspread.authorize(credentials)
-
-
-
-
-####
 
 def show_registered_clients():
     st.title("Registered Clients")
@@ -226,7 +194,18 @@ def show_registered_clients():
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
 
-
+def delete_client(index):
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    worksheet_name = 'Sheet1'
+    try:
+        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
+        # Delete the row; add 2 to index to account for header row and 0-based indexing
+        worksheet.delete_rows(index + 2)
+        st.success(f"Client at row {index + 1} deleted successfully.")
+        st.rerun()  # Rerun the app to refresh the data display
+    except Exception as e:
+        st.error(f"Failed to delete client: {str(e)}")
 
 
 
@@ -280,7 +259,28 @@ def show_dashboard():
     if choose_main == "option2":
         st.title("Today's Events")
 
+        # Google Calendar API
+ 
+
+        # Fetch today's events
+        now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+        events_result = service.events().list(
+            calendarId='primary',
+            timeMin=now,
+            timeMax=(datetime.utcnow() + timedelta(days=1)).isoformat() + 'Z',
+            singleEvents=True,
+            orderBy='startTime'
+        )
+
+        events = events_result.get('items', [])
         
+        if not events:
+            st.write("No events found.")
+        else:
+            for event in events:
+                start_time = event['start'].get('dateTime', event['start'].get('date'))
+                event_summary = event.get('summary', 'No summary provided')
+                st.write(f"{start_time} - {event_summary}")
 
     elif choose_main == "option1":
         st.write("")
@@ -380,7 +380,6 @@ def register_client(date, hours, full_name, phone, email, note):
 
 
     try:
-        # Insert the event into the calendar
         service.events().insert(calendarId='primary', body=event).execute()
         st.sidebar.success("Client registered successfully and event created in Google Calendar!")
     except HttpError as e:
