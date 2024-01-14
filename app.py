@@ -427,6 +427,8 @@ def register_client(date, hours, full_name, phone, email, note):
 
 
 def register_client(date, hours, full_name, phone, email, note):
+    # ... (your existing code)
+
     # Add the data to the list
     registered_clients.append({
         "Date": str(datetime.combine(date, hours)),
@@ -436,19 +438,38 @@ def register_client(date, hours, full_name, phone, email, note):
         "Note": note
     })
 
+
+
     # Format the data for Google Sheets
     sheet_data = [str(datetime.combine(date, hours)), full_name, phone, email, note]
 
     # Write data to Google Sheets
     write_to_sheets(sheet_data)
-    st.sidebar.success("Client registered successfully!")
 
+    # Google Calendar API
+    service = get_calendar_service()
 
-    try:
-        service.events().insert(calendarId='primary', body=event).execute()
-        st.sidebar.success("Client registered successfully and event created in Google Calendar!")
-    except HttpError as e:
-        st.sidebar.error(f"Error creating event: {str(e)}")
+    # Format the event start time
+    start_datetime = datetime.combine(date, hours)
+
+    # Format the event end time (assuming it's 30 minutes later)
+    end_datetime = start_datetime + timedelta(minutes=30)
+
+    # Create event
+    event = {
+        'summary': f"Client Registration - {full_name}",
+        'description': f"Client details:\nFull Name: {full_name}\nPhone: {phone}\nEmail: {email}\nNote: {note}",
+        'start': {
+            'dateTime': start_datetime.isoformat(),
+            'timeZone': 'UTC',  # Replace with your desired time zone
+        },
+        'end': {
+            'dateTime': end_datetime.isoformat(),
+            'timeZone': 'UTC',  # Replace with your desired time zone
+        },
+    }
+
+    
 
 if __name__ == "__main__":
     print("Before main()")
