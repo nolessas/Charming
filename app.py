@@ -297,8 +297,8 @@ def show_dashboard():
             # Handling the deletion of rows
             for index in range(len(df)):
                 if st.button('Delete', key=f"delete_{index}"):
-                delete_row_from_sheet(index + 2) # Adjust the index accordingly if needed
-                st.experimental_rerun() # Rerun the app to update the displayed data
+                    delete_row_from_sheet(index + 2) # Adjust the index accordingly if needed
+                    st.experimental_rerun() # Rerun the app to update the displayed data
 
 
 
