@@ -243,14 +243,6 @@ def get_credentials():
 
 
 
-    # Sidebar logic
-    choose_sidebar = st.sidebar.radio("Choose an option", ("app1", "app2"))
-
-    # Main logic
-    choose_main = st.radio("View section", ("option1", "option2", "option3", "option4"))
-
-
-
 def show_dashboard():
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: center;} </style>', unsafe_allow_html=True)
     st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
