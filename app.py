@@ -233,7 +233,9 @@ def show_registered_clients():
 
 
 
- def delete_client(index):
+
+
+def delete_client(index):
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
     worksheet_name = 'Sheet1'
@@ -245,7 +247,6 @@ def show_registered_clients():
         st.experimental_rerun()  # Rerun the app to refresh the data display
     except Exception as e:
         st.error(f"Failed to delete client: {str(e)}")
-
 
 ####
 
@@ -306,9 +307,6 @@ def register_client(date, hours, full_name, phone, email, note):
     write_to_sheets(sheet_data)
 
     st.success("Client registered successfully!")
-
-   
-
 
 # ... (rest of your existing functions)
 
