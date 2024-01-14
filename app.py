@@ -293,7 +293,11 @@ def show_dashboard():
     elif choose_main == "option3":
         st.title("Data from Sheet3")
         st.write("Reikalingos priemones ir kur jas rasti.")
-
+        # Input fields for adding new entries to Sheet2
+        item_input = st.text_input("Item:")
+        location_input = st.text_input("Location:")
+        if st.button("Add Entry"):
+            add_item_to_sheet2(item_input, location_input)
         # Fetch data from Google Sheets
         records = fetch_data_from_sheets()
 
