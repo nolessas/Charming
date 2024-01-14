@@ -3,6 +3,14 @@ import pandas as pd
 from google.oauth2 import service_account
 import gspread
 
+SCOPES = ['https://www.googleapis.com/auth/calendar']
+SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
+
+service_account_info = st.secrets["google_oauth"]
+credentials = service_account.Credentials.from_service_account_info(service_account_info)
+gc = gspread.authorize(credentials)
+
+
 # Function to get Google Sheets service
 def get_sheets_service():
     service_account_info = st.secrets["google_oauth"]
