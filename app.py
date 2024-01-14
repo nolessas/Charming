@@ -311,14 +311,18 @@ def show_dashboard():
                     st.write(f"{row['Item']} {row['Location']}")
                 with cols[1]:
                     if st.button("✓", key=f"check_{i}"):
-                        st.write("Checkmark clicked!")  # Or any other logic you want
+                    # Placeholder functionality for the checkmark button
+                    # Replace the following line with the action you want to perform
+                        st.success(f"Item '{row['Item']}' at location '{row['Location']}' is marked as checked!")
+
+            # The button to delete the item from the sheet
                 with cols[2]:
                     if st.button("Delete", key=f"delete_{i}"):
+                    # Call the function to delete the row from the sheet and the local DataFrame
                         delete_row_from_sheet(i+2, records)  # Adjust the index for gspread
-                        st.experimental_rerun()
+                        st.experimental_rerun()  # Refresh the display after deletion
         else:
             st.write("No records found.")
-
 
 
 
