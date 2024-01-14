@@ -307,17 +307,17 @@ def show_dashboard():
         st.title("Data from Sheet3")
         st.write("Reikalingos priemones")
         item_input = st.text_input("Reikalingos priemones:", key="item")
-        location_input = st.text_input("Kur:", key="location")
-        if st.button("Add Entry", key="add"):
-            add_item_to_sheet2(item_input, location_input)
+    location_input = st.text_input("Kur:", key="location")
+    if st.button("Add Entry", key="add"):
+        add_item_to_sheet2(item_input, location_input)
 
-        # Fetch and display data from Google Sheets
-        records = fetch_data_from_sheets()
-        if records:
-            df = pd.DataFrame(records)
-            # Add a selectbox for sorting options
-            sort_option = st.selectbox("Sort by:", df.columns, index=0)
-            sort_ascending = st.checkbox("Ascending Order", value=True)
+    # Fetch and display data from Google Sheets
+    records = fetch_data_from_sheets()
+    if records:
+        df = pd.DataFrame(records)
+        # Add a selectbox for sorting options
+        sort_option = st.selectbox("Sort by:", df.columns, index=0)
+        sort_ascending = st.checkbox("Ascending Order", value=True)
 
 
 
