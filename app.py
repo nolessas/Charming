@@ -347,7 +347,7 @@ def show_dashboard():
                     # Add a delete button for each row
                     if st.button(f"Delete Row {index + 1}", key=f"delete_{index}"):
                         delete_row_from_sheet(index, records) # Call function to delete the row
-                        st.experimental_rerun()
+                        st.rerun()
 
 
 
