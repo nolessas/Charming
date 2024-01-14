@@ -286,9 +286,8 @@ def show_dashboard():
             st.rerun()
 
     elif choose_main == "option2":
-        # Option 2: Placeholder functionality
-        st.title("Placeholder Functionality")
-        # Add functionality for option 2 here
+        st.title("Calendar")
+        display_calendar()
 
 #######################################################################################################################################################
     elif choose_main == "option3":
@@ -341,9 +340,7 @@ def show_dashboard():
 def show_dashboard():
     # ... existing code ...
 
-    if choose_main == "option2":
-        st.title("Calendar")
-        display_calendar()
+
 
 
 def register_client(date, hours, full_name, phone, email, note):
