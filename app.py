@@ -20,7 +20,16 @@ gc = gspread.authorize(credentials)
 
 
 
+def get_sheets_service():
+    # Accessing service account credentials from Streamlit secrets
+    service_account_info = st.secrets["google_oauth"]
 
+    # Creating credentials from the service account info
+    credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES_SHEETS)
+
+    # Authorizing the gspread client with the credentials
+    service = gspread.authorize(credentials)
+    return service
 
 
 
@@ -51,16 +60,11 @@ def main():
 
 
 
-def get_sheets_service():
-    # Accessing service account credentials from Streamlit secrets
-    service_account_info = st.secrets["google_oauth"]
 
-    # Creating credentials from the service account info
-    credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES_SHEETS)
 
-    # Authorizing the gspread client with the credentials
-    service = gspread.authorize(credentials)
-    return service
+
+
+
 
 
 
@@ -85,6 +89,10 @@ def write_to_sheets(data):
 
     except Exception as e:
         st.error(f"Error writing to Google Sheets: {str(e)}")
+
+
+
+
 
 
 
@@ -128,21 +136,6 @@ def manage_todo_list():
         st.rerun()
 
 
-
-
-def add_item_to_sheet2(item, location):
-    service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'  # Replace with your actual spreadsheet ID
-    worksheet_name = 'Sheet2'  # The name of the worksheet where you want to add items
-    
-    try:
-        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        worksheet.append_row([item, location])
-        st.sidebar.success("Item added successfully!")
-    except Exception as e:
-        st.sidebar.error(f"Failed to add item to sheet: {str(e)}")
-
-
 def delete_row_from_sheet(index, records):
     try:
         service = get_sheets_service()
@@ -160,6 +153,26 @@ def delete_row_from_sheet(index, records):
 
     except Exception as e:
         st.sidebar.error(f"Failed to delete row from sheet: {str(e)}")
+
+
+
+
+
+
+def add_item_to_sheet2(item, location):
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'  # Replace with your actual spreadsheet ID
+    worksheet_name = 'Sheet2'  # The name of the worksheet where you want to add items
+    
+    try:
+        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
+        worksheet.append_row([item, location])
+        st.sidebar.success("Item added successfully!")
+    except Exception as e:
+        st.sidebar.error(f"Failed to add item to sheet: {str(e)}")
+
+
+
 
 
 
@@ -255,6 +268,11 @@ def delete_client(index):
 
 
 
+
+
+
+
+
 def show_dashboard():
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: center;} </style>', unsafe_allow_html=True)
     st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
@@ -285,7 +303,22 @@ def show_dashboard():
         # Add functionality for option 2 here
 
     elif choose_main == "option3":
+        # Option 3: Add Item to Sheet2 and Display Data
         st.title("Data from Sheet3")
+        st.write("Reikalingos priemones ir kur jas rasti.")
+
+        item_input = st.text_input("Reikalingos priemones:", key="item")
+        location_input = st.text_input("Kur:", key="location")
+        if st.button("Add Entry", key="add"):
+            add_item_to_sheet2(item_input, location_input)
+
+        # Fetch and display data from Google Sheets
+        records = fetch_data_from_sheets()
+        if records:
+            df = pd.DataFrame(records)
+            # Add a selectbox for sorting options
+            sort_option = st
+
 
 
 
