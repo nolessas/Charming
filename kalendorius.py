@@ -1,8 +1,10 @@
+#kalendorius.py
 import streamlit as st
 import streamlit_calendar as st_calendar
 import pandas as pd
 from google.oauth2 import service_account
 import gspread
+from streamlit_fullcalendar import FullCalendar
 
 
 # Function to get Google Sheets service
@@ -19,19 +21,33 @@ def fetch_client_data_for_calendar():
     df = pd.DataFrame(records)
     df['Date'] = pd.to_datetime(df['Date'])
 
-    # Format data for calendar
     events = []
     for _, row in df.iterrows():
         event = {
-            'start': row['Date'].isoformat(),
-            'end': (row['Date'] + pd.DateOffset(hours=1)).isoformat(),
-            'color': 'blue'  # or any other color
+            'title': f"{row['Full Name']}, {row['Phone Number']}",
+            'start': row['Date'].strftime("%Y-%m-%dT%H:%M:%S"),
+            'end': (row['Date'] + pd.DateOffset(hours=1)).strftime("%Y-%m-%dT%H:%M:%S"),
+            'color': 'blue',
+            'extendedProps': {
+                'Phone': row['Phone Number'],
+                'Email': row['Email'],
+                'Note': row['Note']
+            }
         }
-
         events.append(event)
     return events
+
 
 # Modified display_calendar function to include client data
 def display_calendar():
     event_list = fetch_client_data_for_calendar()
-    st_calendar.calendar(events=event_list)
+    calendar_config = {
+        'initialView': 'dayGridMonth',  # Default view
+        'headerToolbar': {
+            'left': 'prev,next today',
+            'center': 'title',
+            'right': 'dayGridMonth,timeGridWeek,timeGridDay'  # Buttons for different views
+        },
+        'events': event_list
+    }
+    st_fullcalendar(calendar_config=calendar_config)
