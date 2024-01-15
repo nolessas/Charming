@@ -33,18 +33,23 @@ def fetch_client_data_for_calendar():
 
 # Modified display_calendar function to include client data
 def display_calendar():
+    # Modified display_calendar function to include client data
+def display_calendar():
     event_list = fetch_client_data_for_calendar()
 
-    # Displaying the calendar with only the events list
-    st_calendar.calendar(events=event_list)
+    # Using the calendar function with only the events list
+    try:
+        st_calendar.calendar(events=event_list)
+    except TypeError as e:
+        st.error(f"An error occurred with the calendar component: {e}")
 
-    # Simplifying the calendar display to just show the current month
-    today = datetime.today()
-    start_date = today.replace(day=1)
-    end_date = (start_date + pd.DateOffset(months=1)) - timedelta(days=1)
-
-    st_calendar.calendar(
-        events=event_list,
-        start_date=start_date,
-        end_date=end_date
-    )
+        # Simplifying the calendar display to just show the current month
+        today = datetime.today()
+        start_date = today.replace(day=1)
+        end_date = (start_date + pd.DateOffset(months=1)) - timedelta(days=1)
+    
+        st_calendar.calendar(
+            events=event_list,
+            start_date=start_date,
+            end_date=end_date
+        )
