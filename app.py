@@ -295,7 +295,7 @@ def show_dashboard():
         st.write("Reikalingos priemones ir kur jas rasti.")
         # Input fields for adding new entries to Sheet2
         item_input = st.text_input("Item:")
-        location_input = st.slider("Location", min_value=1, max_value=10, value=5)
+        location_input = st.text_input("Location:")
         if st.button("Add Entry"):
             add_item_to_sheet2(item_input, location_input)
         # Fetch data from Google Sheets
@@ -305,9 +305,6 @@ def show_dashboard():
             return
 
         df = pd.DataFrame(records)
-
-        # Convert the "Location" column to numeric data type
-        df["Location"] = pd.to_numeric(df["Location"])
 
         # Add a selectbox for sorting options
         sort_option = st.selectbox("Sort by:", df.columns, index=1)  # Set index to 1 for selecting the second column
@@ -338,29 +335,38 @@ def show_dashboard():
                 # Add a delete button for each row in the fifth column
                 if st.button(f"Delete Row {index + 1}"):
                     delete_row_from_sheet(index, records)  # Call function to delete the row
-                    st.rerun()  # Rerun
+                    st.experimental_rerun()
 
 
 
 
-
-def register_client(date, hours, full_name, phone, email, note):
-    # Add the data to the list
+def register_client(date, start_time, full_name, phone, email, note):
+    # Format the appointment date and time for Google Sheets
+    appointment_start = datetime.combine(date, start_time)
+    
+    # If you want to include end time as well, do the following:
+    # appointment_end = datetime.combine(date, end_time)
+    
+    # Add the data to the list (include end_time if necessary)
     registered_clients.append({
-        "Date": str(datetime.combine(date, hours)),
+        "Date": appointment_start.strftime("%Y-%m-%d %H:%M"),
         "Full Name": full_name,
         "Phone Number": phone,
         "Email": email,
         "Note": note
+        # Include "Appointment End" if you're using an end time
     })
 
-    # Format the data for Google Sheets
-    sheet_data = [str(datetime.combine(date, hours)), full_name, phone, email, note]
+    # Format the data for Google Sheets (include end_time if necessary)
+    sheet_data = [appointment_start.strftime("%Y-%m-%d %H:%M"), full_name, phone, email, note]
 
     # Write data to Google Sheets
     write_to_sheets(sheet_data)
 
     st.success("Client registered successfully!")
+    # Optionally, you can rerun to refresh the state of the app
+    st.experimental_rerun()
+
 
 
 
