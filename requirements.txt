@@ -7,4 +7,4 @@ google-auth-oauthlib
 google-auth-httplib2
 google-api-python-client
 python-dateutil
-streamlit_fullcalendar
+streamlit_calendar
