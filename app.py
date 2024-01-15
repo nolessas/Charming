@@ -6,7 +6,7 @@ from datetime import time, datetime
 import gspread
 from google.oauth2 import service_account
 import pandas as pd
-from kalendorius import display_calendar
+from kalendorius import display_calendar, streamlit_fullcalendar
 
 
 
@@ -316,7 +316,7 @@ def show_dashboard():
             df = pd.DataFrame(records)
 
             # Checkbox for sorting order
-            sort_ascending = st.checkbox("Neru", value=False)  # Set to True for ascending order
+            sort_ascending = st.checkbox("Rušiavimas", value=False)  # Set to True for ascending order
 
             # Sort the DataFrame based on the second column (numbers)
             df = df.sort_values(by=[df.columns[1]], ascending=[sort_ascending])
