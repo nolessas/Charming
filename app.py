@@ -270,10 +270,10 @@ def show_dashboard():
         # Input fields for registration
         date_input = st.date_input("Date:")
 
-        # New slider for time selection
+                # With this
         hours_input = st.slider(
-            "Select Time Range:",
-            value=(time(8, 0), time(17, 0)),  # Default values, adjust as needed
+            "Select Time:",
+            value=time(8, 0),  # Default value, adjust as needed
             format="HH:mm"  # Display format for the slider
         )
         st.write("Selected Time Range:", hours_input)
@@ -349,8 +349,9 @@ def show_dashboard():
 
 def register_client(date, hours, full_name, phone, email, note):
     # Add the data to the list
+    start_time = hours[0]
     registered_clients.append({
-        "Date": str(datetime.combine(date, hours)),
+        "Date": str(datetime.combine(date, hours_input)),
         "Full Name": full_name,
         "Phone Number": phone,
         "Email": email,
