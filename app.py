@@ -327,11 +327,11 @@ def show_dashboard():
                 # Create columns for layout
                 col1, col2, col3, col4, col5 = st.columns(5)  # Create columns for layout
                 with col1:
-                    if len(row) > 0:
-                        st.write(row[0])  # Display the first column of the row
-                with col2:
                     if len(row) > 1:
-                        st.write(row[1])  # Display the second column of the row
+                        st.write(row[1])  # Display the first column of the row
+                with col2:
+                    if len(row) > 0:
+                        st.write(row[0])  # Display the second column of the row
                 with col3:
                     if len(row) > 2:
                         st.write(row[2])  # Display the third column of the row
