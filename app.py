@@ -310,7 +310,7 @@ def show_dashboard():
             df = pd.DataFrame(records)
 
             # Add a selectbox for sorting options
-            sort_option = st.selectbox("Sort by:", df.columns, index=0)  # Set index to 1 for selecting the second column
+            sort_option = st.selectbox("Sort by:", df.columns, index=1)  # Set index to 1 for selecting the second column
 
             # Checkbox for sorting order
             sort_ascending = st.checkbox("Sort Ascending", value=True)
@@ -328,10 +328,10 @@ def show_dashboard():
                 col1, col2, col3, col4, col5 = st.columns(5)  # Create columns for layout
                 with col1:
                     if len(row) > 0:
-                        st.write(row[1])  # Display the first column of the row
+                        st.write(row[0])  # Display the first column of the row
                 with col2:
                     if len(row) > 1:
-                        st.write(row[0])  # Display the second column of the row
+                        st.write(row[1])  # Display the second column of the row
                 with col3:
                     if len(row) > 2:
                         st.write(row[2])  # Display the third column of the row
