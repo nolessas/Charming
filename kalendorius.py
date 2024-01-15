@@ -32,15 +32,6 @@ def fetch_client_data_for_calendar():
     return events
 
 
-# Modified display_calendar function to include client data
-# kalendorius.py
-import streamlit as st
-import streamlit_calendar as st_calendar
-import pandas as pd
-from google.oauth2 import service_account
-import gspread
-from datetime import datetime
-
 # [Other functions unchanged]
 
 # Modified display_calendar function to include client data
