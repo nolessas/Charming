@@ -296,7 +296,7 @@ def show_dashboard():
         
         # Input fields for adding new entries to Sheet2
         item_input = st.text_input("Item:")
-        location_input = st.text_input("Location:")
+        location_input = st.slider("Location:")
         
         if st.button("Add Entry"):
             add_item_to_sheet2(item_input, location_input)
