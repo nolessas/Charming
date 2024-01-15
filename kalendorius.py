@@ -51,11 +51,11 @@ def display_calendar():
     else:  # Month
         start_date = today.replace(day=1)
         end_date = start_date + pd.DateOffset(months=timedelta(days=1)
-        st_calendar.calendar(
+    st_calendar.calendar(
         events=event_list,
         start_date=start_date,
         end_date=end_date
-        )
+    )
 
 
 
