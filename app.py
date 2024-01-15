@@ -19,20 +19,7 @@ def local_css(file_name):
 # Inject CSS at the beginning of your app
 local_css('style.css')
 
-/* Ensure full width of the calendar */
-.streamlit-calendar {
-  width: 100% !important;
-}
 
-/* Responsive calendar cells */
-.streamlit-calendar .cell {
-  flex-grow: 1;
-  flex-basis: 0;
-}
-
-/* Ensure the calendar's internal table is also responsive */
-.streamlit-calendar table {
-  width: 100% !important;
 }
 
 calendar_options = {
