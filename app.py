@@ -266,14 +266,19 @@ def show_dashboard():
     choose_main = st.radio("", ("option1", "option2", "option3"))
 
     if choose_main == "option1":
-        # Option 1: Show Registered Clients and Register New Client
-        st.title("")
-        show_registered_clients()
-
         st.title("Register New Client")
         # Input fields for registration
         date_input = st.date_input("Date:")
-        hours_input = st.time_input("Time:")
+
+        # New slider for time selection
+        hours_input = st.slider(
+            "Select Time Range:",
+            value=(time(8, 0), time(17, 0)),  # Default values, adjust as needed
+            format="HH:mm"  # Display format for the slider
+        )
+        st.write("Selected Time Range:", hours_input)
+
+        # Rest of the input fields
         full_name_input = st.text_input("Full Name:")
         phone_input = st.text_input("Phone Number:")
         email_input = st.text_input("Email:")
