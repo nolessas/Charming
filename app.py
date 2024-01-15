@@ -343,12 +343,9 @@ def show_dashboard():
 
 
 def register_client(date, hours, full_name, phone, email, note):
-    # Combine the selected date and time into a single datetime object
-    appointment_datetime = datetime.combine(date, hours)
-
     # Add the data to the list
     registered_clients.append({
-        "Date": str(appointment_datetime),
+        "Date": str(datetime.combine(date, hours)),
         "Full Name": full_name,
         "Phone Number": phone,
         "Email": email,
@@ -356,17 +353,12 @@ def register_client(date, hours, full_name, phone, email, note):
     })
 
     # Format the data for Google Sheets
-    sheet_data = [str(appointment_datetime), full_name, phone, email, note]
+    sheet_data = [str(datetime.combine(date, hours)), full_name, phone, email, note]
 
     # Write data to Google Sheets
     write_to_sheets(sheet_data)
 
     st.success("Client registered successfully!")
-
-# ... (rest of your code)
-
-date_input = st.date_input("Date:")
-hours_input = st.time_input("Time:")
 
 
 
