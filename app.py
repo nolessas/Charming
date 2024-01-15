@@ -297,6 +297,7 @@ def show_dashboard():
         location_input = st.slider("1-100:")
         item_input = st.text_input("A thing:")
         
+        
         if st.button("Add Entry"):
             add_item_to_sheet2(item_input, location_input)
         
@@ -308,29 +309,41 @@ def show_dashboard():
         else:
             df = pd.DataFrame(records)
 
-            # Display two columns: Checkbox and Data
-            col1, col2 = st.columns(2)  # Create two columns for layout
+            # Add a selectbox for sorting options
+            sort_option = st.selectbox("Sort by:", df.columns, index=0)  # Set index to 1 for selecting the second column
+
+            # Checkbox for sorting order
+            sort_ascending = st.checkbox("Sort Ascending", value=True)
             
-            # Checkbox for moving to the second column
-            to_move = []
-            with col1:
-                for index, row in df.iterrows():
-                    checkbox = st.checkbox(f"Move to Second Column {index + 1}")
-                    if checkbox:
-                        to_move.append(row)
-            
-            # Display data in the second column
-            with col2:
-                for row in to_move:
-                    st.write(row)
-            
-            # Delete rows from the original DataFrame based on checkboxes
-            for index in reversed(range(len(df))):
-                if index < len(df) and df.iloc[index].tolist() in to_move:
-                    df = df.drop(index)
-            
-            # Update Google Sheets with the modified DataFrame
-            update_google_sheets(df)
+            try:
+                # Convert the selected column to strings before sorting
+                df[sort_option] = df[sort_option].astype(str)
+                df = df.sort_values(by=[sort_option], ascending=[sort_ascending])
+            except Exception as e:
+                st.error(f"Error sorting DataFrame: {str(e)}")
+
+            # Display the data frame as a list with a delete button for each row
+            for index, row in df.iterrows():
+                # Create columns for layout
+                col1, col2, col3, col4, col5 = st.columns(5)  # Create columns for layout
+                with col1:
+                    if len(row) > 0:
+                        st.write(row[0])  # Display the first column of the row
+                with col2:
+                    if len(row) > 1:
+                        st.write(row[1])  # Display the second column of the row
+                with col3:
+                    if len(row) > 2:
+                        st.write(row[2])  # Display the third column of the row
+                with col4:
+                    if len(row) > 3:
+                        st.write(row[3])  # Display the fourth column of the row
+                with col5:
+                    # Add a delete button for each row in the fifth column
+                    if st.button(f"Delete Row {index + 1}"):
+                        delete_row_from_sheet(index, records)  # Call function to delete the row
+                        st.rerun()  # Rerun
+
 
 
 
