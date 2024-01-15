@@ -153,10 +153,10 @@ def add_item_to_sheet2(item, location):
     worksheet_name = 'Sheet2'
     try:
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        worksheet.append_row([item, location])
-        st.success("Item added successfully!")
+        worksheet.clear()  # Clear the worksheet
+        worksheet.update([dataframe.columns.values.tolist()] + dataframe.values.tolist())  # Update with the modified data
     except Exception as e:
-        st.error(f"Failed to add item to sheet: {str(e)}")
+        st.error(f"Failed to update Google Sheets: {str(e)}")
 
 
 
@@ -297,7 +297,6 @@ def show_dashboard():
         location_input = st.slider("1-100:")
         item_input = st.text_input("A thing:")
         
-        
         if st.button("Add Entry"):
             add_item_to_sheet2(item_input, location_input)
         
@@ -309,41 +308,36 @@ def show_dashboard():
         else:
             df = pd.DataFrame(records)
 
-            # Add a selectbox for sorting options
-            sort_option = st.selectbox("Sort by:", df.columns, index=0)  # Set index to 1 for selecting the second column
-
             # Checkbox for sorting order
             sort_ascending = st.checkbox("Sort Ascending", value=True)
+
+            # Display two columns: Checkbox and Data
+            col1, col2 = st.columns(2)  # Create two columns for layout
             
-            try:
-                # Convert the selected column to strings before sorting
-                df[sort_option] = df[sort_option].astype(str)
-                df = df.sort_values(by=[sort_option], ascending=[sort_ascending])
-            except Exception as e:
-                st.error(f"Error sorting DataFrame: {str(e)}")
+            # Checkbox for moving to the second column
+            to_move = []
+            with col1:
+                for index, row in df.iterrows():
+                    checkbox = st.checkbox(f"Move to Second Column {index + 1}")
+                    if checkbox:
+                        to_move.append(row)
+            
+            # Sort the DataFrame based on the checkbox
+            if sort_ascending:
+                df = pd.concat([pd.DataFrame(to_move), df]).reset_index(drop=True)
+            else:
+                df = pd.concat([df, pd.DataFrame(to_move)]).reset_index(drop=True)
+            
+            # Display data in the second column
+            with col2:
+                for index, row in df.iterrows():
+                    st.write(row)
 
-            # Display the data frame as a list with a delete button for each row
-            for index, row in df.iterrows():
-                # Create columns for layout
-                col1, col2, col3, col4, col5 = st.columns(5)  # Create columns for layout
-                with col1:
-                    if len(row) > 0:
-                        st.write(row[0])  # Display the first column of the row
-                with col2:
-                    if len(row) > 1:
-                        st.write(row[1])  # Display the second column of the row
-                with col3:
-                    if len(row) > 2:
-                        st.write(row[2])  # Display the third column of the row
-                with col4:
-                    if len(row) > 3:
-                        st.write(row[3])  # Display the fourth column of the row
-                with col5:
-                    # Add a delete button for each row in the fifth column
-                    if st.button(f"Delete Row {index + 1}"):
-                        delete_row_from_sheet(index, records)  # Call function to delete the row
-                        st.rerun()  # Rerun
+            # Delete rows from the original DataFrame based on checkboxes
+            df = df[df.index.isin(to_move.index) == False]
 
+            # Update Google Sheets with the modified DataFrame
+            add_item_to_sheet2(df)
 
 
 
