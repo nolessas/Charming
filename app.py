@@ -310,7 +310,7 @@ def show_dashboard():
             df = pd.DataFrame(records)
 
             # Checkbox for sorting order
-            sort_ascending = st.checkbox("Sort Ascending", value=True)  # Set to True for ascending order
+            sort_ascending = st.checkbox("Sort Ascending", value=False)  # Set to True for ascending order
 
             # Sort the DataFrame based on the second column (numbers)
             df = df.sort_values(by=[df.columns[1]], ascending=[sort_ascending])
