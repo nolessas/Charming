@@ -293,14 +293,26 @@ def show_dashboard():
     elif choose_main == "option3":
         st.title("Data from Sheet3")
         st.write("Reikalingos priemones ir kur jas rasti.")
+
         # Input fields for adding new entries to Sheet2
         item_input = st.text_input("Item:")
+
+        # Define the time range for the slider
+        start_time = time(7, 00)
+        end_time = time(23, 45)
+
+        # Slider for selecting a time range
         location_input = st.slider(
             "Schedule your appointment:",
-            value=(time(07, 00), time(23, 45)))
-        st.write("You're scheduled for:", appointment)
+            value=(start_time, end_time))
+
+        # Display the scheduled time
+        st.write("You're scheduled for:", location_input)
+
+        # Button to add an entry
         if st.button("Add Entry"):
             add_item_to_sheet2(item_input, location_input)
+
         # Fetch data from Google Sheets
         records = fetch_data_from_sheets()
 
