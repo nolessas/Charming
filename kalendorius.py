@@ -4,7 +4,8 @@ import streamlit_calendar as st_calendar
 import pandas as pd
 from google.oauth2 import service_account
 import gspread
-from datetime import datetime, timedelta
+from datetime import datetime
+
 
 # Function to get Google Sheets service
 def get_sheets_service():
@@ -40,19 +41,19 @@ def display_calendar():
     selected_date = st.date_input("Select Date", datetime.today())
 
     # Convert selected_date to a pandas Timestamp for consistent comparison
-    selected_date = pd.Timestamp(selected_date)
+    selected_date_ts = pd.Timestamp(selected_date)
 
     # Filter events based on the selected view
     if view == "Day":
-        filtered_events = [event for event in event_list if pd.to_datetime(event['start']).date() == selected_date.date()]
+        filtered_events = [event for event in event_list if pd.to_datetime(event['start']).date() == selected_date_ts.date()]
     elif view == "Week":
-        week_start = selected_date - pd.DateOffset(days=selected_date.weekday())
+        week_start = selected_date_ts - pd.DateOffset(days=selected_date_ts.weekday())
         week_end = week_start + pd.DateOffset(days=7)
-        filtered_events = [event for event in event_list if week_start <= pd.to_datetime(event['start']).date() < week_end]
+        filtered_events = [event for event in event_list if week_start <= pd.to_datetime(event['start']) < week_end]
     else:  # Month view
-        month_start = selected_date.replace(day=1)
+        month_start = selected_date_ts.replace(day=1)
         month_end = month_start + pd.DateOffset(months=1)
-        filtered_events = [event for event in event_list if month_start <= pd.to_datetime(event['start']).date() < month_end]
+        filtered_events = [event for event in event_list if month_start <= pd.to_datetime(event['start']) < month_end]
 
     # Display the calendar with the filtered events list
     st_calendar.calendar(events=filtered_events)
