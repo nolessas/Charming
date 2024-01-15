@@ -21,8 +21,8 @@ def show_login():
         if check_password(username, password, desired_username, desired_password):
             st.success("Login successful!")
             set_user_logged_in(True)
-            st.balloons()
             st.experimental_rerun()
+            st.balloons()
 
         else:
             st.error("Invalid username or password")
