@@ -31,15 +31,10 @@ def fetch_client_data_for_calendar():
         events.append(event)
     return events
 
+
 # Modified display_calendar function to include client data
 def display_calendar():
     event_list = fetch_client_data_for_calendar()
-
-    # Using the calendar function with only the events list
-    try:
-        st_calendar.calendar(events=event_list)
-    except TypeError as e:
-        st.error(f"An error occurred with the calendar component: {e}")
 
     # Simplifying the calendar display to just show the current month
     today = datetime.today()
