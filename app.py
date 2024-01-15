@@ -20,7 +20,6 @@ def local_css(file_name):
 local_css('style.css')
 
 
-}
 
 calendar_options = {
     "editable": True,
