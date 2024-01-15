@@ -19,16 +19,7 @@ def local_css(file_name):
 # Inject CSS at the beginning of your app
 local_css('style.css')
 
-def render_calendar():
-    # Render the calendar component and store the user's interaction result
-    result = calendar(events=calendar_events, options=calendar_options, custom_css=custom_css)
-    
-    # If the calendar interaction returns a value, display it
-    if result:
-        st.json(result)
 
-# Call the function to render the calendar
-render_calendar()
 
 calendar_options = {
     "editable": True,
@@ -80,7 +71,16 @@ custom_css = """
 }
 """
 
+def render_calendar():
+    # Render the calendar component and store the user's interaction result
+    result = calendar(events=calendar_events, options=calendar_options, custom_css=custom_css)
+    
+    # If the calendar interaction returns a value, display it
+    if result:
+        st.json(result)
 
+# Call the function to render the calendar
+render_calendar()
 
 
 
