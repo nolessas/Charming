@@ -4,7 +4,7 @@ import streamlit_calendar as st_calendar
 import pandas as pd
 from google.oauth2 import service_account
 import gspread
-
+from datetime import datetime, timedelta
 
 # Function to get Google Sheets service
 def get_sheets_service():
@@ -28,11 +28,40 @@ def fetch_client_data_for_calendar():
             'end': (row['Date'] + pd.DateOffset(hours=1)).isoformat(),
             'color': 'blue'  # or any other color
         }
-
         events.append(event)
     return events
 
 # Modified display_calendar function to include client data
 def display_calendar():
+    view_options = ["Day", "Week", "Month"]
+    selected_view = st.radio("Choose Calendar View", view_options)
+    
     event_list = fetch_client_data_for_calendar()
-    st_calendar.calendar(events=event_list)
+
+    # Get today's date
+    today = datetime.today()
+
+    # Adjust calendar view based on selection
+    if selected_view == "Day":
+        start_date = today
+        end_date = today + timedelta(days=1)
+    elif selected_view == "Week":
+        start_date = today - timedelta(days=today.weekday())
+        end_date = start_date + timedelta(days=7)
+    else:  # Month
+        start_date = today.replace(day=1)
+        end_date = start_date + pd.DateOffset(months=timedelta(days=1)
+        st_calendar.calendar(
+        events=event_list,
+        start_date=start_date,
+        end_date=end_date
+        )
+
+
+
+
+
+
+
+
+                                              
