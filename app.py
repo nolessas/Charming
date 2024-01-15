@@ -310,10 +310,10 @@ def show_dashboard():
             df = pd.DataFrame(records)
 
             # Checkbox for sorting order
-            sort_ascending = st.checkbox("Sort Ascending", value=False)  # Set to False for descending order
+            sort_ascending = st.checkbox("Sort Ascending", value=True)  # Set to True for ascending order
 
-            # Sort the DataFrame based on the first column (location) in descending order
-            df = df.sort_values(by=[df.columns[0]], ascending=[sort_ascending])
+            # Sort the DataFrame based on the second column (numbers)
+            df = df.sort_values(by=[df.columns[1]], ascending=[sort_ascending])
 
             # Display the data frame as a list with a delete button for each row
             for index, row in df.iterrows():
