@@ -311,9 +311,11 @@ def show_dashboard():
 
         # Checkbox for sorting order
         sort_ascending = st.checkbox("Rušiavimas", value=True)
-
-        # Sort the DataFrame based on the selected column
+    try:
         df = df.sort_values(by=[sort_option], ascending=[sort_ascending])
+    except Exception as e:
+        st.error(f"Error sorting DataFrame: {str(e)}")
+
 
         # Display the data frame as a list with a delete button for each row
         for index, row in df.iterrows():
