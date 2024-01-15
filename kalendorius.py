@@ -35,6 +35,9 @@ def fetch_client_data_for_calendar():
 def display_calendar():
     event_list = fetch_client_data_for_calendar()
 
+    # Displaying the calendar with only the events list
+    st_calendar.calendar(events=event_list)
+
     # Simplifying the calendar display to just show the current month
     today = datetime.today()
     start_date = today.replace(day=1)
