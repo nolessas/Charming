@@ -2,7 +2,7 @@
 import os
 import streamlit as st
 from authentication import is_user_logged_in, show_login, set_user_logged_in
-from datetime import datetime
+from datetime import time, datetime
 import gspread
 from google.oauth2 import service_account
 import pandas as pd
@@ -273,10 +273,7 @@ def show_dashboard():
         st.title("Register New Client")
         # Input fields for registration
         date_input = st.date_input("Date:")
-        hours_input = st.slider(
-    "Schedule your appointment:",
-    value=(time(7, 0), time(23, 45)))
-        st.write("You're scheduled for:", appointment)
+        hours_input = st.time_input("Time:")
         full_name_input = st.text_input("Full Name:")
         phone_input = st.text_input("Phone Number:")
         email_input = st.text_input("Email:")
@@ -313,7 +310,7 @@ def show_dashboard():
             df = pd.DataFrame(records)
 
             # Checkbox for sorting order
-            sort_ascending = st.checkbox("Nerušiuoti", value=False)  # Set to True for ascending order
+            sort_ascending = st.checkbox("Neru", value=False)  # Set to True for ascending order
 
             # Sort the DataFrame based on the second column (numbers)
             df = df.sort_values(by=[df.columns[1]], ascending=[sort_ascending])
