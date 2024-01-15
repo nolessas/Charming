@@ -295,7 +295,10 @@ def show_dashboard():
         st.write("Reikalingos priemones ir kur jas rasti.")
         # Input fields for adding new entries to Sheet2
         item_input = st.text_input("Item:")
-        location_input = st.text_input("Location:")
+        location_input = st.slider(
+            "Schedule your appointment:",
+            value=(time(07, 00), time(23, 30)))
+            st.write("You're scheduled for:", appointment)
         if st.button("Add Entry"):
             add_item_to_sheet2(item_input, location_input)
         # Fetch data from Google Sheets
