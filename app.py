@@ -316,6 +316,8 @@ def show_dashboard():
             sort_ascending = st.checkbox("Sort Ascending", value=True)
             
             try:
+                # Convert the selected column to strings before sorting
+                df[sort_option] = df[sort_option].astype(str)
                 df = df.sort_values(by=[sort_option], ascending=[sort_ascending])
             except Exception as e:
                 st.error(f"Error sorting DataFrame: {str(e)}")
@@ -341,6 +343,7 @@ def show_dashboard():
                     if st.button(f"Delete Row {index + 1}"):
                         delete_row_from_sheet(index, records)  # Call function to delete the row
                         st.rerun()  # Rerun
+
 
 
 
