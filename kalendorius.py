@@ -47,14 +47,17 @@ def display_calendar():
         end_date = start_date + timedelta(days=7)
     else:  # Month
         start_date = today.replace(day=1)
-        end_date = (start_date + pd.DateOffset(months=1)) - timedelta(days=1)
+        end_date = start_date + pd.DateOffset(months=1) - timedelta(days=1)
+
+    # Ensure start_date and end_date are datetime objects
+    start_date = pd.to_datetime(start_date).to_pydatetime()
+    end_date = pd.to_datetime(end_date).to_pydatetime()
 
     st_calendar.calendar(
         events=event_list,
         start_date=start_date,
         end_date=end_date
     )
-
 
 
 
