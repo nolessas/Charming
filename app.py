@@ -138,9 +138,9 @@ def delete_row_from_sheet(index, records):
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
         worksheet.delete_rows(index + 2)  # Adjust for header row and 1-indexing
         del records[index]
-        st.sidebar.success("Selected rows deleted successfully!")
+        st.success("Selected rows deleted successfully!")
     except Exception as e:
-        st.sidebar.error(f"Failed to delete row from sheet: {str(e)}")
+        st.error(f"Failed to delete row from sheet: {str(e)}")
 
 
 
@@ -154,9 +154,9 @@ def add_item_to_sheet2(item, location):
     try:
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
         worksheet.append_row([item, location])
-        st.sidebar.success("Item added successfully!")
+        st.success("Item added successfully!")
     except Exception as e:
-        st.sidebar.error(f"Failed to add item to sheet: {str(e)}")
+        st.error(f"Failed to add item to sheet: {str(e)}")
 
 
 
