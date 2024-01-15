@@ -33,32 +33,23 @@ def fetch_client_data_for_calendar():
 
 
 # Modified display_calendar function to include client data
+# kalendorius.py
+import streamlit as st
+import streamlit_calendar as st_calendar
+import pandas as pd
+from google.oauth2 import service_account
+import gspread
+from datetime import datetime
+
+# [Other functions unchanged]
+
+# Modified display_calendar function to include client data
 def display_calendar():
-    view_options = ["Day", "Week", "Month"]
-    selected_view = st.radio("Choose Calendar View", view_options)
-    
     event_list = fetch_client_data_for_calendar()
-    today = datetime.now()
 
-    if selected_view == "Day":
-        start_date = today
-        end_date = today + timedelta(days=1)
-    elif selected_view == "Week":
-        start_date = today - timedelta(days=today.weekday())
-        end_date = start_date + timedelta(days=7)
-    else:  # Month
-        start_date = today.replace(day=1)
-        end_date = start_date.replace(day=28) + timedelta(days=4)  # This ensures covering the end of the month
+    # Displaying the calendar with only the events list
+    st_calendar.calendar(events=event_list)
 
-    # Ensure dates are formatted as strings for st_calendar
-    start_date_str = start_date.strftime('%Y-%m-%d')
-    end_date_str = end_date.strftime('%Y-%m-%d')
-
-    st_calendar.calendar(
-        events=event_list,
-        start_date=start_date,
-        end_date=end_date
-    )
 
 
                                               
