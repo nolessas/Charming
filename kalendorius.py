@@ -1,4 +1,4 @@
-#kalendorius.py
+# kalendorius.py
 import streamlit as st
 import streamlit_calendar as st_calendar
 import pandas as pd
@@ -39,12 +39,15 @@ def display_calendar():
     view = st.selectbox("Select View", ["Month", "Week", "Day"])
     selected_date = st.date_input("Select Date", datetime.today())
 
+    # Convert selected_date to a pandas Timestamp for consistent comparison
+    selected_date = pd.Timestamp(selected_date)
+
     # Filter events based on the selected view
     if view == "Day":
-        filtered_events = [event for event in event_list if pd.to_datetime(event['start']).date() == selected_date]
+        filtered_events = [event for event in event_list if pd.to_datetime(event['start']).date() == selected_date.date()]
     elif view == "Week":
-        week_start = selected_date - timedelta(days=selected_date.weekday())
-        week_end = week_start + timedelta(days=7)
+        week_start = selected_date - pd.DateOffset(days=selected_date.weekday())
+        week_end = week_start + pd.DateOffset(days=7)
         filtered_events = [event for event in event_list if week_start <= pd.to_datetime(event['start']).date() < week_end]
     else:  # Month view
         month_start = selected_date.replace(day=1)
