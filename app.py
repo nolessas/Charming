@@ -348,10 +348,12 @@ def show_dashboard():
 
 
 def register_client(date, hours, full_name, phone, email, note):
+    # Format the datetime correctly
+    combined_datetime = str(datetime.combine(date, hours))  # date and hours are used directly
+
     # Add the data to the list
-    start_time = hours[0]
     registered_clients.append({
-        "Date": str(datetime.combine(date, hours_input)),
+        "Date": combined_datetime,
         "Full Name": full_name,
         "Phone Number": phone,
         "Email": email,
@@ -359,7 +361,7 @@ def register_client(date, hours, full_name, phone, email, note):
     })
 
     # Format the data for Google Sheets
-    sheet_data = [str(datetime.combine(date, hours)), full_name, phone, email, note]
+    sheet_data = [combined_datetime, full_name, phone, email, note]
 
     # Write data to Google Sheets
     write_to_sheets(sheet_data)
