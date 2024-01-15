@@ -294,9 +294,9 @@ def show_dashboard():
         st.title("ToDo")
         st.write("")
         
-        # Input fields for adding new entries to Sheet2
-        item_input = st.text_input("A thing:")
         location_input = st.slider("1-100:")
+        item_input = st.text_input("A thing:")
+        
         
         if st.button("Add Entry"):
             add_item_to_sheet2(item_input, location_input)
