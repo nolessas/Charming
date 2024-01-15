@@ -153,11 +153,12 @@ def add_item_to_sheet2(item, location):
     worksheet_name = 'Sheet2'
     try:
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        # Append the new data row. Location is now an integer from the slider
         worksheet.append_row([item, location])
         st.sidebar.success("Item added successfully!")
     except Exception as e:
         st.sidebar.error(f"Failed to add item to sheet: {str(e)}")
+
+
 
 
 
@@ -292,19 +293,15 @@ def show_dashboard():
     elif choose_main == "option3":
         st.title("Data from Sheet3")
         st.write("Reikalingos priemones ir kur jas rasti.")
-        
         # Input fields for adding new entries to Sheet2
         item_input = st.text_input("Item:")
-        location_input = st.slider("Location", min_value=1, max_value=10, value=5)  # Using a slider for location input
-        
+        location_input = st.text_input("Location:")
         if st.button("Add Entry"):
-            add_item_to_sheet2(item_input, location_input)  # Pass the numerical value from the slider
-        
+            add_item_to_sheet2(item_input, location_input)
         # Fetch data from Google Sheets
         records = fetch_data_from_sheets()
 
         if not records:
-            st.write("No records found.")
             return
 
         df = pd.DataFrame(records)
@@ -313,27 +310,32 @@ def show_dashboard():
         sort_option = st.selectbox("Sort by:", df.columns, index=1)  # Set index to 1 for selecting the second column
 
         # Checkbox for sorting order
-        sort_ascending = st.checkbox("Ascending Order", value=True)
+        sort_ascending = st.checkbox("Rušiavimas", value=True)
+
+        # Sort the DataFrame based on the selected column
         df = df.sort_values(by=[sort_option], ascending=[sort_ascending])
 
         # Display the data frame as a list with a delete button for each row
         for index, row in df.iterrows():
             # Create columns for layout
-            col1, col2, col3, col4, col5 = st.columns(5)
+            col1, col2, col3, col4, col5 = st.columns(5)  # Create columns for layout
             with col1:
-                st.write(row[0])  # Display the first column of the row
+                if len(row) > 0:
+                    st.write(row[0])  # Display the first column of the row
             with col2:
-                st.write(row[1])  # Display the second column of the row
+                if len(row) > 1:
+                    st.write(row[1])  # Display the second column of the row
             with col3:
-                st.write(row[2])  # Display the third column of the row
+                if len(row) > 2:
+                    st.write(row[2])  # Display the third column of the row
             with col4:
-                st.write(row[3])  # Display the fourth column of the row
+                if len(row) > 3:
+                    st.write(row[3])  # Display the fourth column of the row
             with col5:
                 # Add a delete button for each row in the fifth column
-                if st.button(f"Delete Row {index + 1}", key=f"delete_{index}"):
-                    delete_row_from_sheet(index + 2, records)  # Adjust the index for header row and 1-indexing in Google Sheets
-                    st.experimental_rerun()  # Rerun the app to refresh the data display after deletion
-
+                if st.button(f"Delete Row {index + 1}"):
+                    delete_row_from_sheet(index, records)  # Call function to delete the row
+                    st.experimental_rerun()
 
 
 
