@@ -1,0 +1,17 @@
+/* Ensure full width of the calendar */
+.streamlit-calendar {
+  width: 100% !important;
+}
+
+/* Responsive calendar cells */
+.streamlit-calendar .cell {
+  flex-grow: 1;
+  flex-basis: 0;
+}
+
+/* Ensure the calendar's internal table is also responsive */
+.streamlit-calendar table {
+  width: 100% !important;
+}
+
+/* Add any additional styles you need here */
