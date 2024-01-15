@@ -10,6 +10,7 @@ from kalendorius import display_calendar
 
 
 
+
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
