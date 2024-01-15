@@ -6,7 +6,7 @@ from datetime import datetime
 import gspread
 from google.oauth2 import service_account
 import pandas as pd
-
+from kalendorius import display_calendar
 
 
 
@@ -286,9 +286,8 @@ def show_dashboard():
             st.rerun()
 
     elif choose_main == "option2":
-        # Option 2: Placeholder functionality
-        st.title("Placeholder Functionality")
-        # Add functionality for option 2 here
+        st.title("Calendar")
+        display_calendar()
 
 #######################################################################################################################################################
     elif choose_main == "option3":
@@ -337,6 +336,7 @@ def show_dashboard():
                 if st.button(f"Delete Row {index + 1}"):
                     delete_row_from_sheet(index, records)  # Call function to delete the row
                     st.rerun()  # Rerun
+
 
 
 
