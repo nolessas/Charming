@@ -6,11 +6,10 @@ from datetime import time, datetime
 import gspread
 from google.oauth2 import service_account
 import pandas as pd
-from kalendorius import display_calendar, fetch_client_data_for_calendar
+from kalendorius import display_calendar
 import streamlit as st
 from pathlib import Path
 from streamlit_calendar import calendar
-
 
 # Function to read CSS and inject it into the Streamlit app
 def local_css(file_name):
@@ -19,8 +18,6 @@ def local_css(file_name):
 
 # Inject CSS at the beginning of your app
 local_css('style.css')
-
-
 
 calendar_options = {
     "editable": True,
@@ -71,9 +68,16 @@ custom_css = """
     font-size: 2rem;
 }
 """
+def render_calendar():
+    # Render the calendar component and store the user's interaction result
+    result = calendar(events=calendar_events, options=calendar_options, custom_css=custom_css)
+    
+    # If the calendar interaction returns a value, display it
+    if result:
+        st.json(result)
 
-
-
+# Call the function to render the calendar
+render_calendar()
 
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
