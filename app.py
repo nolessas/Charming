@@ -266,6 +266,7 @@ def show_dashboard():
     choose_main = st.radio("", ("option1", "option2", "option3"))
 
     if choose_main == "option1":
+        show_registered_clients()
         st.title("Register New Client")
         # Input fields for registration
         date_input = st.date_input("Date:")
@@ -342,7 +343,8 @@ def show_dashboard():
                         delete_row_from_sheet(index, records)  # Call function to delete the row
                         st.rerun()  # Rerun
 
-
+    elif choose_main == "option4":
+        st.title("DoDo")
 
 
 
