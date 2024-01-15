@@ -306,6 +306,9 @@ def show_dashboard():
 
         df = pd.DataFrame(records)
 
+        # Convert the "Location" column to numeric data type
+        df["Location"] = pd.to_numeric(df["Location"])
+
         # Add a selectbox for sorting options
         sort_option = st.selectbox("Sort by:", df.columns, index=1)  # Set index to 1 for selecting the second column
 
@@ -336,6 +339,7 @@ def show_dashboard():
                 if st.button(f"Delete Row {index + 1}"):
                     delete_row_from_sheet(index, records)  # Call function to delete the row
                     st.rerun()  # Rerun
+
 
 
 
