@@ -275,7 +275,7 @@ def show_dashboard():
         date_input = st.date_input("Date:")
         hours_input = st.slider(
             "Schedule your appointment:",
-            value=(time(07, 00), time(23, 45)))
+    value=(time(7, 0), time(23, 45)))
         st.write("You're scheduled for:", appointment)
         full_name_input = st.text_input("Full Name:")
         phone_input = st.text_input("Phone Number:")
