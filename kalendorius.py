@@ -34,6 +34,21 @@ def fetch_client_data_for_calendar():
     return events
 
 
+
+
+def render_calendar():
+    # Render the calendar component and store the user's interaction result
+    result = calendar(events=calendar_events, options=calendar_options, custom_css=custom_css)
+    
+    # If the calendar interaction returns a value, display it
+    if result:
+        st.json(result)
+
+# Call the function to render the calendar
+render_calendar()
+
+
+
 def display_calendar():
     event_list = fetch_client_data_for_calendar()
 
