@@ -274,7 +274,7 @@ def show_dashboard():
         # Input fields for registration
         date_input = st.date_input("Date:")
         hours_input = st.slider(
-            "Schedule your appointment:",
+    "Schedule your appointment:",
     value=(time(7, 0), time(23, 45)))
         st.write("You're scheduled for:", appointment)
         full_name_input = st.text_input("Full Name:")
