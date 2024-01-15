@@ -309,29 +309,22 @@ def show_dashboard():
         else:
             df = pd.DataFrame(records)
 
-            # Add a selectbox for sorting options
-            sort_option = st.selectbox("Sort by:", df.columns, index=1)  # Set index to 1 for selecting the second column
-
             # Checkbox for sorting order
-            sort_ascending = st.checkbox("Sort Ascending", value=True)
-            
-            try:
-                # Convert the selected column to strings before sorting
-                df[sort_option] = df[sort_option].astype(str)
-                df = df.sort_values(by=[sort_option], ascending=[sort_ascending])
-            except Exception as e:
-                st.error(f"Error sorting DataFrame: {str(e)}")
+            sort_ascending = st.checkbox("Sort Ascending", value=False)  # Set to False for descending order
+
+            # Sort the DataFrame based on the first column (location) in descending order
+            df = df.sort_values(by=[df.columns[0]], ascending=[sort_ascending])
 
             # Display the data frame as a list with a delete button for each row
             for index, row in df.iterrows():
                 # Create columns for layout
                 col1, col2, col3, col4, col5 = st.columns(5)  # Create columns for layout
                 with col1:
-                    if len(row) > 1:
-                        st.write(row[1])  # Display the first column of the row
-                with col2:
                     if len(row) > 0:
-                        st.write(row[0])  # Display the second column of the row
+                        st.write(row[0])  # Display the first column of the row
+                with col2:
+                    if len(row) > 1:
+                        st.write(row[1])  # Display the second column of the row
                 with col3:
                     if len(row) > 2:
                         st.write(row[2])  # Display the third column of the row
@@ -343,6 +336,7 @@ def show_dashboard():
                     if st.button(f"Delete Row {index + 1}"):
                         delete_row_from_sheet(index, records)  # Call function to delete the row
                         st.rerun()  # Rerun
+
 
 
 
