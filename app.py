@@ -62,7 +62,11 @@ def main():
 
 
 
-
+event = {
+            'start': row['Date'].isoformat(),
+            'end': (row['Date'] + pd.DateOffset(hours=1)).isoformat(),
+            'color': 'blue'  # or any other color
+        }
 
 
 
