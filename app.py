@@ -7,6 +7,17 @@ import gspread
 from google.oauth2 import service_account
 import pandas as pd
 from kalendorius import display_calendar
+import streamlit as st
+from pathlib import Path
+
+# Function to read CSS and inject it into the Streamlit app
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+# Inject CSS at the beginning of your app
+local_css('style.css')
+
 
 
 
