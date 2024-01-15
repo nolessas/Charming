@@ -56,4 +56,6 @@ def display_calendar():
         filtered_events = [event for event in event_list if month_start <= pd.to_datetime(event['start']) < month_end]
 
     # Display the calendar with the filtered events list
-    st_calendar.calendar(events=filtered_events)
+    st.markdown('<div class="streamlit-calendar">', unsafe_allow_html=True)
+    st_calendar.calendar(events=filtered_events)  # Your calendar component call
+    st.markdown('</div>', unsafe_allow_html=True)
