@@ -300,7 +300,7 @@ def show_dashboard():
         st.title("ToDo")
         st.write("")
         
-        location_input = st.slider("1-100:")
+        location_input = st.slider("1-100:", min_value=1, max_value=100, value=50)
         item_input = st.text_input("A thing:")
         
         
