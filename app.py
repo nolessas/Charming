@@ -297,8 +297,8 @@ def show_dashboard():
         item_input = st.text_input("Item:")
         location_input = st.slider(
             "Schedule your appointment:",
-            value=(time(07, 00), time(23, 30)))
-            st.write("You're scheduled for:", appointment)
+            value=(time(07, 00), time(23, 45)))
+        st.write("You're scheduled for:", appointment)
         if st.button("Add Entry"):
             add_item_to_sheet2(item_input, location_input)
         # Fetch data from Google Sheets
