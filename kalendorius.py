@@ -31,9 +31,7 @@ def fetch_client_data_for_calendar():
         events.append(event)
     return events
 
-# Modified display_calendar function to include client data
-def display_calendar():
-    # Modified display_calendar function to include client data
+
 def display_calendar():
     event_list = fetch_client_data_for_calendar()
 
