@@ -13,33 +13,27 @@ def get_sheets_service():
     return gspread.authorize(credentials)
 
 # Function to fetch client data from Google Sheets and format it for the calendar
-def fetch_client_data_for_calendar():
-    service = get_sheets_service()
-    worksheet = service.open_by_key('1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ').worksheet('Sheet1')
-    records = worksheet.get_all_records()
-    df = pd.DataFrame(records)
-    df['Date'] = pd.to_datetime(df['Date'])
-
-    # Format data for calendar
-    events = []
-    for _, row in df.iterrows():
-        event = {
-            'start': row['Date'].isoformat(),
-            'end': (row['Date'] + pd.DateOffset(hours=1)).isoformat(),
-            'color': 'blue'  # or any other color
-        }
-        events.append(event)
-    return events
-
-
-# [Other functions unchanged]
-
-# Modified display_calendar function to include client data
 def display_calendar():
     event_list = fetch_client_data_for_calendar()
 
-    # Displaying the calendar with only the events list
-    st_calendar.calendar(events=event_list)
+    # UI elements for selecting the view
+    view = st.selectbox("Select View", ["Month", "Week", "Day"])
+    selected_date = st.date_input("Select Date", datetime.today())
+
+    # Filter events based on the selected view
+    if view == "Day":
+        filtered_events = [event for event in event_list if pd.to_datetime(event['start']).date() == selected_date]
+    elif view == "Week":
+        week_start = selected_date - timedelta(days=selected_date.weekday())
+        week_end = week_start + timedelta(days=7)
+        filtered_events = [event for event in event_list if week_start <= pd.to_datetime(event['start']).date() < week_end]
+    else:  # Month view
+        month_start = selected_date.replace(day=1)
+        month_end = month_start + pd.DateOffset(months=1)
+        filtered_events = [event for event in event_list if month_start <= pd.to_datetime(event['start']).date() < month_end]
+
+    # Display the calendar with the filtered events list
+    st_calendar.calendar(events=filtered_events)
 
 
 
