@@ -291,12 +291,12 @@ def show_dashboard():
 
 #######################################################################################################################################################
     elif choose_main == "option3":
-        st.title("Data from Sheet3")
-        st.write("Reikalingos priemones ir kur jas rasti.")
+        st.title("ToDo")
+        st.write("")
         
         # Input fields for adding new entries to Sheet2
-        item_input = st.text_input("Item:")
-        location_input = st.slider("Location:")
+        item_input = st.text_input("A thing:")
+        location_input = st.slider("1-100:")
         
         if st.button("Add Entry"):
             add_item_to_sheet2(item_input, location_input)
