@@ -37,11 +37,8 @@ def display_calendar():
     selected_view = st.radio("Choose Calendar View", view_options)
     
     event_list = fetch_client_data_for_calendar()
+    today = datetime.now()
 
-    # Get today's date
-    today = datetime.today()
-
-    # Adjust calendar view based on selection
     if selected_view == "Day":
         start_date = today
         end_date = today + timedelta(days=1)
@@ -50,14 +47,14 @@ def display_calendar():
         end_date = start_date + timedelta(days=7)
     else:  # Month
         start_date = today.replace(day=1)
-        end_date = start_date + pd.DateOffset(months=1) - timedelta(days=1)
+        end_date = start_date.replace(day=28) + timedelta(days=4)  # This ensures covering the end of the month
 
-    # Ensure start_date and end_date are datetime objects
-    start_date = pd.to_datetime(start_date).to_pydatetime()
-    end_date = pd.to_datetime(end_date).to_pydatetime()
+    # Ensure dates are formatted as strings for st_calendar
+    start_date_str = start_date.strftime('%Y-%m-%d')
+    end_date_str = end_date.strftime('%Y-%m-%d')
 
     st_calendar.calendar(
         events=event_list,
-        start_date=start_date,
-        end_date=end_date
+        start_date=start_date_str,
+        end_date=end_date_str
     )
