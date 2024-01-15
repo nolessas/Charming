@@ -35,19 +35,21 @@ def fetch_client_data_for_calendar():
 def display_calendar():
     event_list = fetch_client_data_for_calendar()
 
-    # Using the calendar function with only the events list
-    try:
-        st_calendar.calendar(events=event_list)
-    except TypeError as e:
-        st.error(f"An error occurred with the calendar component: {e}")
+    # UI elements for selecting the view
+    view = st.selectbox("Select View", ["Month", "Week", "Day"])
+    selected_date = st.date_input("Select Date", datetime.today())
 
-        # Simplifying the calendar display to just show the current month
-        today = datetime.today()
-        start_date = today.replace(day=1)
-        end_date = (start_date + pd.DateOffset(months=1)) - timedelta(days=1)
-    
-        st_calendar.calendar(
-            events=event_list,
-            start_date=start_date,
-            end_date=end_date
-        )
+    # Filter events based on the selected view
+    if view == "Day":
+        filtered_events = [event for event in event_list if pd.to_datetime(event['start']).date() == selected_date]
+    elif view == "Week":
+        week_start = selected_date - timedelta(days=selected_date.weekday())
+        week_end = week_start + timedelta(days=7)
+        filtered_events = [event for event in event_list if week_start <= pd.to_datetime(event['start']).date() < week_end]
+    else:  # Month view
+        month_start = selected_date.replace(day=1)
+        month_end = month_start + pd.DateOffset(months=1)
+        filtered_events = [event for event in event_list if month_start <= pd.to_datetime(event['start']).date() < month_end]
+
+    # Display the calendar with the filtered events list
+    st_calendar.calendar(events=filtered_events)
