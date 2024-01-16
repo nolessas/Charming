@@ -53,8 +53,14 @@ def show_registered_clients():
             # Sort the dataframe by Date column
             filtered_df = filtered_df.sort_values(by=["Date"])
 
+            # Format date and time columns for display
+            filtered_df['Formatted Date'] = filtered_df['Date'].dt.strftime('%d/%m/%Y')
+            filtered_df['Formatted Time In'] = filtered_df['Time in'].dt.strftime('%H:%M')
+            filtered_df['Formatted Time Out'] = filtered_df['Time out'].dt.strftime('%H:%M')
+
             st.write("Client Information:")
-            st.dataframe(filtered_df)  # Displaying the filtered dataframe directly
+            st.dataframe(filtered_df[['Formatted Date', 'Formatted Time In', 'Formatted Time Out', 'Full Name', 'Phone Number', 'Email', 'Note']])
+
 
         else:
             st.write("No registered clients found.")
