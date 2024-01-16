@@ -59,13 +59,13 @@ def show_registered_clients():
 
             # Display the DataFrame
             st.write("Client Information:")
-            st.dataframe(filtered_df[['Formatted Date', 'Formatted Time In', 'Formatted Time Out', 'Full Name', 'Phone Number', 'Email', 'Note']])
-
+            st.dataframe(filtered_df[['Date', 'Formatted Time In', 'Formatted Time Out', 'Full Name', 'Phone Number', 'Email', 'Note']])
 
         else:
             st.write("No registered clients found.")
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
+
 
 # The rest of your Streamlit app code, including register_client1 and other components
 # Don't forget to call show_registered_clients() in your main app flow to display the data
