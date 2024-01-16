@@ -103,22 +103,24 @@ def register_client1():
     email_input = st.text_input("Email:")
     note_input = st.text_area("Note:")
 
-if st.button("Register Client"):
-    if full_name_input and phone_input and email_input:  # Ensure all required fields are filled
-        try:
-            # Combine the date and hours into datetime objects
-            combined_datetime_in = datetime.combine(date_input, time_in)
-            
-            # Format the data for Google Sheets
-            # Updated date format to 'day/month/year'
-            sheet_data = [combined_datetime_in.strftime("%d/%m/%Y"), combined_datetime_in.strftime("%H:%M"), time_out.strftime("%H:%M"), full_name_input, phone_input, email_input, note_input]
+    # 'Register Client' button
+    if st.button("Register Client"):
+        if full_name_input and phone_input and email_input:  # Ensure all required fields are filled
+            try:
+                # Combine the date and hours into datetime objects
+                combined_datetime_in = datetime.combine(date_input, time_in)
 
-            # Write data to Google Sheets (using the function from google_sheets.py)
-            write_to_sheets(sheet_data)
+                # Format the data for Google Sheets
+                # Updated date format to 'day/month/year'
+                sheet_data = [combined_datetime_in.strftime("%d/%m/%Y"), combined_datetime_in.strftime("%H:%M"), time_out.strftime("%H:%M"), full_name_input, phone_input, email_input, note_input]
 
-            # User feedback
-            st.success("Client registered successfully!")
-        except Exception as e:
-            st.error(f"Failed to register client: {e}")
-    else:
-        st.error("Please fill in all required fields.")
+                # Write data to Google Sheets (using the function from google_sheets.py)
+                write_to_sheets(sheet_data)
+
+                # User feedback
+                st.success("Client registered successfully!")
+            except Exception as e:
+                st.error(f"Failed to register client: {e}")
+        else:
+            st.error("Please fill in all required fields.")
+
