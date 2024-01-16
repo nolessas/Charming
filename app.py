@@ -6,10 +6,10 @@ from datetime import time, datetime
 import gspread
 from google.oauth2 import service_account
 import pandas as pd
+from streamlit_calendar import streamlit_calendar
 from kalendorius import display_calendar
 import streamlit as st
 from pathlib import Path
-from streamlit_calendar import streamlit_calendar
 from client_managament import show_registered_clients, register_client1  
 from google_sheets import get_sheets_service, write_to_sheets, delete_client
 from data_base import show_clients_with_deletion_option, delete_row_from_sheet, fetch_data_from_sheets
