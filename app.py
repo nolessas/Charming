@@ -41,7 +41,7 @@ def main():
 def show_dashboard():
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: center;} </style>', unsafe_allow_html=True)
     st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
-    choose_main = st.radio("", ("1", "2", "3", "4"))
+    choose_main = st.radio("", ("1", "2", "3", "4","5"))
 
     if choose_main == "1":
         st.title("Clients")
@@ -61,6 +61,9 @@ def show_dashboard():
         st.title("DoDo")
         register_todo()
         manage_todo_list()
+
+    elif choose_main == "4":
+        st.title("This tab is on development")
 
 
 if __name__ == "__main__":
