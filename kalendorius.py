@@ -35,27 +35,23 @@ def fetch_client_data_for_calendar():
 
 def display_calendar():
     event_list = fetch_client_data_for_calendar()
-
-    # UI elements for selecting the view
     view = st.selectbox("Select View", ["Month", "Week", "Day"])
     selected_date = st.date_input("Select Date", datetime.today())
-
-    # Convert selected_date to a pandas Timestamp for consistent comparison
     selected_date_ts = pd.Timestamp(selected_date)
 
-    # Filter events based on the selected view
+    filtered_events = []
+
     if view == "Day":
         filtered_events = [event for event in event_list if pd.to_datetime(event['start']).date() == selected_date_ts.date()]
     elif view == "Week":
         week_start = selected_date_ts - pd.DateOffset(days=selected_date_ts.weekday())
         week_end = week_start + pd.DateOffset(days=7)
         filtered_events = [event for event in event_list if week_start <= pd.to_datetime(event['start']) < week_end]
-    else:  # Month view
+    elif view == "Month":
         month_start = selected_date_ts.replace(day=1)
         month_end = month_start + pd.DateOffset(months=1)
         filtered_events = [event for event in event_list if month_start <= pd.to_datetime(event['start']) < month_end]
 
-    # Display the calendar with the filtered events list
-    st.markdown('<div class="streamlit-calendar">', unsafe_allow_html=True)
-    st_calendar.calendar(events=filtered_events)  # Your calendar component call
-    st.markdown('</div>', unsafe_allow_html=True)
+    for event in filtered_events:
+        if st.button(event['title'], key=event['start']):
+            display_detailed_info(event)
