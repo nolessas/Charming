@@ -6,6 +6,7 @@ from datetime import time, datetime
 import gspread
 from google.oauth2 import service_account
 import pandas as pd
+from modules.kalendorius import display_calendar
 from streamlit_calendar import calendar
 from kalendorius import display_calendar
 import streamlit as st
