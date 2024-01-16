@@ -11,23 +11,17 @@ def get_sheets_service():
     service = gspread.authorize(credentials)
     return service
 
-def write_to_sheets(data):
+def write_to_sheets(data, value_input_option='USER_ENTERED'):
     service = get_sheets_service()
-    # Replace 'YOUR_SPREADSHEET_ID' with the actual ID of your Google Sheets document
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
     worksheet_name = 'Sheet1'
     try:
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        
-        # Check if we need to write the header row (only if the worksheet is empty)
-        if worksheet.row_count == 0:
-            header_row = ["Date", "Full Name", "Last Name", "Phone Number", "Note", "Email Sent"]
-            worksheet.append_row(header_row) 
-        # Append the new data row, including a 'No' for 'Email Sent' status
-        new_row = data + ['No']  # Add 'No' to indicate the email has not been sent
-        worksheet.append_row(new_row)
+        # Append the new data row
+        worksheet.append_row(data, value_input_option=value_input_option)
     except Exception as e:
         st.error(f"Error writing to Google Sheets: {str(e)}")
+
 
 
 def delete_client(index):
