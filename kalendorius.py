@@ -39,6 +39,7 @@ def display_calendar():
     selected_date = st.date_input("Select Date", datetime.today())
     selected_date_ts = pd.Timestamp(selected_date)
 
+    # Initialize filtered_events outside of the if-elif blocks to ensure it's always defined
     filtered_events = []
 
     if view == "Day":
@@ -50,5 +51,10 @@ def display_calendar():
     elif view == "Month":
         month_start = selected_date_ts.replace(day=1)
         month_end = month_start + pd.DateOffset(months=1)
-        filtered_events = [event for event in event_list if month_start <= pd.to_datetime(event['start']) < month_end]
+        filtered_events = [event for event in event list if month_start <= pd.to_datetime(event['start']) < month_end]
+
+    # Display the calendar with the filtered events list
+    st.markdown('<div class="streamlit-calendar">', unsafe_allow_html=True)
+    st_calendar.calendar(events=filtered_events)  # Your calendar component call
+    st.markdown('</div>', unsafe_allow_html=True)
 
