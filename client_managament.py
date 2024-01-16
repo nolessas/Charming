@@ -95,40 +95,28 @@ def register_client1():
     duration = st.slider("Duration (hours):", min_value=0, max_value=12, value=1, step=1, key='duration')
 
     # Calculate Time Out
-    time_out = (datetime.combine(date.today(), time_in) + timedelta(hours=duration)).time()
+    time_out = (datetime.combine(date_input, time_in) + timedelta(hours=duration)).time()
     st.write(f"Time Out: {time_out.strftime('%H:%M')}")
 
-    # Continue with other inputs...
     full_name_input = st.text_input("Full Name:")
     phone_input = st.text_input("Phone Number:")
     email_input = st.text_input("Email:")
     note_input = st.text_area("Note:")
 
     if st.button("Register Client"):
-        # Check if the necessary inputs are provided
-        if full_name_input and phone_input and email_input:  # Add other necessary checks as per your requirements
+        if full_name_input and phone_input and email_input:  # Ensure all required fields are filled
             try:
                 # Combine the date and hours into datetime objects
                 combined_datetime_in = datetime.combine(date_input, time_in)
-                combined_datetime_out = datetime.combine(date_input, time_out)
-
+                
                 # Format the data for Google Sheets
-                sheet_data = {
-                    "Date": combined_datetime_in.strftime("%Y-%m-%d"),
-                    "Time In": combined_datetime_in.strftime("%H:%M"),
-                    "Time Out": combined_datetime_out.strftime("%H:%M"),
-                    "Full Name": full_name_input,
-                    "Phone Number": phone_input,
-                    "Email": email_input,
-                    "Note": note_input
-                }
+                sheet_data = [combined_datetime_in.strftime("%Y-%m-%d"), combined_datetime_in.strftime("%H:%M"), time_out.strftime("%H:%M"), full_name_input, phone_input, email_input, note_input]
 
-                # Write data to Google Sheets
-                write_to_sheets(sheet_data, sheet_name="Sheet1")  # Specify the sheet name if needed
+                # Write data to Google Sheets (using the function from google_sheets.py)
+                write_to_sheets(sheet_data)
 
                 # User feedback
                 st.success("Client registered successfully!")
-                st.sidebar.success("Client registered successfully!")
             except Exception as e:
                 st.error(f"Failed to register client: {e}")
         else:
