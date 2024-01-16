@@ -2,21 +2,100 @@
 import os
 import streamlit as st
 from authentication import is_user_logged_in, show_login, set_user_logged_in
-from datetime import datetime
+from datetime import time, datetime
 import gspread
 from google.oauth2 import service_account
 import pandas as pd
 from kalendorius import display_calendar
+import streamlit as st
+from pathlib import Path
+from streamlit_calendar import calendar
 
 
 
+calendar_options = {
+    "editable": True,
+    "selectable": True,
+    "headerToolbar": {
+        "left": "today prev,next",
+        "center": "title",
+        "right": "dayGridMonth,timeGridWeek,timeGridDay",
+    },
+    "slotMinTime": "06:00:00",
+    "slotMaxTime": "18:00:00",
+    "initialView": "timeGridWeek",
+    "events": [
+        # ... define your events here ...
+    ],
+    # ... other FullCalendar options ...
+}
+# Define events for the calendar
+calendar_events = [
+    {
+        "title": "Event 1",
+        "start": "2024-01-15T08:30:00",
+        "end": "2024-01-15T10:30:00",
+    },
+    {
+        "title": "Event 2",
+        "start": "2024-01-16T07:30:00",
+        "end": "2024-01-16T10:30:00",
+    },
+    {
+        "title": "Event 3",
+        "start": "2024-01-17T10:40:00",
+        "end": "2024-01-17T12:30:00",
+    },
+    # ... add more events as needed ...
+]
+custom_css = """
+.fc-event-past {
+    opacity: 0.8;
+}
+.fc-event-time {
+    font-style: italic;
+}
+.fc-event-title {
+    font-weight: 700;
+}
+.fc-toolbar-title {
+    font-size: 2rem;
+}
+"""
+def render_calendar():
+    # Render the calendar component and store the user's interaction result
+    result = calendar(events=calendar_events, options=calendar_options, custom_css=custom_css)
+    
+    # If the calendar interaction returns a value, display it
+    if result:
+        st.json(result)
+
+# Call the function to render the calendar
+render_calendar()
 
 
-
-
-# Google Sheets API credentials file
-SHEETS_CLIENT_SECRET_FILE = '.streamlit/token_sheets.json'
+SCOPES = ['https://www.googleapis.com/auth/calendar']
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
+
+service_account_info = st.secrets["google_oauth"]
+credentials = service_account.Credentials.from_service_account_info(service_account_info)
+gc = gspread.authorize(credentials)
+
+
+
+def get_sheets_service():
+    # Accessing service account credentials from Streamlit secrets
+    service_account_info = st.secrets["google_oauth"]
+
+    # Creating credentials from the service account info
+    credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES_SHEETS)
+
+    # Authorizing the gspread client with the credentials
+    service = gspread.authorize(credentials)
+    return service
+
+
+
 
 class SessionState:
     def __init__(self, **kwargs):
@@ -46,13 +125,6 @@ def main():
 
 
 
-def get_sheets_service():
-    credentials = service_account.Credentials.from_service_account_file(
-        '.streamlit/key.json', scopes=SCOPES_SHEETS
-    )
-
-    service = gspread.authorize(credentials)
-    return service
 
 
 
@@ -89,19 +161,13 @@ def write_to_sheets(data):
 
 
 def fetch_data_from_sheets():
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    worksheet_name = 'Sheet2'
     try:
-        service = get_sheets_service()
-        spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-        worksheet_name = 'Sheet2'
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
         records = worksheet.get_all_records()
-
-        if not records:
-            st.write("No to-do items found.")
-            return []
-
         return records
-
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
         return []
@@ -128,22 +194,16 @@ def manage_todo_list():
 
 
 def delete_row_from_sheet(index, records):
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    worksheet_name = 'Sheet2'
     try:
-        service = get_sheets_service()
-        spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-        worksheet_name = 'Sheet2'
-
-        # Delete the row from the Google Sheets
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        worksheet.delete_rows(index + 2)  # +2 to account for the header row and 1-indexing
-
-        # Update the records list to reflect the deletion
+        worksheet.delete_rows(index + 2)  # Adjust for header row and 1-indexing
         del records[index]
-
-        st.sidebar.success("Selected rows deleted successfully!")
-
+        st.success("Selected rows deleted successfully!")
     except Exception as e:
-        st.sidebar.error(f"Failed to delete row from sheet: {str(e)}")
+        st.error(f"Failed to delete row from sheet: {str(e)}")
 
 
 
@@ -152,15 +212,14 @@ def delete_row_from_sheet(index, records):
 
 def add_item_to_sheet2(item, location):
     service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'  # Replace with your actual spreadsheet ID
-    worksheet_name = 'Sheet2'  # The name of the worksheet where you want to add items
-    
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    worksheet_name = 'Sheet2'
     try:
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
         worksheet.append_row([item, location])
-        st.sidebar.success("Item added successfully!")
+        st.success("Item added successfully!")
     except Exception as e:
-        st.sidebar.error(f"Failed to add item to sheet: {str(e)}")
+        st.error(f"Failed to add item to sheet: {str(e)}")
 
 
 
@@ -183,7 +242,7 @@ def show_registered_clients():
             df['Date'] = pd.to_datetime(df['Date'])
 
             # Add radio buttons for filtering by time range (Day, Week, Month, Year)
-            time_range = st.radio("Filter by Time Range", ["Day", "Week", "Month", "Year"])
+            time_range = st.radio("", ["Day", "Week", "Month", "Year"])
 
             # Calculate the start date based on the selected time range
             if time_range == "Day":
@@ -269,138 +328,97 @@ def show_dashboard():
     st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
     choose_main = st.radio("", ("option1", "option2", "option3"))
 
-
-
-
-
     if choose_main == "option1":
-        st.write("")
-        show_registered_clients()  # Function to display clients from Google Sheets
+        show_registered_clients()
+        st.title("Register New Client")
+        # Input fields for registration
+        date_input = st.date_input("Date:")
+
+                # With this
+        hours_input = st.slider(
+            "Select Time:",
+            value=time(8, 0),  # Default value, adjust as needed
+            format="HH:mm"  # Display format for the slider
+        )
+        st.write("Selected Time Range:", hours_input)
+
+        # Rest of the input fields
+        full_name_input = st.text_input("Full Name:")
+        phone_input = st.text_input("Phone Number:")
+        email_input = st.text_input("Email:")
+        note_input = st.text_area("Note:")
+
+        # Button for registering the client
+        if st.button("Register"):
+            register_client(date_input, hours_input, full_name_input, phone_input, email_input, note_input)
+            st.success("Client registered successfully!")
+            st.rerun()
 
     elif choose_main == "option2":
         st.title("Calendar")
-        display_calendar()
+        #display_calendar()
 
-
+#######################################################################################################################################################
     elif choose_main == "option3":
-        st.title("Data from Sheet3")
-        st.write("Reikalingos priemones ir kur jas rasti.")
-        # Input fields for adding new entries to Sheet2
-        item_input = st.text_input("Item:")
-        location_input = st.text_input("Location:")
+        st.title("ToDo")
+        st.write("")
+        
+        location_input = st.slider("1-100:", min_value=1, max_value=100, value=50)
+        item_input = st.text_input("A thing:")
+        
+        
         if st.button("Add Entry"):
             add_item_to_sheet2(item_input, location_input)
+        
         # Fetch data from Google Sheets
         records = fetch_data_from_sheets()
 
         if not records:
-            return
+            st.write("No data available.")
+        else:
+            df = pd.DataFrame(records)
 
-        df = pd.DataFrame(records)
+            # Checkbox for sorting order
+            sort_ascending = st.checkbox("Rušiavimas", value=False)  # Set to True for ascending order
 
-        # Add a selectbox for sorting options
-        sort_option = st.selectbox("Sort by:", df.columns, index=1)  # Set index to 1 for selecting the second column
+            # Sort the DataFrame based on the second column (numbers)
+            df = df.sort_values(by=[df.columns[1]], ascending=[sort_ascending])
 
-        # Checkbox for sorting order
-        sort_ascending = st.checkbox("Rušiavimas", value=True)
+            # Display the data frame as a list with a delete button for each row
+            for index, row in df.iterrows():
+                # Create columns for layout
+                col1, col2, col3, col4, col5 = st.columns(5)  # Create columns for layout
+                with col1:
+                    if len(row) > 0:
+                        st.write(row[0])  # Display the first column of the row
+                with col2:
+                    if len(row) > 1:
+                        st.write(row[1])  # Display the second column of the row
+                with col3:
+                    if len(row) > 2:
+                        st.write(row[2])  # Display the third column of the row
+                with col4:
+                    if len(row) > 3:
+                        st.write(row[3])  # Display the fourth column of the row
+                with col5:
+                    # Add a delete button for each row in the fifth column
+                    if st.button(f"Delete Row {index + 1}"):
+                        delete_row_from_sheet(index, records)  # Call function to delete the row
+                        st.rerun()  # Rerun
 
-        # Sort the DataFrame based on the selected column
-        df = df.sort_values(by=[sort_option], ascending=[sort_ascending])
-
-        # Display the data frame as a list with a delete button for each row
-        for index, row in df.iterrows():
-            # Create columns for layout
-            col1, col2, col3, col4, col5 = st.columns(5)  # Create columns for layout
-            with col1:
-                if len(row) > 0:
-                    st.write(row[0])  # Display the first column of the row
-            with col2:
-                if len(row) > 1:
-                    st.write(row[1])  # Display the second column of the row
-            with col3:
-                if len(row) > 2:
-                    st.write(row[2])  # Display the third column of the row
-            with col4:
-                if len(row) > 3:
-                    st.write(row[3])  # Display the fourth column of the row
-            with col5:
-                # Add a delete button for each row in the fifth column
-                if st.button(f"Delete Row {index + 1}"):
-                    delete_row_from_sheet(index, records)  # Call function to delete the row
-                    st.rerun()  # Rerun
-
-
-
-    choose_sidebar = st.sidebar.radio("", ("app1", "app2"))
-    if choose_sidebar == "app1":
-        st.sidebar.title("Register Client")
-
-        # Input fields for registration
-        date_input = st.sidebar.date_input("Date:")
-        hours_input = st.sidebar.time_input("Time:")
-        full_name_input = st.sidebar.text_input("Full Name:")
-        phone_input = st.sidebar.text_input("Phone Number:")
-        email_input = st.sidebar.text_input("Email:")
-        note_input = st.sidebar.text_area("Note:")
-
-        # Button for registering the client
-        if st.sidebar.button("Register"):
-            # Placeholder function for handling registration
-            register_client(date_input, hours_input, full_name_input, phone_input, email_input, note_input)
-            st.sidebar.success("Client registered successfully!")
-
-    if choose_sidebar == "app2":
-        item_input = st.sidebar.text_input("Reikalingos priemones:", key="item")
-        location_input = st.sidebar.text_input("Kur:", key="location")
-        if st.sidebar.button("Add Entry", key="add"):
-            add_item_to_sheet2(item_input, location_input)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    elif choose_main == "option4":
+        st.title("DoDo")
 
 
 
 
 def register_client(date, hours, full_name, phone, email, note):
-    # Placeholder function for handling client registration
-    # You can add the logic to save the client information to a database or file
-    # For now, it just prints the information
-    print(f"Registered Client:")
-    print(f"Date: {date}")
-    print(f"Hours: {hours}")
-    print(f"Full Name: {full_name}")
-    print(f"Phone Number: {phone}")
-    print(f"Email: {email}")
-    print(f"Note: {note}")
+    # Format the datetime correctly
+    combined_datetime = str(datetime.combine(date, hours))  # date and hours are used directly
 
-
-
-def register_client(date, hours, full_name, phone, email, note):
     # Add the data to the list
     registered_clients.append({
-        "Date": str(datetime.combine(date, hours)),
+        "Date": combined_datetime,
         "Full Name": full_name,
         "Phone Number": phone,
         "Email": email,
@@ -408,19 +426,14 @@ def register_client(date, hours, full_name, phone, email, note):
     })
 
     # Format the data for Google Sheets
-    sheet_data = [str(datetime.combine(date, hours)), full_name, phone, email, note]
+    sheet_data = [combined_datetime, full_name, phone, email, note]
 
     # Write data to Google Sheets
     write_to_sheets(sheet_data)
 
-    st.sidebar.success("Client registered successfully!")
-    st.rerun()
-
-
+    st.success("Client registered successfully!")
 
 
 
 if __name__ == "__main__":
-    print("Before main()")
     main()
-    print("After main()")
