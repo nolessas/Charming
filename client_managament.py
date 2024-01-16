@@ -13,19 +13,26 @@ from google_sheets import write_to_sheets, get_sheets_service, delete_client
 
 #if "registered_clients" not in st.session_state:
     #st.session_state.registered_clients = []
-
+ #   1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ
 #registered_clients = []
+def get_unique_headers(worksheet):
+    # Get the first row of the worksheet, typically the header row
+    headers = worksheet.row_values(1)
+    # Check for uniqueness
+    is_unique = len(headers) == len(set(headers))
+    return is_unique, headers
 
 
 def show_registered_clients():
-    st.title("Registered Clients")
-
     service = get_sheets_service()
-
     try:
         worksheet = service.open_by_key('1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ').worksheet('Sheet1')
-        records = worksheet.get_all_records()
+        unique, headers = get_unique_headers(worksheet)
+        if not unique:
+            st.error(f"The header row in the worksheet is not unique: {', '.join(headers)}")
+            return  # Stop execution if headers are not unique
 
+        records = worksheet.get_all_records()
         if records:
             df = pd.DataFrame(records)
             df['Date'] = pd.to_datetime(df['Date'])
