@@ -74,20 +74,6 @@ calendar_options['events'] = calendar_events
 
 
 ]
-custom_css = """
-.fc-event-past {
-    opacity: 0.8;
-}
-.fc-event-time {
-    font-style: italic;
-}
-.fc-event-title {
-    font-weight: 700;
-}
-.fc-toolbar-title {
-    font-size: 2rem;
-}
-"""
 def render_calendar():
     # Render the calendar component and store the user's interaction result
     result = calendar(events=calendar_events, options=calendar_options, custom_css=custom_css)
