@@ -41,19 +41,20 @@ def show_dashboard():
     st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
     choose_main = st.radio("", ("1", "2", "3", "4"))
 
-    if choose_main == "option1":
+    if choose_main == "1":
+        st.title("Clients")
         show_registered_clients()
 
-    elif choose_main == "option2":
+    elif choose_main == "2":
         st.title("Calendar")
         #show_clients_with_deletion_option()
         #display_calendar()
 
-    elif choose_main == "option3":
+    elif choose_main == "3":
         st.title("ToDo")
         #register_todo()
 
-    elif choose_main == "option4":
+    elif choose_main == "4":
         st.title("DoDo")
 
 
