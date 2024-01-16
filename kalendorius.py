@@ -42,11 +42,11 @@ def display_calendar():
     filtered_events = [event for event in event_list if pd.to_datetime(event['start']).date() == selected_date_ts.date()]
 
     if view == "Week":
-                week_start = selected_date_ts - pd.DateOffset(days=selected_date_ts.weekday())
-                week_end = week_start + pd.DateOffset(days=7)
-                filtered_events = [
-                    event for event in event_list if week_start <= pd.to_datetime(event['start']) < week_end
-                ]
+        week_start = selected_date_ts - pd.DateOffset(days=selected_date_ts.weekday())
+        week_end = week_start + pd.DateOffset(days=7)
+        filtered_events = [
+            event for event in event_list if week_start <= pd.to_datetime(event['start']) < week_end
+        ]
     elif view == "Month":
         month_start = selected_date_ts.replace(day=1)
         month_end = month_start + pd.DateOffset(months=1)
