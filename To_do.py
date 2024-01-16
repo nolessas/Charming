@@ -44,7 +44,7 @@ def register_todo():
             with col5:
                 # Add a delete button for each row in the fifth column
                 if st.button(f"Delete Row {index + 1}"):
-                    delete_row_from_sheet(index, records)  # Call function to delete the row
+                    delete_row_from_sheet2(index, records)  # Call function to delete the row
                     st.rerun()  # Rerun
 
 def manage_todo_list():
@@ -78,7 +78,7 @@ def add_item_to_sheet2(item, location):
     except Exception as e:
         st.error(f"Failed to add item to sheet: {str(e)}")
 
-def delete_row_from_sheet(index, records):
+def delete_row_from_sheet2(index, records):
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
     worksheet_name = 'Sheet2'
