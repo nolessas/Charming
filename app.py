@@ -12,6 +12,7 @@ from pathlib import Path
 from streamlit_calendar import calendar
 from client_managament import show_registered_clients, Register_client1  
 from google_sheets import get_sheets_service, write_to_sheets, delete_client
+from data_base import show_clients_with_deletion_option, delete_row_from_sheet, fetch_data_from_sheets
 
 
 
@@ -48,15 +49,16 @@ def show_dashboard():
 
     elif choose_main == "2":
         st.title("Calendar")
-        #show_clients_with_deletion_option()
+        
         display_calendar()
 
     elif choose_main == "3":
-        st.title("ToDo")
-        #register_todo()
+        st.title("List of clients")
+        show_clients_with_deletion_option()
 
     elif choose_main == "4":
         st.title("DoDo")
+        #register_todo()
 
 
 if __name__ == "__main__":
