@@ -163,7 +163,20 @@ def add_item_to_sheet2(item, location):
         st.error(f"Failed to add item to sheet: {str(e)}")
 
 
+def delete_client(index):
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    worksheet_name = 'Sheet1'
+    try:
+        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
+        # Delete the row; add 2 to index to account for header row and 0-based indexing
+        worksheet.delete_rows(index + 2)
+        st.success(f"Client at row {index + 1} deleted successfully.")
+        st.experimental_rerun()  # Rerun the app to refresh the data display
+    except Exception as e:
+        st.error(f"Failed to delete client: {str(e)}")
 
+####
 
 
 
@@ -270,20 +283,7 @@ def show_clients_with_deletion_option():
 
 
 
-def delete_client(index):
-    service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-    worksheet_name = 'Sheet1'
-    try:
-        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        # Delete the row; add 2 to index to account for header row and 0-based indexing
-        worksheet.delete_rows(index + 2)
-        st.success(f"Client at row {index + 1} deleted successfully.")
-        st.experimental_rerun()  # Rerun the app to refresh the data display
-    except Exception as e:
-        st.error(f"Failed to delete client: {str(e)}")
 
-####
 
 
 
