@@ -108,16 +108,16 @@ def register_client1():
             try:
                 # Format the data for Google Sheets as strings
                 sheet_data = [
-                    date_input.strftime("%d/%m/%Y"),  # Date in 'DD/MM/YYYY' format
-                    time_in.strftime("%H:%M"),       # Time In as 'HH:MM'
-                    time_out.strftime("%H:%M"),      # Time Out as 'HH:MM'
+                    datetime.combine(date_input, datetime.min.time()),  # Python datetime object for the date
+                    datetime.combine(datetime.today(), time_in),       # Python datetime object for 'Time In'
+                    datetime.combine(datetime.today(), time_out),      # Python datetime object for 'Time Out'
                     full_name_input, 
                     phone_input, 
                     email_input, 
                     note_input
                 ]
 
-                # Write data to Google Sheets (using the function from google_sheets.py)
+                # Then you write sheet_data to the Google Sheet as before
                 write_to_sheets(sheet_data)
 
                 # User feedback
