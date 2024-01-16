@@ -63,7 +63,7 @@ def show_dashboard():
         manage_todo_list()
 
     elif choose_main == "4":
-        st.title("This tab is on development")
+        st.write("This tab is on development")
 
 
 if __name__ == "__main__":
