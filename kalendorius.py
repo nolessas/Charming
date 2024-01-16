@@ -8,10 +8,10 @@ from datetime import datetime
 from google_sheets import get_sheets_service  # Make sure to have this function in google_sheets.py
 
 # Function to fetch client data from Google Sheets and format it for the calendar
-@st.cache
+#@st.cache
 def fetch_client_data_for_calendar():
     service = get_sheets_service()
-    worksheet = service.open_by_key('Your_Spreadsheet_ID').worksheet('Sheet1')
+    worksheet = service.open_by_key('1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ').worksheet('Sheet1')
     records = worksheet.get_all_records()
     df = pd.DataFrame(records)
     df['Date'] = pd.to_datetime(df['Date'])
