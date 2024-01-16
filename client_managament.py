@@ -91,24 +91,39 @@ def register_client1():
 
     # Input fields for registration
     date_input = st.date_input("Date:")
-    hours_input = st.slider("Select Time:", value=time(8, 0), format="HH:mm")
+    time_in = st.slider("Time In:", value=time(8, 0), format="HH:mm", key='time_in')
+    duration = st.slider("Duration (hours):", min_value=0, max_value=12, value=1, step=1, key='duration')
+
+    # Calculate Time Out
+    time_out = (datetime.combine(date.today(), time_in) + timedelta(hours=duration)).time()
+    st.write(f"Time Out: {time_out.strftime('%H:%M')}")
+
+    # Continue with other inputs...
     full_name_input = st.text_input("Full Name:")
     phone_input = st.text_input("Phone Number:")
     email_input = st.text_input("Email:")
     note_input = st.text_area("Note:")
 
-    if st.button("Register"):
-        # Combine the date and hours into a datetime object
-        combined_datetime = datetime.combine(date_input, hours_input)
+if st.button("Register"):
+        # Combine the date and hours into datetime objects
+        combined_datetime_in = datetime.combine(date_input, time_in)
+        combined_datetime_out = datetime.combine(date_input, time_out)
 
         # Format the data for Google Sheets
-        sheet_data = [str(combined_datetime), full_name_input, phone_input, email_input, note_input]
+        sheet_data = {
+            "Date": combined_datetime_in.strftime("%Y-%m-%d"),
+            "Time In": combined_datetime_in.strftime("%H:%M"),
+            "Time Out": combined_datetime_out.strftime("%H:%M"),
+            "Full Name": full_name_input,
+            "Phone Number": phone_input,
+            "Email": email_input,
+            "Note": note_input
+        }
 
         # Write data to Google Sheets
-        write_to_sheets(sheet_data)
+        write_to_sheets(sheet_data, sheet_name="Sheet1")  # Specify the sheet name if needed
 
         # User feedback
         st.success("Client registered successfully!")
         st.sidebar.success("Client registered successfully!")
         st.rerun()
-
