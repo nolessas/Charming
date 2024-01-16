@@ -120,21 +120,6 @@ def fetch_data_from_sheets2():
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
         return []
     
-def delete_client2(index):
-    service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-    worksheet_name = 'Sheet2'
-    try:
-        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        # Delete the row; add 2 to index to account for header row and 0-based indexing
-        worksheet.delete_rows(index + 2)
-        st.success(f"Client at row {index + 1} deleted successfully.")
-        st.experimental_rerun()  # Rerun the app to refresh the data display
-    except Exception as e:
-        st.error(f"Failed to delete client: {str(e)}")
-
-####
-        
 
 def manage_todo_list():
     st.title("To-Do List")
@@ -169,7 +154,17 @@ def delete_row_from_sheet(index, records):
     except Exception as e:
         st.error(f"Failed to delete row from sheet: {str(e)}")
 
-
+def delete_row_from_sheet2(index, records):
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    worksheet_name = 'Sheet2'
+    try:
+        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
+        worksheet.delete_rows(index + 2)  # Adjust for header row and 1-indexing
+        del records[index]
+        st.success("Selected rows deleted successfully!")
+    except Exception as e:
+        st.error(f"Failed to delete row from sheet: {str(e)}")
 
 
 
@@ -395,7 +390,7 @@ def show_dashboard():
                 with col5:
                     # Add a delete button for each row in the fifth column
                     if st.button(f"Delete Row {index + 1}"):
-                        delete_client2(index, records)  # Call function to delete the row
+                        delete_row_from_sheet2(index, records)  # Call function to delete the row
                         st.rerun()  # Rerun
 
     elif choose_main == "option4":
