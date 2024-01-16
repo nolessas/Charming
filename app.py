@@ -44,7 +44,7 @@ def show_dashboard():
     choose_main = st.radio("", ("1", "2", "3", "4","5"))
 
     if choose_main == "1":
-        st.title("Clients")
+        st.title("")
         show_registered_clients()
         register_client1()
 
