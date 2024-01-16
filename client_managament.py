@@ -15,13 +15,11 @@ from google_sheets import write_to_sheets, get_sheets_service, delete_client
     #st.session_state.registered_clients = []
  #   1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ
 #registered_clients = []
-def get_unique_headers(worksheet):
-    # Get the first row of the worksheet, typically the header row
-    headers = worksheet.row_values(1)
-    # Check for uniqueness
-    is_unique = len(headers) == len(set(headers))
-    return is_unique, headers
 
+
+def get_unique_headers(worksheet):
+    headers = worksheet.row_values(1)
+    return len(headers) == len(set(headers)), headers
 
 def show_registered_clients():
     service = get_sheets_service()
@@ -39,59 +37,36 @@ def show_registered_clients():
             df['Weekday'] = df['Date'].dt.day_name()  # Add day of the week
 
             # Add radio buttons for filtering by time range (Day, Week, Month, Year)
-            time_range = st.radio("", ["Day", "Week", "Month", "Year"])
+            time_range = st.radio("Filter by time range:", ["Day", "Week", "Month", "Year"])
 
             # Calculate the start date based on the selected time range
-            if time_range == "Day":
-                start_date = pd.Timestamp.now()- pd.DateOffset(days=1)
-            elif time_range == "Week":
-                start_date = pd.Timestamp.now() - pd.DateOffset(weeks=1)
-            elif time_range == "Month":
-                start_date = pd.Timestamp.now() - pd.DateOffset(months=1)
-            elif time_range == "Year":
-                start_date = pd.Timestamp.now() - pd.DateOffset(years=1)
-            else:
-                start_date = pd.Timestamp(1970, 1, 1)  # Default to a very old date
+            start_date = {
+                "Day": pd.Timestamp.now() - pd.DateOffset(days=1),
+                "Week": pd.Timestamp.now() - pd.DateOffset(weeks=1),
+                "Month": pd.Timestamp.now() - pd.DateOffset(months=1),
+                "Year": pd.Timestamp.now() - pd.DateOffset(years=1)
+            }.get(time_range, pd.Timestamp(1970, 1, 1))  # Default to a very old date
 
             # Filter the dataframe based on the selected time range
-            if time_range == "Day":
-                filtered_df = df[df['Date'].dt.date == start_date.date()]
-            else:
-                filtered_df = df[df['Date'] >= start_date]
+            filtered_df = df[df['Date'] >= start_date]
 
             # Sort the dataframe by Date column
             filtered_df = filtered_df.sort_values(by=["Date"])
 
             st.write("Client Information:")
-            for index, row in filtered_df.iterrows():
-                # Create columns for layout
-                col1, col2 = st.columns([4, 1])  # Adjust the ratio as needed
-
-                # Display client information in the first column
-                with col1:
-                    st.write(f"Date: {row['Date']}")
-                    st.write(f"Full Name: {row['Full Name']}")
-                    st.write(f"Phone Number: {row['Phone Number']}")
-                    st.write(f"Email: {row['Email']}")
-                    st.write(f"Note: {row['Note']}")
-                    st.write(f"Email Sent: {row['Email Sent']}")
-
-                # Display delete button in the second column
-                with col2:
-                    delete_button_label = f"Delete {row['Full Name']}"
-                    if st.button(delete_button_label, key=f"delete_{index}"):
-                        delete_client(index)
-
-                # Add a horizontal line as a separator after each client
-                st.markdown("---")
-
+            st.dataframe(filtered_df)  # Displaying the filtered dataframe directly
 
         else:
             st.write("No registered clients found.")
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
 
+# The rest of your Streamlit app code, including register_client1 and other components
+# Don't forget to call show_registered_clients() in your main app flow to display the data
 
+# Example call within your Streamlit layout:
+if st.sidebar.button('Show Registered Clients'):
+    show_registered_clients()
 
 
 def register_client1():
