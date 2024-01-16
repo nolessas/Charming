@@ -6,29 +6,46 @@ from datetime import time, datetime
 import gspread
 from google.oauth2 import service_account
 import pandas as pd
-
-import streamlit as st
 from pathlib import Path
 from streamlit_calendar import calendar
 
 
 
+# Define your SCOPES and get your credentials set up
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
-
 service_account_info = st.secrets["google_oauth"]
-credentials = service_account.Credentials.from_service_account_info(service_account_info)
+credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES_SHEETS)
 gc = gspread.authorize(credentials)
 
-# Function to read CSS and inject it into the Streamlit app
+
+# CSS to inject specified in a string
+custom_css = """
+.fc-event-past {
+    opacity: 0.8;
+}
+.fc-event-time {
+    font-style: italic;
+}
+.fc-event-title {
+    font-weight: 700;
+}
+.fc-toolbar-title {
+    font-size: 2rem;
+}
+"""
+
+
+# Function to read CSS from a file and inject it into the Streamlit app
 def local_css(file_name):
     with open(file_name) as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-# Inject CSS at the beginning of your app
+# Inject custom CSS at the beginning of your app
 local_css('style.css')
 
 
+# Initialize your calendar options
 calendar_options = {
     "editable": True,
     "selectable": True,
@@ -40,7 +57,7 @@ calendar_options = {
     "slotMinTime": "06:00:00",
     "slotMaxTime": "18:00:00",
     "initialView": "timeGridWeek",
-    "events": []  # Initially empty, to be populated later
+    "events": []  # Events will be populated later
 }
 
 
