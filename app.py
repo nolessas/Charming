@@ -13,40 +13,66 @@ from streamlit_calendar import calendar
 
 
 
-calendar_options = {
-    "editable": True,
-    "selectable": True,
-    "headerToolbar": {
-        "left": "today prev,next",
-        "center": "title",
-        "right": "dayGridMonth,timeGridWeek,timeGridDay",
-    },
-    "slotMinTime": "06:00:00",
-    "slotMaxTime": "18:00:00",
-    "initialView": "timeGridWeek",
-    "events": [
-        # ... define your events here ...
-    ],
-    # ... other FullCalendar options ...
-}
-# Define events for the calendar
-calendar_events = [
-    {
-        "title": "Event 1",
-        "start": "2024-01-15T08:30:00",
-        "end": "2024-01-15T10:30:00",
-    },
-    {
-        "title": "Event 2",
-        "start": "2024-01-16T07:30:00",
-        "end": "2024-01-16T10:30:00",
-    },
-    {
-        "title": "Event 3",
-        "start": "2024-01-17T10:40:00",
-        "end": "2024-01-17T12:30:00",
-    },
-    # ... add more events as needed ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+def fetch_events_from_sheets():
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'  # Your Spreadsheet ID
+    worksheet_name = 'Sheet1'  # Name of your worksheet containing events
+
+    try:
+        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
+        records = worksheet.get_all_records()
+        return records
+    except Exception as e:
+        st.error(f"Failed to fetch events from Google Sheets: {str(e)}")
+        return []
+
+
+
+
+
+
+
+
+
+def transform_events_data(events):
+    formatted_events = []
+    for event in events:
+        start_datetime = f"{event['Date']}T{event['Start Time']}"
+        end_datetime = f"{event['Date']}T{event['End Time']}"
+        formatted_events.append({
+            "title": event['Event Name'],
+            "start": start_datetime,
+            "end": end_datetime
+        })
+    return formatted_events
+
+
+
+
+
+
+# Fetch and transform event data
+events_data = fetch_events_from_sheets()
+calendar_events = transform_events_data(events_data)
+
+# Update calendar options
+calendar_options['events'] = calendar_events
+
+
+
 ]
 custom_css = """
 .fc-event-past {
