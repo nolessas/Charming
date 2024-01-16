@@ -105,6 +105,22 @@ def fetch_data_from_sheets():
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
         return []
 
+
+
+#######?
+def fetch_data_from_sheets2():
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    worksheet_name = 'Sheet2'  # Change this to 'Sheet1'
+    try:
+        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
+        records = worksheet.get_all_records()
+        return records
+    except Exception as e:
+        st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
+        return []
+    
+
 def manage_todo_list():
     st.title("To-Do List")
 
@@ -276,7 +292,7 @@ def show_clients_with_deletion_option():
 
 
 
-
+ 
 
 
 
@@ -332,7 +348,7 @@ def show_dashboard():
             add_item_to_sheet2(item_input, location_input)
         
         # Fetch data from Google Sheets
-        records = fetch_data_from_sheets()
+        records = fetch_data_from_sheets2()
 
         if not records:
             st.write("No data available.")
