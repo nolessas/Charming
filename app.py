@@ -63,15 +63,7 @@ def main():
         logout_button = st.sidebar.button("Logout", on_click=set_user_logged_in, args=(False,))
 
 
-
-
-
-
-
-
-
-
-
+###########1
 def write_to_sheets(data):
     service = get_sheets_service()
 
@@ -100,7 +92,7 @@ def write_to_sheets(data):
 
 
 
-
+#######?
 def fetch_data_from_sheets():
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
@@ -137,7 +129,7 @@ def manage_todo_list():
 def delete_row_from_sheet(index, records):
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-    worksheet_name = 'Sheet2'
+    worksheet_name = 'Sheet1'
     try:
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
         worksheet.delete_rows(index + 2)  # Adjust for header row and 1-indexing
