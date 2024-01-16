@@ -69,15 +69,19 @@ def fetch_events_from_sheets():
 def transform_events_data(events):
     formatted_events = []
     for event in events:
-        start_datetime = f"{event['Date']}T{event['Start Time']}"
-        end_datetime = f"{event['Date']}T{event['End Time']}"
-        formatted_events.append({
-            "title": event['Event Name'],
-            "start": start_datetime,
-            "end": end_datetime
-        })
+        try:
+            start_datetime = f"{event['Date']}T{event['Start Time']}"
+            end_datetime = f"{event['Date']}T{event['End Time']}"
+            formatted_events.append({
+                "title": event['Event Name'],
+                "start": start_datetime,
+                "end": end_datetime
+            })
+        except KeyError as e:
+            st.error(f"KeyError: {str(e)} in row: {event}")
+            # Optionally, you can continue or break the loop based on your requirement
+            continue  # Skip this row and continue with the next
     return formatted_events
-
 
 
 
