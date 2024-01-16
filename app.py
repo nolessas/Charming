@@ -59,7 +59,8 @@ def show_dashboard():
 
     elif choose_main == "4":
         st.title("DoDo")
-        #register_todo()
+        register_todo()
+        manage_todo_list()
 
 
 if __name__ == "__main__":
