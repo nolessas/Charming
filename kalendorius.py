@@ -46,7 +46,7 @@ def display_calendar():
     elif view == "Month":
         month_start = selected_date_ts.replace(day=1)
         month_end = month_start + pd.DateOffset(months=1)
-        filtered_events = [event for event in event list if month_start <= pd.to_datetime(event['start']) < month_end]
+        filtered_events = [event for event in event_list if month_start <= pd.to_datetime(event['start']) < month_end]
 
     # Here you would call the actual calendar display function/component.
     # This is a placeholder for wherever your calendar component should be integrated.
