@@ -2,11 +2,17 @@ import streamlit as st
 import gspread
 import pandas as pd
 from datetime import datetime, time
-from google_sheets import get_sheets_service  # Ensure this function is correctly defined in google_sheets.py
+
+# Function to get Google Sheets service
+def get_sheets_service2():
+    service_account_info = st.secrets["google_oauth"]
+    credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=['https://www.googleapis.com/auth/spreadsheets'])
+    return gspread.authorize(credentials)
+
 
 #@st.cache
 def fetch_client_data_for_calendar():
-    service = get_sheets_service()
+    service = get_sheets_service2()
     worksheet = service.open_by_key('1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ').worksheet('Sheet1')
     records = worksheet.get_all_records()
     df = pd.DataFrame(records)
