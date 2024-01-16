@@ -11,6 +11,7 @@ def get_sheets_service2():
 
 
 #@st.cache
+# Function to fetch client data from Google Sheets and format it for the calendar
 def fetch_client_data_for_calendar():
     service = get_sheets_service2()
     worksheet = service.open_by_key('1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ').worksheet('Sheet1')
@@ -18,14 +19,13 @@ def fetch_client_data_for_calendar():
     df = pd.DataFrame(records)
     df['Date'] = pd.to_datetime(df['Date'])
 
+    # Format data for calendar
     events = []
     for _, row in df.iterrows():
         event = {
             'start': row['Date'].isoformat(),
             'end': (row['Date'] + pd.DateOffset(hours=1)).isoformat(),
-            'title': row['Full Name'],
-            'details': row['Note'],
-            'color': 'blue',  # You can specify the color or any other property as needed
+            'color': 'blue'  # or any other color
         }
         events.append(event)
     return events
