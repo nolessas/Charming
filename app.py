@@ -50,7 +50,6 @@ def show_dashboard():
 
     elif choose_main == "2":
         st.title("Calendar")
-        
         display_calendar()
 
     elif choose_main == "3":
@@ -62,7 +61,7 @@ def show_dashboard():
         register_todo()
         manage_todo_list()
 
-    elif choose_main == "4":
+    elif choose_main == "5":
         st.write("This tab is on development")
 
 
