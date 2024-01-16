@@ -6,7 +6,6 @@ from google_sheets import get_sheets_service
 
 
 
-# New function to show clients with checkboxes for deletion
 def show_clients_with_deletion_option():
     st.title("Manage Clients")
 
@@ -20,15 +19,13 @@ def show_clients_with_deletion_option():
     # Convert records to DataFrame
     df = pd.DataFrame(records)
 
-    # Add a column for checkboxes
-    df['Select'] = [False] * len(df)
-    df = df.reset_index()  # Reset index to use in multiselect
+    # Initialize an empty list to store indices of selected rows
+    selected_indices = []
 
-    # Show DataFrame with checkboxes
-    st.dataframe(df)
-
-    # Get the selected rows based on checkboxes
-    selected_indices = st.multiselect("Select clients to delete:", df.index, format_func=lambda x: df.at[x, 'Full Name'])
+    # Display each client with a checkbox
+    for index, row in df.iterrows():
+        if st.checkbox(f"{row['Full Name']}, {row['Phone Number']}, {row['Email']}", key=index):
+            selected_indices.append(index)
 
     # Confirm deletion button
     if st.button('Confirm deletion of selected clients'):
@@ -36,7 +33,6 @@ def show_clients_with_deletion_option():
             delete_row_from_sheet(i, records)  # Delete selected clients
         st.success("Selected clients deleted successfully!")
         st.experimental_rerun()  # Rerun the app to refresh the data display
-
 
 
 
