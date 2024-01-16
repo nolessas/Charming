@@ -2,18 +2,15 @@ import streamlit as st
 import gspread
 import pandas as pd
 from datetime import datetime, time
+from google_sheets import get_sheets_service
 
-# Function to get Google Sheets service
-def get_sheets_service2():
-    service_account_info = st.secrets["google_oauth"]
-    credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=['https://www.googleapis.com/auth/spreadsheets'])
-    return gspread.authorize(credentials)
+
 
 
 #@st.cache
 # Function to fetch client data from Google Sheets and format it for the calendar
 def fetch_client_data_for_calendar():
-    service = get_sheets_service2()
+    service = get_sheets_service()
     worksheet = service.open_by_key('1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ').worksheet('Sheet1')
     records = worksheet.get_all_records()
     df = pd.DataFrame(records)
@@ -30,31 +27,29 @@ def fetch_client_data_for_calendar():
         events.append(event)
     return events
 
-def display_detailed_info(event):
-    st.subheader(f"Details for {event['title']}:")
-    st.write(f"Date: {event['start']}")
-    st.write(f"Note: {event['details']}")
-    # Add more details you want to show here
-
 def display_calendar():
     event_list = fetch_client_data_for_calendar()
+
+    # UI elements for selecting the view
     view = st.selectbox("Select View", ["Month", "Week", "Day"])
     selected_date = st.date_input("Select Date", datetime.today())
+
+    # Convert selected_date to a pandas Timestamp for consistent comparison
     selected_date_ts = pd.Timestamp(selected_date)
 
-    filtered_events = []
-
+    # Filter events based on the selected view
     if view == "Day":
         filtered_events = [event for event in event_list if pd.to_datetime(event['start']).date() == selected_date_ts.date()]
     elif view == "Week":
         week_start = selected_date_ts - pd.DateOffset(days=selected_date_ts.weekday())
         week_end = week_start + pd.DateOffset(days=7)
         filtered_events = [event for event in event_list if week_start <= pd.to_datetime(event['start']) < week_end]
-    elif view == "Month":
+    else:  # Month view
         month_start = selected_date_ts.replace(day=1)
         month_end = month_start + pd.DateOffset(months=1)
         filtered_events = [event for event in event_list if month_start <= pd.to_datetime(event['start']) < month_end]
 
-    for event in filtered_events:
-        if st.button(event['title'], key=event['start']):
-            display_detailed_info(event)
+    # Display the calendar with the filtered events list
+    st.markdown('<div class="streamlit-calendar">', unsafe_allow_html=True)
+    st_calendar.calendar(events=filtered_events)  # Your calendar component call
+    st.markdown('</div>', unsafe_allow_html=True)
