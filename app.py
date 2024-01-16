@@ -362,7 +362,7 @@ def show_dashboard():
 
     elif choose_main == "option2":
         st.title("Calendar")
-        display_calendar()
+        #display_calendar()
 
 #######################################################################################################################################################
     elif choose_main == "option3":
