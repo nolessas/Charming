@@ -20,7 +20,13 @@ service_account_info = st.secrets["google_oauth"]
 credentials = service_account.Credentials.from_service_account_info(service_account_info)
 gc = gspread.authorize(credentials)
 
+# Function to read CSS and inject it into the Streamlit app
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
+# Inject CSS at the beginning of your app
+local_css('style.css')
 
 
 calendar_options = {
