@@ -187,7 +187,7 @@ def show_registered_clients():
 
             # Calculate the start date based on the selected time range
             if time_range == "Day":
-                start_date = pd.Timestamp.now().normalize()
+                start_date = pd.Timestamp.now()- pd.DateOffset(days=1)
             elif time_range == "Week":
                 start_date = pd.Timestamp.now() - pd.DateOffset(weeks=1)
             elif time_range == "Month":
