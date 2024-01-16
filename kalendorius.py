@@ -52,6 +52,3 @@ def display_calendar():
         month_end = month_start + pd.DateOffset(months=1)
         filtered_events = [event for event in event_list if month_start <= pd.to_datetime(event['start']) < month_end]
 
-    for event in filtered_events:
-        if st.button(event['title'], key=event['start']):
-            display_detailed_info(event)
