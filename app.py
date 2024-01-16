@@ -13,65 +13,6 @@ from streamlit_calendar import calendar
 
 
 
-calendar_options = {
-    "editable": True,
-    "selectable": True,
-    "headerToolbar": {
-        "left": "today prev,next",
-        "center": "title",
-        "right": "dayGridMonth,timeGridWeek,timeGridDay",
-    },
-    "slotMinTime": "06:00:00",
-    "slotMaxTime": "18:00:00",
-    "initialView": "timeGridWeek",
-    "events": [
-        # ... define your events here ...
-    ],
-    # ... other FullCalendar options ...
-}
-# Define events for the calendar
-calendar_events = [
-    {
-        "title": "Event 1",
-        "start": "2024-01-15T08:30:00",
-        "end": "2024-01-15T10:30:00",
-    },
-    {
-        "title": "Event 2",
-        "start": "2024-01-16T07:30:00",
-        "end": "2024-01-16T10:30:00",
-    },
-    {
-        "title": "Event 3",
-        "start": "2024-01-17T10:40:00",
-        "end": "2024-01-17T12:30:00",
-    },
-    # ... add more events as needed ...
-]
-custom_css = """
-.fc-event-past {
-    opacity: 0.8;
-}
-.fc-event-time {
-    font-style: italic;
-}
-.fc-event-title {
-    font-weight: 700;
-}
-.fc-toolbar-title {
-    font-size: 2rem;
-}
-"""
-def render_calendar():
-    # Render the calendar component and store the user's interaction result
-    result = calendar(events=calendar_events, options=calendar_options, custom_css=custom_css)
-    
-    # If the calendar interaction returns a value, display it
-    if result:
-        st.json(result)
-
-# Call the function to render the calendar
-render_calendar()
 
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
