@@ -57,8 +57,7 @@ def display_calendar():
     st.write("Filtered events:")  # This will print the filtered events in the app
     st.write(filtered_events)
 
+    # Display the calendar with the filtered events list
     st.markdown('<div class="streamlit-calendar">', unsafe_allow_html=True)
-    for event in filtered_events:
-        if st.button(event['title'], key=event['start']):
-            display_detailed_info(event)
+    st_calendar.calendar(events=filtered_events)  # Your calendar component call
     st.markdown('</div>', unsafe_allow_html=True)
