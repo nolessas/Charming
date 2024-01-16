@@ -13,6 +13,25 @@ from streamlit_calendar import calendar
 
 
 
+SCOPES = ['https://www.googleapis.com/auth/calendar']
+SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
+
+service_account_info = st.secrets["google_oauth"]
+credentials = service_account.Credentials.from_service_account_info(service_account_info)
+gc = gspread.authorize(credentials)
+
+
+
+def get_sheets_service():
+    # Accessing service account credentials from Streamlit secrets
+    service_account_info = st.secrets["google_oauth"]
+
+    # Creating credentials from the service account info
+    credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES_SHEETS)
+
+    # Authorizing the gspread client with the credentials
+    service = gspread.authorize(credentials)
+    return service
 
 
 
@@ -87,25 +106,6 @@ render_calendar()
 
 
 
-SCOPES = ['https://www.googleapis.com/auth/calendar']
-SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
-
-service_account_info = st.secrets["google_oauth"]
-credentials = service_account.Credentials.from_service_account_info(service_account_info)
-gc = gspread.authorize(credentials)
-
-
-
-def get_sheets_service():
-    # Accessing service account credentials from Streamlit secrets
-    service_account_info = st.secrets["google_oauth"]
-
-    # Creating credentials from the service account info
-    credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES_SHEETS)
-
-    # Authorizing the gspread client with the credentials
-    service = gspread.authorize(credentials)
-    return service
 
 
 
