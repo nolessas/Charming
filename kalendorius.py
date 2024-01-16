@@ -60,5 +60,5 @@ def display_calendar():
     st.markdown('<div class="streamlit-calendar">', unsafe_allow_html=True)
     for event in filtered_events:
         if st.button(event['title'], key=event['start']):
+            st.write(event)  # Debug: Print the event data
             display_detailed_info(event)
-    st.markdown('</div>', unsafe_allow_html=True)
