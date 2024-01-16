@@ -73,7 +73,7 @@ calendar_options['events'] = calendar_events
 
 
 
-]
+
 def render_calendar():
     # Render the calendar component and store the user's interaction result
     result = calendar(events=calendar_events, options=calendar_options, custom_css=custom_css)
@@ -84,6 +84,7 @@ def render_calendar():
 
 # Call the function to render the calendar
 render_calendar()
+
 
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
