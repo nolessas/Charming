@@ -70,18 +70,24 @@ def transform_events_data(events):
     formatted_events = []
     for event in events:
         try:
-            start_datetime = f"{event['Date']}T{event['Start Time']}"
-            end_datetime = f"{event['Date']}T{event['End Time']}"
+            # Use default times if 'Start Time' or 'End Time' is missing
+            start_time = event.get('Start Time', '00:00:00')
+            end_time = event.get('End Time', '23:59:59')
+            start_datetime = f"{event['Date']}T{start_time}"
+            end_datetime = f"{event['Date']}T{end_time}"
+
+            event_name = event.get('Event Name', 'No Title')  # Default title if missing
+
             formatted_events.append({
-                "title": event['Event Name'],
+                "title": event_name,
                 "start": start_datetime,
                 "end": end_datetime
             })
         except KeyError as e:
             st.error(f"KeyError: {str(e)} in row: {event}")
-            # Optionally, you can continue or break the loop based on your requirement
-            continue  # Skip this row and continue with the next
+            continue
     return formatted_events
+
 
 
 
