@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime, time
-from app import st_calendar
 from google_sheets import get_sheets_service  # Ensure this function is correctly defined in google_sheets.py
 
 #@st.cache
