@@ -54,6 +54,10 @@ def display_calendar():
         filtered_events = [event for event in event_list if month_start <= pd.to_datetime(event['start']) < month_end]
 
     # Debugging: Check if events are being filtered correctly
+    def display_detailed_info(event):
+        # Add your code here to display detailed information about the event
+        pass
+
     st.write("Filtered events:")  # This will print the filtered events in the app
     st.write(filtered_events)
 
