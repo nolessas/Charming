@@ -10,6 +10,8 @@ from kalendorius import display_calendar
 import streamlit as st
 from pathlib import Path
 from streamlit_calendar import calendar
+from client_management import show_registered_clients, register_client1
+from google_sheets import get_sheets_service, write_to_sheets, delete_client
 
 
 
@@ -44,12 +46,12 @@ def show_dashboard():
 
     elif choose_main == "option2":
         st.title("Calendar")
-        show_clients_with_deletion_option()
+        #show_clients_with_deletion_option()
         #display_calendar()
 
     elif choose_main == "option3":
         st.title("ToDo")
-        register_todo()
+        #register_todo()
 
     elif choose_main == "option4":
         st.title("DoDo")
