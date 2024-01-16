@@ -63,7 +63,7 @@ def get_sheets_service():
     service = gspread.authorize(credentials)
     return service
 
-@st.cache(allow_output_mutation=True, show_spinner=False)
+# Fetch events from Google Sheets
 def fetch_events_from_sheets():
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'  # Replace with your actual Spreadsheet ID
@@ -111,12 +111,7 @@ calendar_options['events'] = calendar_events
 
 
 
-# In your main function or wherever you render the calendar, call render_calendar()
-if __name__ == "__main__":
-    if is_user_logged_in():
-        render_calendar()
-    else:
-        show_login()
+
 
 def render_calendar():
     # Render the calendar component and store the user's interaction result
