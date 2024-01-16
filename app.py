@@ -7,7 +7,7 @@ import gspread
 from google.oauth2 import service_account
 import pandas as pd
 from pathlib import Path
-from streamlit_calendar import calendar
+from kalendorius import display_calendar
 
 
 
@@ -282,7 +282,7 @@ def show_dashboard():
 
     elif choose_main == "option2":
         st.title("Calendar")
-        #display_calendar()
+        display_calendar()
 
 #######################################################################################################################################################
     elif choose_main == "option3":
