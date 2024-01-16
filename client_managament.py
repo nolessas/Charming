@@ -33,10 +33,12 @@ def show_registered_clients():
         records = worksheet.get_all_records()
         if records:
             df = pd.DataFrame(records)
-            df['Date'] = pd.to_datetime(df['Date'])
+
+            # Ensure 'Date' is in datetime format
+            df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
             df['Weekday'] = df['Date'].dt.day_name()  # Add day of the week
 
-            # Add radio buttons for filtering by time range (Day, Week, Month, Year)
+            # Add radio buttons for filtering by time range
             time_range = st.radio("Filter by time range:", ["Day", "Week", "Month", "Year"])
 
             # Calculate the start date based on the selected time range
@@ -55,8 +57,10 @@ def show_registered_clients():
 
             # Format date and time columns for display
             filtered_df['Formatted Date'] = filtered_df['Date'].dt.strftime('%d/%m/%Y')
-            filtered_df['Formatted Time In'] = filtered_df['Time in'].dt.strftime('%H:%M')
-            filtered_df['Formatted Time Out'] = filtered_df['Time out'].dt.strftime('%H:%M')
+
+            # Convert 'Time in' and 'Time out' columns to string format for display
+            filtered_df['Formatted Time In'] = pd.to_datetime(df['Time in'], format='%H:%M').dt.strftime('%H:%M')
+            filtered_df['Formatted Time Out'] = pd.to_datetime(df['Time out'], format='%H:%M').dt.strftime('%H:%M')
 
             st.write("Client Information:")
             st.dataframe(filtered_df[['Formatted Date', 'Formatted Time In', 'Formatted Time Out', 'Full Name', 'Phone Number', 'Email', 'Note']])
