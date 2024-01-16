@@ -107,10 +107,14 @@ def register_client1():
         if full_name_input and phone_input and email_input:  # Ensure all required fields are filled
             try:
                 # Format the data for Google Sheets as strings
+                formatted_date = date_input.strftime("%d/%m/%Y")  # 'DD/MM/YYYY' format for the date
+                formatted_time_in = time_in.strftime("%H:%M")     # 'HH:MM' format for time
+                formatted_time_out = time_out.strftime("%H:%M")   # 'HH:MM' format for time
+
                 sheet_data = [
-                    datetime.combine(date_input, datetime.min.time()),  # Python datetime object for the date
-                    datetime.combine(datetime.today(), time_in),       # Python datetime object for 'Time In'
-                    datetime.combine(datetime.today(), time_out),      # Python datetime object for 'Time Out'
+                    formatted_date,
+                    formatted_time_in,
+                    formatted_time_out,
                     full_name_input, 
                     phone_input, 
                     email_input, 
