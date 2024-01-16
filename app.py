@@ -36,13 +36,7 @@ custom_css = """
 """
 
 
-# Function to read CSS from a file and inject it into the Streamlit app
-def local_css(file_name):
-    with open(file_name) as f:
-        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-# Inject custom CSS at the beginning of your app
-local_css('style.css')
 
 
 # Initialize your calendar options
@@ -61,6 +55,7 @@ calendar_options = {
 }
 
 
+# Get the Google Sheets service
 def get_sheets_service():
     # Accessing service account credentials from Streamlit secrets
     service_account_info = st.secrets["google_oauth"]
@@ -71,8 +66,6 @@ def get_sheets_service():
     # Authorizing the gspread client with the credentials
     service = gspread.authorize(credentials)
     return service
-
-
 
 def fetch_events_from_sheets():
     service = get_sheets_service()
