@@ -181,6 +181,7 @@ def show_registered_clients():
         if records:
             df = pd.DataFrame(records)
             df['Date'] = pd.to_datetime(df['Date'])
+            df['Weekday'] = df['Date'].dt.day_name()  # Add day of the week
 
             # Add radio buttons for filtering by time range (Day, Week, Month, Year)
             time_range = st.radio("", ["Day", "Week", "Month", "Year"])
@@ -283,10 +284,6 @@ def delete_client(index):
         st.error(f"Failed to delete client: {str(e)}")
 
 ####
-
-
-
-
 
 
 
