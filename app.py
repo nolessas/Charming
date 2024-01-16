@@ -301,29 +301,7 @@ def show_dashboard():
 
     if choose_main == "option1":
         show_registered_clients()
-        st.title("Register New Client")
-        # Input fields for registration
-        date_input = st.date_input("Date:")
-
-                # With this
-        hours_input = st.slider(
-            "Select Time:",
-            value=time(8, 0),  # Default value, adjust as needed
-            format="HH:mm"  # Display format for the slider
-        )
-        st.write("Selected Time Range:", hours_input)
-
-        # Rest of the input fields
-        full_name_input = st.text_input("Full Name:")
-        phone_input = st.text_input("Phone Number:")
-        email_input = st.text_input("Email:")
-        note_input = st.text_area("Note:")
-
-        # Button for registering the client
-        if st.button("Register"):
-            register_client(date_input, hours_input, full_name_input, phone_input, email_input, note_input)
-            st.success("Client registered successfully!")
-            st.rerun()
+        show_clients_with_deletion_option()
 
     elif choose_main == "option2":
         st.title("Calendar")
