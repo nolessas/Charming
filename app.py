@@ -104,7 +104,7 @@ def write_to_sheets(data):
 def fetch_data_from_sheets():
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-    worksheet_name = 'Sheet2'
+    worksheet_name = 'Sheet1'  # Change this to 'Sheet1'
     try:
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
         records = worksheet.get_all_records()
