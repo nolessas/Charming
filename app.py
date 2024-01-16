@@ -36,6 +36,8 @@ def main():
         # You can add your logout logic here if needed
         logout_button = st.sidebar.button("Logout", on_click=set_user_logged_in, args=(False,))
 
+def display_calendar():
+    st_calendar.calendar()  # Test the calendar rendering without any events
 
 
 def show_dashboard():
