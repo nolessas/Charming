@@ -51,10 +51,14 @@ def display_calendar():
     elif view == "Month":
         month_start = selected_date_ts.replace(day=1)
         month_end = month_start + pd.DateOffset(months=1)
-        filtered_events = [event for event in event list if month_start <= pd.to_datetime(event['start']) < month_end]
+        filtered_events = [event for event in event_list if month_start <= pd.to_datetime(event['start']) < month_end]
 
-    # Display the calendar with the filtered events list
+    # Debugging: Check if events are being filtered correctly
+    st.write("Filtered events:")  # This will print the filtered events in the app
+    st.write(filtered_events)
+
     st.markdown('<div class="streamlit-calendar">', unsafe_allow_html=True)
-    st_calendar.calendar(events=filtered_events)  # Your calendar component call
+    for event in filtered_events:
+        if st.button(event['title'], key=event['start']):
+            display_detailed_info(event)
     st.markdown('</div>', unsafe_allow_html=True)
-
