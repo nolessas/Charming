@@ -16,6 +16,7 @@ from data_base import show_clients_with_deletion_option, delete_row_from_sheet, 
 
 
 
+
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 service_account_info = st.secrets["google_oauth"]
