@@ -98,7 +98,9 @@ events_data = fetch_events_from_sheets()
 calendar_events = transform_events_data(events_data)
 
 # Update calendar options
+st.write(calendar_events)  # Debugging
 calendar_options['events'] = calendar_events
+
 
 
 
