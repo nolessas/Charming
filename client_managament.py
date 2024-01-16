@@ -103,16 +103,19 @@ def register_client1():
     email_input = st.text_input("Email:")
     note_input = st.text_area("Note:")
 
-    # 'Register Client' button
     if st.button("Register Client"):
         if full_name_input and phone_input and email_input:  # Ensure all required fields are filled
             try:
-                # Combine the date and hours into datetime objects
-                combined_datetime_in = datetime.combine(date_input, time_in)
-
-                # Format the data for Google Sheets
-                # Updated date format to 'day/month/year'
-                sheet_data = [combined_datetime_in.strftime("%d/%m/%Y"), combined_datetime_in.strftime("%H:%M"), time_out.strftime("%H:%M"), full_name_input, phone_input, email_input, note_input]
+                # Format the data for Google Sheets as strings
+                sheet_data = [
+                    date_input.strftime("%d/%m/%Y"),  # Date in 'DD/MM/YYYY' format
+                    time_in.strftime("%H:%M"),       # Time In as 'HH:MM'
+                    time_out.strftime("%H:%M"),      # Time Out as 'HH:MM'
+                    full_name_input, 
+                    phone_input, 
+                    email_input, 
+                    note_input
+                ]
 
                 # Write data to Google Sheets (using the function from google_sheets.py)
                 write_to_sheets(sheet_data)
@@ -123,4 +126,3 @@ def register_client1():
                 st.error(f"Failed to register client: {e}")
         else:
             st.error("Please fill in all required fields.")
-
