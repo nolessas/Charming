@@ -1,5 +1,5 @@
 import streamlit as st
-import gspread
+#import gspread
 import pandas as pd
 from datetime import datetime, time
 from google_sheets import get_sheets_service  # Ensure this function is correctly defined in google_sheets.py
@@ -7,10 +7,11 @@ from google_sheets import get_sheets_service  # Ensure this function is correctl
 #@st.cache
 def fetch_client_data_for_calendar():
     service = get_sheets_service()
-    worksheet = service.open_by_key('1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ').worksheet('Sheet1')
+    worksheet = service.open_by_key('Your_Spreadsheet_ID').worksheet('Sheet1')
     records = worksheet.get_all_records()
     df = pd.DataFrame(records)
     df['Date'] = pd.to_datetime(df['Date'])
+
     events = []
     for _, row in df.iterrows():
         event = {
@@ -18,7 +19,7 @@ def fetch_client_data_for_calendar():
             'end': (row['Date'] + pd.DateOffset(hours=1)).isoformat(),
             'title': row['Full Name'],
             'details': row['Note'],
-            'color': 'blue',
+            'color': 'blue',  # You can specify the color or any other property as needed
         }
         events.append(event)
     return events
@@ -35,7 +36,6 @@ def display_calendar():
     selected_date = st.date_input("Select Date", datetime.today())
     selected_date_ts = pd.Timestamp(selected_date)
 
-    # Initialize filtered_events outside of the if-elif blocks to ensure it's always defined
     filtered_events = []
 
     if view == "Day":
@@ -49,12 +49,6 @@ def display_calendar():
         month_end = month_start + pd.DateOffset(months=1)
         filtered_events = [event for event in event_list if month_start <= pd.to_datetime(event['start']) < month_end]
 
-    # Here you would call the actual calendar display function/component.
-    # This is a placeholder for wherever your calendar component should be integrated.
-    st_calendar(calendar_events=filtered_events)  # Replace with your calendar component call
-
-    # For each event in the filtered list, create a button for more details
     for event in filtered_events:
         if st.button(event['title'], key=event['start']):
             display_detailed_info(event)
-
