@@ -46,16 +46,35 @@ def display_calendar():
         week_start = selected_date_ts - pd.DateOffset(days=selected_date_ts.weekday())
         week_end = week_start + pd.DateOffset(days=7)
         filtered_events = [event for event in event_list if week_start <= pd.to_datetime(event['start']) < week_end]
+    def display_detailed_info(event):
+        # Add your code to display detailed information about the event
+        pass
+
     elif view == "Month":
         month_start = selected_date_ts.replace(day=1)
         month_end = month_start + pd.DateOffset(months=1)
         filtered_events = [event for event in event_list if month_start <= pd.to_datetime(event['start']) < month_end]
 
-    # Debugging: Check if events are being filtered correctly
-    st.write("Filtered events:")  # This will print the filtered events in the app
-    st.write(filtered_events)
+        # Debugging: Check if events are being filtered correctly
+        st.write("Filtered events:")  # This will print the filtered events in the app
+        st.write(filtered_events)
 
-    # Display the calendar with the filtered events list
-    st.markdown('<div class="streamlit-calendar">', unsafe_allow_html=True)
-    st_calendar.calendar(events=filtered_events)  # Your calendar component call
-    st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('<div class="streamlit-calendar">', unsafe_allow_html=True)
+        for event in filtered_events:
+            if st.button(event['title'], key=event['start']):
+                display_detailed_info(event)
+        st.markdown('</div>', unsafe_allow_html=True)
+        pass
+        month_start = selected_date_ts.replace(day=1)
+        month_end = month_start + pd.DateOffset(months=1)
+        filtered_events = [event for event in event_list if month_start <= pd.to_datetime(event['start']) < month_end]
+
+        # Debugging: Check if events are being filtered correctly
+        st.write("Filtered events:")  # This will print the filtered events in the app
+        st.write(filtered_events)
+
+        st.markdown('<div class="streamlit-calendar">', unsafe_allow_html=True)
+        for event in filtered_events:
+            if st.button(event['title'], key=event['start']):
+                display_detailed_info(event)
+        st.markdown('</div>', unsafe_allow_html=True)
