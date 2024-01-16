@@ -46,7 +46,7 @@ def show_dashboard():
     if choose_main == "1":
         st.title("Clients")
         show_registered_clients()
-        Register_client1()
+        register_client1()
 
     elif choose_main == "2":
         st.title("Calendar")
