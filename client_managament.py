@@ -34,34 +34,30 @@ def show_registered_clients():
         if records:
             df = pd.DataFrame(records)
 
-            # Ensure 'Date' is in datetime format
+            # Convert 'Date', 'Time in', and 'Time out' to proper formats
             df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
-            df['Weekday'] = df['Date'].dt.day_name()  # Add day of the week
+            df['Formatted Time In'] = pd.to_datetime(df['Time in'], format='%H:%M').dt.strftime('%H:%M')
+            df['Formatted Time Out'] = pd.to_datetime(df['Time out'], format='%H:%M').dt.strftime('%H:%M')
 
-            # Add radio buttons for filtering by time range
+            # Convert 'Phone Number' to string to prevent formatting issues
+            df['Phone Number'] = df['Phone Number'].astype(str)
+
+            # Add day of the week
+            df['Weekday'] = df['Date'].dt.day_name()
+
+            # Filter by time range
             time_range = st.radio("Filter by time range:", ["Day", "Week", "Month", "Year"])
-
-            # Calculate the start date based on the selected time range
             start_date = {
                 "Day": pd.Timestamp.now() - pd.DateOffset(days=1),
                 "Week": pd.Timestamp.now() - pd.DateOffset(weeks=1),
                 "Month": pd.Timestamp.now() - pd.DateOffset(months=1),
                 "Year": pd.Timestamp.now() - pd.DateOffset(years=1)
-            }.get(time_range, pd.Timestamp(1970, 1, 1))  # Default to a very old date
+            }.get(time_range, pd.Timestamp(1970, 1, 1))
 
-            # Filter the dataframe based on the selected time range
             filtered_df = df[df['Date'] >= start_date]
-
-            # Sort the dataframe by Date column
             filtered_df = filtered_df.sort_values(by=["Date"])
 
-            # Format date and time columns for display
-            filtered_df['Formatted Date'] = filtered_df['Date'].dt.strftime('%d/%m/%Y')
-
-            # Convert 'Time in' and 'Time out' columns to string format for display
-            filtered_df['Formatted Time In'] = pd.to_datetime(df['Time in'], format='%H:%M').dt.strftime('%H:%M')
-            filtered_df['Formatted Time Out'] = pd.to_datetime(df['Time out'], format='%H:%M').dt.strftime('%H:%M')
-
+            # Display the DataFrame
             st.write("Client Information:")
             st.dataframe(filtered_df[['Formatted Date', 'Formatted Time In', 'Formatted Time Out', 'Full Name', 'Phone Number', 'Email', 'Note']])
 
