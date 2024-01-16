@@ -4,7 +4,7 @@ from datetime import datetime, time
 from app import st_calendar
 from google_sheets import get_sheets_service  # Ensure this function is correctly defined in google_sheets.py
 
-@st.cache
+#@st.cache
 def fetch_client_data_for_calendar():
     service = get_sheets_service()
     worksheet = service.open_by_key('Your_Spreadsheet_ID').worksheet('Sheet1')
