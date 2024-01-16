@@ -39,20 +39,19 @@ def display_calendar():
     selected_date = st.date_input("Select Date", datetime.today())
     selected_date_ts = pd.Timestamp(selected_date)
 
-    filtered_events = [event for event in event_list if pd.to_datetime(event['start']).date() == selected_date_ts.date()]
+    # Initialize filtered_events outside of the if-elif blocks to ensure it's always defined
+    filtered_events = []
 
-    if view == "Week":
+    if view == "Day":
+        filtered_events = [event for event in event_list if pd.to_datetime(event['start']).date() == selected_date_ts.date()]
+    elif view == "Week":
         week_start = selected_date_ts - pd.DateOffset(days=selected_date_ts.weekday())
         week_end = week_start + pd.DateOffset(days=7)
-        filtered_events = [
-            event for event in event_list if week_start <= pd.to_datetime(event['start']) < week_end
-        ]
+        filtered_events = [event for event in event_list if week_start <= pd.to_datetime(event['start']) < week_end]
     elif view == "Month":
         month_start = selected_date_ts.replace(day=1)
         month_end = month_start + pd.DateOffset(months=1)
-        filtered_events = [
-            event for event in event_list if month_start <= pd.to_datetime(event['start']) < month_end
-        ]
+        filtered_events = [event for event in event_list if month_start <= pd.to_datetime(event['start']) < month_end]
 
     # Debugging: Check if events are being filtered correctly
     st.write("Filtered events:")  # This will print the filtered events in the app
