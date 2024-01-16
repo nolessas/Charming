@@ -57,4 +57,4 @@ def display_calendar():
         if st.button(event['title'], key=event['start']):
             display_detailed_info(event)
     st.markdown('</div>', unsafe_allow_html=True)
-    print(df)
+
