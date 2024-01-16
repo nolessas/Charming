@@ -300,7 +300,6 @@ def show_dashboard():
     choose_main = st.radio("", ("option1", "option2", "option3"))
 
     if choose_main == "option1":
-        show_registered_clients()
         show_clients_with_deletion_option()
 
     elif choose_main == "option2":
