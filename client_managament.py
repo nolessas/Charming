@@ -86,33 +86,29 @@ def show_registered_clients():
 
 
 
-def Register_client1():
+def register_client1():
     st.title("Register New Client")
+
     # Input fields for registration
     date_input = st.date_input("Date:")
-
-            # With this
-    hours_input = st.slider(
-        "Select Time:",
-        value=time(8, 0),  # Default value, adjust as needed
-        format="HH:mm"  # Display format for the slider
-    )
-    st.write("Selected Time Range:", hours_input)
-
-    # Rest of the input fields
+    hours_input = st.slider("Select Time:", value=time(8, 0), format="HH:mm")
     full_name_input = st.text_input("Full Name:")
     phone_input = st.text_input("Phone Number:")
     email_input = st.text_input("Email:")
     note_input = st.text_area("Note:")
 
-    # Button for registering the client
     if st.button("Register"):
-        register_client(date_input, hours_input, full_name_input, phone_input, email_input, note_input)
+        # Combine the date and hours into a datetime object
+        combined_datetime = datetime.combine(date_input, hours_input)
+
+        # Format the data for Google Sheets
+        sheet_data = [str(combined_datetime), full_name_input, phone_input, email_input, note_input]
+
+        # Write data to Google Sheets
+        write_to_sheets(sheet_data)
+
+        # User feedback
         st.success("Client registered successfully!")
+        st.sidebar.success("Client registered successfully!")
         st.rerun()
-
-
-
-
-
 
