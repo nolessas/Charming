@@ -49,7 +49,7 @@ def show_dashboard():
     elif choose_main == "2":
         st.title("Calendar")
         #show_clients_with_deletion_option()
-        #display_calendar()
+        display_calendar()
 
     elif choose_main == "3":
         st.title("ToDo")
