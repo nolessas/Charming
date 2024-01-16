@@ -35,10 +35,6 @@ custom_css = """
 }
 """
 
-
-
-
-
 # Initialize your calendar options
 calendar_options = {
     "editable": True,
@@ -67,10 +63,11 @@ def get_sheets_service():
     service = gspread.authorize(credentials)
     return service
 
+# Fetch events from Google Sheets
 def fetch_events_from_sheets():
     service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'  # Your Spreadsheet ID
-    worksheet_name = 'Sheet1'  # Name of your worksheet containing events
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'  # Replace with your actual Spreadsheet ID
+    worksheet_name = 'Sheet1'  # Replace with your actual Worksheet name
 
     try:
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
@@ -82,17 +79,15 @@ def fetch_events_from_sheets():
 
 
 
-
+# Transform the events data into the format needed for FullCalendar
 def transform_events_data(events):
     formatted_events = []
     for event in events:
         try:
-            # Use default times if 'Start Time' or 'End Time' is missing
             start_time = event.get('Start Time', '00:00:00')
             end_time = event.get('End Time', '23:59:59')
             start_datetime = f"{event['Date']}T{start_time}"
             end_datetime = f"{event['Date']}T{end_time}"
-
             event_name = event.get('Event Name', 'No Title')  # Default title if missing
 
             formatted_events.append({
