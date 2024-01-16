@@ -10,7 +10,7 @@ from kalendorius import display_calendar
 import streamlit as st
 from pathlib import Path
 from streamlit_calendar import calendar
-from client_managament import show_registered_clients, register_client1
+from client_managament import show_registered_clients, Register_client1  
 from google_sheets import get_sheets_service, write_to_sheets, delete_client
 
 
