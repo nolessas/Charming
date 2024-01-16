@@ -39,8 +39,6 @@ def display_calendar():
     selected_date = st.date_input("Select Date", datetime.today())
     selected_date_ts = pd.Timestamp(selected_date)
 
-    # Initialize filtered_events outside of the if-elif blocks to ensure it's always defined
-    filtered_events = []
 
     if view == "Day":
         filtered_events = [event for event in event_list if pd.to_datetime(event['start']).date() == selected_date_ts.date()]
