@@ -104,26 +104,32 @@ def register_client1():
     email_input = st.text_input("Email:")
     note_input = st.text_area("Note:")
 
-if st.button("Register"):
-        # Combine the date and hours into datetime objects
-        combined_datetime_in = datetime.combine(date_input, time_in)
-        combined_datetime_out = datetime.combine(date_input, time_out)
+    if st.button("Register Client"):
+        # Check if the necessary inputs are provided
+        if full_name_input and phone_input and email_input:  # Add other necessary checks as per your requirements
+            try:
+                # Combine the date and hours into datetime objects
+                combined_datetime_in = datetime.combine(date_input, time_in)
+                combined_datetime_out = datetime.combine(date_input, time_out)
 
-        # Format the data for Google Sheets
-        sheet_data = {
-            "Date": combined_datetime_in.strftime("%Y-%m-%d"),
-            "Time In": combined_datetime_in.strftime("%H:%M"),
-            "Time Out": combined_datetime_out.strftime("%H:%M"),
-            "Full Name": full_name_input,
-            "Phone Number": phone_input,
-            "Email": email_input,
-            "Note": note_input
-        }
+                # Format the data for Google Sheets
+                sheet_data = {
+                    "Date": combined_datetime_in.strftime("%Y-%m-%d"),
+                    "Time In": combined_datetime_in.strftime("%H:%M"),
+                    "Time Out": combined_datetime_out.strftime("%H:%M"),
+                    "Full Name": full_name_input,
+                    "Phone Number": phone_input,
+                    "Email": email_input,
+                    "Note": note_input
+                }
 
-        # Write data to Google Sheets
-        write_to_sheets(sheet_data, sheet_name="Sheet1")  # Specify the sheet name if needed
+                # Write data to Google Sheets
+                write_to_sheets(sheet_data, sheet_name="Sheet1")  # Specify the sheet name if needed
 
-        # User feedback
-        st.success("Client registered successfully!")
-        st.sidebar.success("Client registered successfully!")
-        st.rerun()
+                # User feedback
+                st.success("Client registered successfully!")
+                st.sidebar.success("Client registered successfully!")
+            except Exception as e:
+                st.error(f"Failed to register client: {e}")
+        else:
+            st.error("Please fill in all required fields.")
