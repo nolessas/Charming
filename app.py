@@ -22,6 +22,22 @@ gc = gspread.authorize(credentials)
 
 
 
+
+calendar_options = {
+    "editable": True,
+    "selectable": True,
+    "headerToolbar": {
+        "left": "today prev,next",
+        "center": "title",
+        "right": "dayGridMonth,timeGridWeek,timeGridDay",
+    },
+    "slotMinTime": "06:00:00",
+    "slotMaxTime": "18:00:00",
+    "initialView": "timeGridWeek",
+    "events": []  # Initially empty, to be populated later
+}
+
+
 def get_sheets_service():
     # Accessing service account credentials from Streamlit secrets
     service_account_info = st.secrets["google_oauth"]
@@ -32,16 +48,6 @@ def get_sheets_service():
     # Authorizing the gspread client with the credentials
     service = gspread.authorize(credentials)
     return service
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -57,11 +63,6 @@ def fetch_events_from_sheets():
     except Exception as e:
         st.error(f"Failed to fetch events from Google Sheets: {str(e)}")
         return []
-
-
-
-
-
 
 
 
@@ -90,15 +91,11 @@ def transform_events_data(events):
 
 
 
-
-
-
 # Fetch and transform event data
 events_data = fetch_events_from_sheets()
 calendar_events = transform_events_data(events_data)
 
-# Update calendar options
-st.write(calendar_events)  # Debugging
+# Update calendar options with the events
 calendar_options['events'] = calendar_events
 
 
