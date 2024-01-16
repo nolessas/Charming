@@ -5,7 +5,6 @@ import pandas as pd
 from google.oauth2 import service_account
 import gspread
 from datetime import datetime
-from google_sheets import get_sheets_service  # Make sure to have this function in google_sheets.py
 
 # Function to fetch client data from Google Sheets and format it for the calendar
 @st.cache
