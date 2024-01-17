@@ -21,12 +21,10 @@ def register_todo():
         # Convert records to DataFrame
     df = pd.DataFrame(records)
 
-    # Initialize an empty list to store indices of selected rows
-    selected_indices = []
 
     # Display each client with a checkbox
     for index, row in df.iterrows():
-        if st.checkbox(f"{row['Date']}{row['Full Name']}, {row['Phone Number']}, {row['Email']}, {row['Note']}", key=index):
+        if st.checkbox(f"{row['1-100']}{row['A thing']}, key=index):
             selected_indices.append(index)
 
     # Confirm deletion button
