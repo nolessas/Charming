@@ -7,7 +7,7 @@ from google_sheets import get_sheets_service
 
 
 def show_clients_with_deletion_option():
-    st.title("Manage Clients")
+    st.title("")
 
     # Fetch data from Google Sheets
     records = fetch_data_from_sheets()
@@ -24,7 +24,7 @@ def show_clients_with_deletion_option():
 
     # Display each client with a checkbox
     for index, row in df.iterrows():
-        if st.checkbox(f"{row['Full Name']}, {row['Phone Number']}, {row['Email']}", key=index):
+        if st.checkbox(f"{row['Date']}{row['Full Name']}, {row['Phone Number']}, {row['Email']}, {row['Note']}", key=index):
             selected_indices.append(index)
 
     # Confirm deletion button
