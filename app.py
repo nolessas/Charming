@@ -1,7 +1,7 @@
 #app.py
 import os
 import streamlit as st
-from authentication import is_user_logged_in, show_login, set_user_logged_in, is_user_persistently_logged_in
+from authentication import is_user_logged_in, show_login, hash_password, show_login, check_password
 from datetime import time, datetime
 import gspread
 from google.oauth2 import service_account
