@@ -25,14 +25,29 @@ gc = gspread.authorize(credentials)
 
 
 def main():
-    """ Main function to control the app. """
-    if is_user_logged_in():
-        # Call function to display the main app content
-        st.write("Display the app's main content here.")
+    st.write("Entered main function")
+
+    # Check for session token and set logged in status
+    if "session_token" in st.session_state and st.session_state["session_token"]:
+        set_user_logged_in(True)
+        st.write("Session token found.")
     else:
-        # Show the login form
+        st.write("No session token found.")
+
+    # Attempt to display content after login
+    if is_user_logged_in():
+        st.write("Logged in! Showing main app...")
+        try:
+            show_dashboard()  # This should be the function that displays your app's content
+            st.write("Dashboard function called successfully.")
+        except Exception as e:
+            st.error(f"An error occurred while displaying the main app: {e}")
+            st.exception(e)
+    else:
+        st.write("Not logged in, showing login form...")
         show_login()
 
+    st.write("End of main function")
 
 
 
