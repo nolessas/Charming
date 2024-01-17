@@ -5,24 +5,54 @@ import pandas as pd
 from google_sheets import get_sheets_service
 
 
+import streamlit as st
+from google_sheets import get_sheets_service
+
 def manage_todo_list():
     st.title("To-Do List")
 
-    records = fetch_data_from_sheets2()
-    
+    # Fetch data from Google Sheets
+    records = fetch_data_from_sheets()
+
     if not records:
         st.write("No to-do items found.")
         return
-    
+
+    # Initialize a session state to store indices of items to delete
+    if 'delete_todo' not in st.session_state:
+        st.session_state.delete_todo = []
+
+    # Iterate over the records and display them with checkboxes
     for index, record in enumerate(records):
-        # Check if 'Item' key exists in record, and if not, assign a default value
-        item = record.get('Item', 'No Item Description')
-        key = f"checkbox-{index}"
-        if st.checkbox(item, key=key):
-            # If checkbox is selected, delete the item
-            if st.button(f"Delete {item}", key=f"delete-{index}"):
-                delete_row_from_sheet2(index + 2, records)
-                st.experimental_rerun()  # Rerun the app to refresh the data display after deletion
+        # Assuming 'Item' is a key in the record
+        item_text = record.get('Item', 'Unnamed Item')
+        # Create a checkbox for the current record
+        if st.checkbox(item_text, key=f"todo-{index}"):
+            # If checked, add the index to the list of items to delete
+            st.session_state.delete_todo.append(index)
+
+    # Button to delete selected items
+    if st.button("Delete Selected Items"):
+        # Get a reference to the Google Sheet
+        service = get_sheets_service()
+        sheet = service.open_by_key('your-spreadsheet-key').sheet1
+
+        # Reverse the indices to delete items from the end of the list
+        for index in sorted(st.session_state.delete_todo, reverse=True):
+            # Delete the row from the sheet using the index
+            sheet.delete_row(index + 2)  # +2 to account for header and 1-based indexing
+
+        # Clear the selected items and rerun to refresh the display
+        st.session_state.delete_todo = []
+        st.experimental_rerun()
+
+# Utility functions
+def fetch_data_from_sheets():
+    # Fetch data from Google Sheets and return as a list of dictionaries
+    # This is a placeholder - replace with your actual data fetching logic
+    return []
+
+def ge
 
 
 def manage_todo_list():
