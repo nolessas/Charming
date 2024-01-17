@@ -22,19 +22,19 @@ def manage_todo_list():
     
     # Display each to-do item with a checkbox and a slider for importance
     for index, record in enumerate(records):
-        # Debug: Print each record to see what keys and values it contains
-        st.write(record)  # This will print the record in the Streamlit app
-
         col1, col2, col3 = st.columns(3)
         with col1:
             if st.checkbox(record.get("1", 'Del'), key=index):
                 selected_indices.append(index)
         with col2:
+            # For importance, you can keep a separate key or use one from the sheet if it exists
             importance = record.get('Importance', 50)
             record['Importance'] = st.slider('Importance', min_value=0, max_value=100, value=importance, key=f'slider-{index}')
         with col3:
-            second_col_text = record.get("2", 'No Data')  # Ensure "2" is the correct key
-            st.text(second_col_text)
+            # Allow user to input or edit the second column data
+            user_input = st.text_input('Data', record.get("2", ''), key=f'input-{index}')
+            record["2"] = user_input  # Update the record with the user input
+
 
     # If the delete button is pressed, delete all selected items
     if st.button('Delete selected items'):
