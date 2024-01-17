@@ -36,14 +36,9 @@ def fetch_client_data_for_calendar():
 
 def display_calendar():
     event_list = fetch_client_data_for_calendar()
-    current_month = pd.Timestamp(datetime.today()).replace(day=1)
-
-    # Assuming we only want to show events for the current month
-    month_start = current_month
-    month_end = month_start + pd.DateOffset(months=1)
-    filtered_events = [event for event in event_list if month_start <= pd.to_datetime(event['start']) < month_end]
 
     # Display the calendar with the filtered events list for the current month
     st.markdown('<div class="streamlit-calendar">', unsafe_allow_html=True)
-    st_calendar.calendar(events=filtered_events, default_view="month")  # Your calendar component call with month view
+    # Display the calendar with the events list
+    st_calendar.calendar(events=event_list)
     st.markdown('</div>', unsafe_allow_html=True)
