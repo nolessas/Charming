@@ -23,10 +23,10 @@ service_account_info = st.secrets["google_oauth"]
 credentials = service_account.Credentials.from_service_account_info(service_account_info)
 gc = gspread.authorize(credentials)
 
-    st.image("image.png")
+
 def main():
     st.title("Charming")
-
+    st.image("image.png")
 
     # Check if the user is logged in
     if not is_user_logged_in():
