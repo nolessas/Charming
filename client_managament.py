@@ -4,7 +4,7 @@ from datetime import datetime, time, timedelta, date
 import pandas as pd
 import gspread
 from google_sheets import write_to_sheets, get_sheets_service, delete_client
-from authentication import is_user_logged_in, show_login, set_user_logged_in, is_user_persistently_logged_in
+from authentication import is_user_logged_in, show_login, hash_password, show_login, check_password
 
 
 #class SessionState:
