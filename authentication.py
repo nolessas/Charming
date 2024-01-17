@@ -20,22 +20,14 @@ def check_password(username, password, desired_username, desired_password):
 def show_login():
     st.subheader("Login")
 
-    # Add hidden HTML form for autofill functionality
-    components.html("""
-    <form id="hidden-form" style="display:none">
-        <input type="text" name="username" />
-        <input type="password" name="password" />
-    </form>
-    """, height=0)
-
     # Add login form elements here
-    desired_username = st.secrets["global"]["username"]
-    desired_password = st.secrets["global"]["password"]
+    username = st.text_input("Username", key="username")
+    password = st.text_input("Password", type="password", key="password")
 
     if st.button("Login"):
-        # Change these values to your desired credentials
-        desired_username = st.secrets["username"]
-        desired_password = st.secrets["password"]
+        # Change these values to your actual secrets keys
+        desired_username = st.secrets["global"]["username"]
+        desired_password = st.secrets["global"]["password"]
 
         if check_password(username, password, desired_username, desired_password):
             st.success("Login successful!")
@@ -45,6 +37,7 @@ def show_login():
             st.experimental_rerun()
         else:
             st.error("Invalid username or password")
+
 
 # Check for the session token on app startup
 if "session_token" not in st.session_state:
