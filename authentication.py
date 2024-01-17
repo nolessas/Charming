@@ -29,8 +29,8 @@ def show_login():
     """, height=0)
 
     # Add login form elements here
-    username = st.text_input("Username", key="username")
-    password = st.text_input("Password", type="password", key="password")
+    desired_username = st.secrets["username2"]
+    desired_password = st.secrets["password2"]
 
     if st.button("Login"):
         # Change these values to your desired credentials
