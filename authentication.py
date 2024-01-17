@@ -1,5 +1,10 @@
 import streamlit as st
 from hashlib import sha256
+import uuid
+
+# Function to generate a random session token
+def generate_session_token():
+    return str(uuid.uuid4())
 
 # Function to check if the user is logged in based on session token
 def is_user_logged_in():
