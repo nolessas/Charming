@@ -13,6 +13,9 @@ def manage_todo_list():
     # Fetch data from Google Sheets
     records = fetch_data_from_sheets2()
 
+    # Debug: Print the records to verify their structure
+    st.write(records)
+
     if not records:
         st.write("No to-do items found.")
         return
