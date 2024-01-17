@@ -22,25 +22,25 @@ def manage_todo_list():
     
     # Display each to-do item with a checkbox and a slider for importance
     for index, record in enumerate(records):
-        # Debug: Print each record to see what keys and values it contains
-        st.write(record)  # This will print the record in the Streamlit app
-
         col1, col2, col3 = st.columns(3)
         with col1:
-            if st.checkbox(record.get("1", 'Del'), key=index):
+            # Use string keys that correspond to the columns in Google Sheets
+            if st.checkbox(record.get("1", 'Del'), key=index):  # Replace "1" with the actual column number for the item text
                 selected_indices.append(index)
         with col2:
-            importance = record.get('Importance', 50)
+            # For importance, you can keep a separate key or use one from the sheet if it exists
+            importance = record.get('Importance', 50)  # Default importance value set to 50
             record['Importance'] = st.slider('Importance', min_value=0, max_value=100, value=importance, key=f'slider-{index}')
         with col3:
-            second_col_text = record.get("2", 'No Data')  # Ensure "2" is the correct key
+            # Use the string key for the second column, possibly "2"
+            second_col_text = record.get("2", 'No Data')  # Replace "2" with the actual column number for the second column
             st.text(second_col_text)
 
     # If the delete button is pressed, delete all selected items
     if st.button('Delete selected items'):
         for i in selected_indices:
-            delete_row_from_sheet2(i, records)
-        st.experimental_rerun()
+            delete_row_from_sheet2(i, records)  # Delete selected items
+        st.experimental_rerun()  # Rerun the app to refresh the data display after deletion
 
 
 
