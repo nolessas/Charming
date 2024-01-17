@@ -2,6 +2,16 @@
 
 import streamlit as st
 from hashlib import sha256
+import hashlib
+
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+# Example usage
+hashed_password = hash_password("your_password")
+print(hashed_password)
+
+
 
 def is_user_logged_in():
     return st.session_state.get('logged_in', False)
@@ -32,18 +42,10 @@ def show_login():
 
 
 def check_password(username, password):
-    users = st.secrets.get("users", {})
+    # Retrieve user's plaintext password from Streamlit secrets
+    user_password_plain = st.secrets["users"].get(username)
 
-    # Check if the username exists in the secrets
-    if username in users:
-        user_password_hash = users[username]
-
-        # Check if the provided password matches the stored hash
-        hashed_input_password = sha256(password.encode()).hexdigest()
-        return hashed_input_password == user_password_hash
-    else:
-        # Username not found in secrets
-        return False
+    return password == user_password_plain
 
     
 def is_user_persistently_logged_in():
