@@ -30,16 +30,18 @@ def show_login():
         # desired_username = "a"
         # desired_password = "a"
 
-        if check_password(username, password):
-            st.success("Login successful!")
-            set_user_logged_in(True)
-            # The balloons should be released after the successful message.
-            st.balloons()
-            st.experimental_rerun()
-
-        else:
-            st.error("Invalid username or password")
-
+    if check_password(username, password):
+        st.success("Login successful!")
+        set_user_logged_in(True)
+        st.balloons()
+        st.experimental_rerun()
+    else:
+        # Debugging: Print out the hashed password from secrets and the entered hashed password
+        stored_hashed_password = users.get(username, "")
+        entered_hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        st.error(f"Stored Hashed Password: {stored_hashed_password}")
+        st.error(f"Entered Hashed Password: {entered_hashed_password}")
+        st.error("Invalid username or password")
 
 def check_password(username, password):
     # Get the dictionary of users from Streamlit secrets
