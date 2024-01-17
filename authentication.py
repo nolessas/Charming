@@ -4,12 +4,14 @@ import streamlit as st
 from hashlib import sha256
 import hashlib
 
+
+
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
-# Replace 'user1_password' with the real password
-hashed_password = hash_password("user1_password")
-print(hashed_password)  # This is what you will store in Streamlit secrets
+# Example usage
+hashed_password = hash_password("powerfull")  # Replace "powerfull" with your actual password
+print(hashed_password)  # This hashed password is what you will store in Streamlit secrets
 
 
 
