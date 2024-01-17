@@ -17,9 +17,7 @@ from google_sheets import write_to_sheets, get_sheets_service, delete_client
 #registered_clients = []
 
 
-def get_unique_headers(worksheet):
-    headers = worksheet.row_values(1)
-    return len(headers) == len(set(headers)), headers
+
 
 day_name_map = {
     'Monday': 'Pirmadienis',
