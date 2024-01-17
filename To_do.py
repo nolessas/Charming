@@ -31,7 +31,7 @@ def manage_todo_list():
             record['Importance'] = st.slider('Importance', min_value=0, max_value=100, value=importance, key=f'slider-{index}')
         with col3:
             # Use the actual key for the second column, here it's assumed to be 'B'
-            second_col_text = record.get('B', 'No Second Column Data')
+            second_col_text = record.get('B', 'No ')
             st.text(second_col_text)
 
     # If the delete button is pressed, delete all selected items
