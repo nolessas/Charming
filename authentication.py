@@ -27,7 +27,7 @@ def show_login():
             st.success("Login successful!")
             session_token = generate_session_token()
             st.session_state.session_token = session_token  # Set the session token
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.error("Invalid username or password")
 
