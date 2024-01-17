@@ -6,10 +6,13 @@ from google_sheets import get_sheets_service
 
 
 def manage_todo_list():
-    st.title("To-Do List")
+    # ... [your existing code]
 
-    # Fetch data from Google Sheets
     records = fetch_data_from_sheets2()
+
+    if records:
+        # Print the keys from the first record
+        print(records[0].keys())
 
     if not records:
         st.write("No to-do items found.")
