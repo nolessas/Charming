@@ -24,24 +24,24 @@ credentials = service_account.Credentials.from_service_account_info(service_acco
 gc = gspread.authorize(credentials)
 
 
-    def main():
-        st.write("Entered main function")
+def main():
+    st.write("Entered main function")
 
-        # Authentication logic here...
-        if "session_token" in st.session_state:
-            # Check if the session token is valid and if so, set the user as logged in
-            set_user_logged_in(True)
+    # Authentication logic here...
+    if "session_token" in st.session_state:
+        # Check if the session token is valid and if so, set the user as logged in
+        set_user_logged_in(True)
 
-        if is_user_logged_in():
-            st.write("Logged in! Showing main app...")
-            # Call function to display the main app content here
-            # For example:
-            # show_dashboard()
-        else:
-            st.write("Not logged in, showing login form...")
-            show_login()
+    if is_user_logged_in():
+        st.write("Logged in! Showing main app...")
+        # Call function to display the main app content here
+        # For example:
+        # show_dashboard()
+    else:
+        st.write("Not logged in, showing login form...")
+        show_login()
 
-        st.write("End of main function")
+    st.write("End of main function")
 
 
     def show_dashboard():
