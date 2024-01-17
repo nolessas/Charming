@@ -29,7 +29,6 @@ day_name_map = {
     'Sunday': 'Sekmadienis'
 }
 
-
 def show_registered_clients():
     service = get_sheets_service()
     try:
@@ -45,11 +44,8 @@ def show_registered_clients():
         if records:
             df = pd.DataFrame(records)
 
-            # Ensure 'Date' column is in datetime format
-            df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y', errors='coerce')
-
-            # Now that 'Date' is a datetime column, remove the time component
-            df['Date'] = df['Date'].dt.date
+            # Ensure 'Date' column is in datetime format and remove the time component
+            df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y', errors='coerce').dt.date
 
             # Filter options
             time_filter = st.radio(
@@ -57,21 +53,22 @@ def show_registered_clients():
                 ('Day', 'Week', 'Month'),
                 index=0  # Default is 'Day'
             )
+            
             # Filter based on the selected time period
             today = datetime.today()
             if time_filter == 'Day':
-                df = df[df['Date'].dt.date == today.date()]
+                df = df[df['Date'] == today.date()]
             elif time_filter == 'Week':
                 week_start = today - timedelta(days=today.weekday())  # Calculate the start of the week
                 week_end = week_start + timedelta(days=6)
-                df = df[(df['Date'].dt.date >= week_start.date()) & (df['Date'].dt.date <= week_end.date())]
+                df = df[(df['Date'] >= week_start) & (df['Date'] <= week_end)]
             elif time_filter == 'Month':
                 df = df[df['Date'].dt.month == today.month]
 
             # Add day name in Lithuanian
-            df['Weekday'] = df['Date'].dt.day_name().map(day_name_map)
+            df['Weekday'] = pd.to_datetime(df['Date']).dt.day_name().map(day_name_map)
             
-            # Convert 'Phone Number' to string
+            # Convert 'Phone Number' to string if the column exists
             if 'Phone Number' in df.columns:
                 df['Phone Number'] = df['Phone Number'].astype(str)
 
@@ -85,6 +82,7 @@ def show_registered_clients():
             st.write("No registered clients found.")
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
+
 
 
 
