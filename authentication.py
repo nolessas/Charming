@@ -61,4 +61,3 @@ def check_password(username, password):
         # Username not found in secrets
         return False
 
-
