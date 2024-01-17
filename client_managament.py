@@ -54,15 +54,14 @@ def show_registered_clients():
                 ('Day', 'Week', 'Month'),
                 index=0  # Default is 'Day'
             )
-
             # Filter based on the selected time period
             today = datetime.today()
             if time_filter == 'Day':
-                df = df[df['Date'] == today.date()]
+                df = df[df['Date'].dt.date == today.date()]
             elif time_filter == 'Week':
                 week_start = today - timedelta(days=today.weekday())  # Calculate the start of the week
                 week_end = week_start + timedelta(days=6)
-                df = df[(df['Date'] >= week_start.date()) & (df['Date'] <= week_end.date())]
+                df = df[(df['Date'].dt.date >= week_start.date()) & (df['Date'].dt.date <= week_end.date())]
             elif time_filter == 'Month':
                 df = df[df['Date'].dt.month == today.month]
 
