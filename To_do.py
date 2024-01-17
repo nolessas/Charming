@@ -111,7 +111,8 @@ def fetch_data_from_sheets2():
         return records
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
-        return [{"Item": "Sample task", "Location": 42}]
+        return []
+
 
 
 
