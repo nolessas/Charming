@@ -28,7 +28,7 @@ def main():
     st.write("Entered main function")
 
     # Authentication logic here...
-    if "session_token" in st.session_state:
+    if "session_token" in st.session_state and st.session_state["session_token"]:
         # Check if the session token is valid and if so, set the user as logged in
         set_user_logged_in(True)
 
