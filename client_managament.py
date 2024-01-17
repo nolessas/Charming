@@ -36,24 +36,30 @@ def show_registered_clients():
         if records:
             df = pd.DataFrame(records)
 
-            # Convert 'Date' to datetime and display just the date
-            df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y').dt.date
+            # Convert 'Date' to datetime
+            df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
+
+            # Filter options
+            time_filter = st.radio(
+                "Filter by:",
+                ('Day', 'Week', 'Month'),
+                index=0  # Default is 'Day'
+            )
+
+            # Filter based on the selected time period
+            today = datetime.today()
+            if time_filter == 'Day':
+                df = df[df['Date'] == today.date()]
+            elif time_filter == 'Week':
+                week_start = today - timedelta(days=today.weekday())  # Calculate the start of the week
+                week_end = week_start + timedelta(days=6)
+                df = df[(df['Date'] >= week_start.date()) & (df['Date'] <= week_end.date())]
+            elif time_filter == 'Month':
+                df = df[df['Date'].dt.month == today.month]
+
+            # Add day name in Lithuanian
+            df['Weekday'] = df['Date'].dt.day_name().map(day_name_map)
             
-            # Create a 'Weekday' column with English day names
-            df['Weekday'] = pd.to_datetime(df['Date']).dt.day_name()
-
-            # Map English day names to Lithuanian
-            day_name_map = {
-                'Monday': 'Pirmadienis',
-                'Tuesday': 'Antradienis',
-                'Wednesday': 'Trečiadienis',
-                'Thursday': 'Ketvirtadienis',
-                'Friday': 'Penktadienis',
-                'Saturday': 'Šeštadienis',
-                'Sunday': 'Sekmadienis'
-            }
-            df['Weekday'] = df['Weekday'].map(day_name_map)
-
             # Convert 'Phone Number' to string
             if 'Phone Number' in df.columns:
                 df['Phone Number'] = df['Phone Number'].astype(str)
@@ -61,7 +67,7 @@ def show_registered_clients():
             # Set the 'Weekday' column as the index of the DataFrame
             df.set_index('Weekday', inplace=True)
 
-            # Display the DataFrame
+            # Display the filtered DataFrame
             st.write("Client Information:")
             st.dataframe(df)
         else:
