@@ -4,8 +4,33 @@ from datetime import time, datetime
 import pandas as pd
 from google_sheets import get_sheets_service
 
+st.title("")
 
+    # Fetch data from Google Sheets
+    records = fetch_data_from_sheets()
 
+    if not records:
+        st.write("No clients found.")
+        return
+
+    # Convert records to DataFrame
+    df = pd.DataFrame(records)
+
+    # Initialize an empty list to store indices of selected rows
+    selected_indices = []
+
+    # Display each client with a checkbox
+    for index, row in df.iterrows():
+        if st.checkbox(f"{row['Date']}{row['Full Name']}, {row['Phone Number']}, {row['Email']}, {row['Note']}", key=index):
+            selected_indices.append(index)
+
+    # Confirm deletion button
+    if st.button('Confirm deletion of selected clients'):
+        for i in selected_indices:
+            delete_row_from_sheet(i, records)  # Delete selected clients
+        st.success("Selected clients deleted successfully!")
+        st.experimental_rerun()  # Rerun the app to refresh the data display
+        
 def register_todo():
     st.write("")
     
@@ -18,21 +43,35 @@ def register_todo():
     if not records:
         st.write("No data available.")
     else:
-        # Convert records to DataFrame
         df = pd.DataFrame(records)
 
+        # Checkbox for sorting order
+        sort_ascending = st.checkbox("Rušiavimas", value=False)  # Set to True for ascending order
 
-    # Display each client with a checkbox
-    for index, row in df.iterrows():
-        if st.checkbox(f"{row['1-100']}{row['A thing']}, key=index):
-            selected_indices.append(index)
+        # Sort the DataFrame based on the second column (numbers)
+        df = df.sort_values(by=[df.columns[1]], ascending=[sort_ascending])
 
-    # Confirm deletion button
-    if st.button('Confirm deletion of selected clients'):
-        for i in selected_indices:
-            delete_row_from_sheet2(i, records)  # Delete selected clients
-        st.success("Selected clients deleted successfully!")
-        st.experimental_rerun()  # Rerun the app to refresh the data display
+        # Display the data frame as a list with a delete button for each row
+        for index, row in df.iterrows():
+            # Create columns for layout
+            col1, col2, col3, col4, col5 = st.columns(5)  # Create columns for layout
+            with col1:
+                if len(row) > 0:
+                    st.write(row[0])  # Display the first column of the row
+            with col2:
+                if len(row) > 1:
+                    st.write(row[1])  # Display the second column of the row
+            with col3:
+                if len(row) > 2:
+                    st.write(row[2])  # Display the third column of the row
+            with col4:
+                if len(row) > 3:
+                    st.write(row[3])  # Display the fourth column of the row
+            with col5:
+                # Add a delete button for each row in the fifth column
+                if st.button(f"Delete Row {index + 1}"):
+                    delete_row_from_sheet2(index, records)  # Call function to delete the row
+                    st.rerun()  # Rerun
 
 def manage_todo_list():
     st.title("To-Do List")
