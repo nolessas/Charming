@@ -5,40 +5,24 @@ import pandas as pd
 from google_sheets import get_sheets_service
 
 
-def register_todo():
-    st.title("List of Clients")
+def manage_todo_list():
+    st.title("To-Do List")
 
-    # Fetch data from Google Sheets
     records = fetch_data_from_sheets2()
     
     if not records:
-        st.write("No clients available.")
-    else:
-        # Initialize a session state for selected items if it doesn't exist
-        if 'selected_clients' not in st.session_state:
-            st.session_state.selected_clients = []
-
-        # Display each client with a checkbox and all the information
-        for index, record in enumerate(records):
-            # Create a unique key for the checkbox using the index
-            checkbox_key = f"select_client_{index}"
-            checked = st.checkbox("", key=checkbox_key, value=False)
-            
-            # Display the client information
-            st.write(f"{record['Client Name']} - {record['Details']} - {record['More Info']}")  # Adjust the keys based on your actual record keys
-            
-            # If the checkbox is checked, add the index to the list of selected items
-            if checked:
-                st.session_state.selected_clients.append(index)
-
-        # Button to delete selected clients
-        if st.button("Delete Selected Clients"):
-            # Reverse sort the selected clients to avoid index errors during deletion
-            selected_indices = sorted(set(st.session_state.selected_clients), reverse=True)
-            for index in selected_indices:
-                delete_row_from_sheet2(index + 2, records)  # Adjust index for Google Sheets
-            st.session_state.selected_clients = []  # Clear the selected clients after deletion
-            st.experimental_rerun()  # Rerun the app to refresh the data display after deletion
+        st.write("No to-do items found.")
+        return
+    
+    for index, record in enumerate(records):
+        # Check if 'Item' key exists in record, and if not, assign a default value
+        item = record.get('Item', 'No Item Description')
+        key = f"checkbox-{index}"
+        if st.checkbox(item, key=key):
+            # If checkbox is selected, delete the item
+            if st.button(f"Delete {item}", key=f"delete-{index}"):
+                delete_row_from_sheet2(index + 2, records)
+                st.experimental_rerun()  # Rerun the app to refresh the data display after deletion
 
 
 def manage_todo_list():
