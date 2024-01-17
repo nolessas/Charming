@@ -26,7 +26,7 @@ gc = gspread.authorize(credentials)
 
 def main():
     st.title("Charming")
-    st.image("image.png")
+
 
     # Check if the user is logged in
     if not is_user_logged_in():
@@ -46,6 +46,7 @@ def show_dashboard():
 
     if choose_main == "1":
         st.title("")
+        st.image("image.png")
         show_registered_clients()
         register_client1()
 
