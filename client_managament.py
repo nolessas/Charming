@@ -41,12 +41,15 @@ def show_registered_clients():
         
         # Read all records
         records = worksheet.get_all_records()
-        
+
         if records:
             df = pd.DataFrame(records)
 
-            # Convert 'Date' to datetime
-            df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y').dt.date
+            # Ensure 'Date' column is in datetime format
+            df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y', errors='coerce')
+
+            # Now that 'Date' is a datetime column, remove the time component
+            df['Date'] = df['Date'].dt.date
 
             # Filter options
             time_filter = st.radio(
