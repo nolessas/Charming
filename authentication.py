@@ -13,16 +13,18 @@ def is_user_logged_in():
 
 def show_login():
     st.subheader("Login")
+    # Only password input
     password = st.text_input("Password", type="password", key="password")
 
     if st.button("Login"):
-        stored_password = st.secrets["password"]  # Make sure the key matches exactly
+        # Retrieve the stored password from secrets
+        stored_password = st.secrets["password"]
 
         if password == stored_password:
             st.success("Login successful!")
-            # Create a session token or another method to keep the user logged in
-            st.session_state['logged_in'] = True  # Just a simple flag here
-            # Now redirect or show the main content
+            # Generate a session token
+            st.session_state.session_token = "logged_in"  # Or use a generated token
+            st.experimental_rerun()
         else:
             st.error("Invalid password")
 
