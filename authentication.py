@@ -17,8 +17,8 @@ def show_login():
     password = st.text_input("Password", type="password")
 
     if st.button("Login"):
-        desired_username = st.secrets["username2"]
-        desired_password = st.secrets["password2"]
+        desired_username = st.secrets["global"]["username2"]
+        desired_password = st.secrets["global"]["password2"]
 
         if check_password(username, password, desired_username, desired_password):
             st.success("Login successful!")
