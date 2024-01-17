@@ -1,6 +1,6 @@
 import streamlit as st
 from hashlib import sha256
-import uuid
+from streamlit_tags import st_tags
 
 # Function to generate a random session token
 def generate_session_token():
@@ -14,16 +14,38 @@ def is_user_logged_in():
 def show_login():
     st.subheader("Login")
 
-    # Add login form elements here
-    username = st.text_input("Username")
+    # Custom HTML for the email input field
+    st.markdown("""
+    <style>
+    .input-email {
+        width: 100%;
+        padding: 8px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+    </style>
+    <input class="input-email" type="email" id="email" placeholder="Enter Username" name="email">
+    """, unsafe_allow_html=True)
+
+    # Password field
     password = st.text_input("Password", type="password")
+
+    # Using JavaScript to get the value of the email input
+    email = st_tags(label='',
+                    text='Enter your email',
+                    value=[''],
+                    suggestions=[],
+                    maxtags=1,
+                    key='1')[0]
 
     if st.button("Login"):
         # Change these values to your desired credentials
         desired_username = st.secrets["username2"]
         desired_password = st.secrets["password2"]
 
-        if check_password(username, password, desired_username, desired_password):
+        if check_password(email, password, desired_username, desired_password):
             st.success("Login successful!")
             
             # Generate a session token and store it in a cookie
