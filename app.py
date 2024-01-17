@@ -25,18 +25,15 @@ gc = gspread.authorize(credentials)
 
 
 def main():
-    st.write("Entered main function")
-
     # Check for session token and set logged in status
     if "session_token" in st.session_state and st.session_state["session_token"]:
         set_user_logged_in(True)
+
     # Attempt to display content after login
     if is_user_logged_in():
-        try:
-            show_dashboard()  # This should be the function that displays your app's content
+        show_dashboard()  # This function displays your app's content
+    else:
         show_login()
-
-    st.write("End of main function")
 
 
 
