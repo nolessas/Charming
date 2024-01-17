@@ -57,20 +57,24 @@ def manage_todo_list():
         st.write("No to-do items found.")
         return
 
-    df = pd.DataFrame(records)
-    
-    # Add a column for checkboxes
-    df['Delete'] = [False] * len(df)
+    # Create a dictionary to hold the checkbox state for each item
+    checkbox_states = {}
 
-    # Display the DataFrame with checkboxes
+    # Display each to-do item with a checkbox
+    for index, record in enumerate(records):
+        # Use the index and item text to create a unique key for each checkbox
+        key = f"checkbox-{index}-{record['Item']}"
+        checkbox_states[key] = st.checkbox(record['Item'], key=key)
 
     # If the delete button is pressed, delete all selected items
     if st.button('Delete selected items'):
-        # Reverse iterate over the DataFrame to avoid index issues during deletion
-        for index, row in reversed(list(df.iterrows())):
-            if row['Delete']:  # If the checkbox is selected
-                delete_row_from_sheet2(index + 2, records)  # Adjust for 1-indexing in Google Sheets
-        st.rerun()  # Rerun the app to refresh the data display after deletion
+        # Iterate over the checkbox_states to see which items were selected for deletion
+        for key, checked in checkbox_states.items():
+            if checked:
+                index_to_delete = int(key.split('-')[1]) + 2  # Extract the index and adjust for Google Sheets
+                delete_row_from_sheet2(index_to_delete, records)
+        st.experimental_rerun()  # Rerun the app to refresh the data display after deletion
+
 
     
 def add_item_to_sheet2(item, location):
