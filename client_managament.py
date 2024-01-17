@@ -36,8 +36,8 @@ def show_registered_clients():
 
             # Convert 'Date', 'Time in', and 'Time out' to proper formats
             df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
-            df['Time In'] = pd.to_datetime(df['Time in'], format='%H:%M').dt.strftime('%H:%M')
-            df['Time Out'] = pd.to_datetime(df['Time out'], format='%H:%M').dt.strftime('%H:%M')
+            df['Formatted Time In'] = pd.to_datetime(df['Time in'], format='%H:%M').dt.strftime('%H:%M')
+            df['Formatted Time Out'] = pd.to_datetime(df['Time out'], format='%H:%M').dt.strftime('%H:%M')
 
             # Convert 'Phone Number' to string to prevent formatting issues
             df['Phone Number'] = df['Phone Number'].astype(str)
@@ -59,7 +59,7 @@ def show_registered_clients():
 
             # Display the DataFrame
             st.write("Client Information:")
-            st.dataframe(filtered_df[['Date', 'Formatted Time In', 'Formatted Time Out', 'Full Name', 'Phone Number', 'Email', 'Note']])
+            st.dataframe(filtered_df[['Date', 'Time In', 'Time Out', 'Full Name', 'Phone Number', 'Email', 'Note']])
 
         else:
             st.write("No registered clients found.")
