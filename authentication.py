@@ -16,10 +16,11 @@ def show_login():
 
     if st.button("Login"):
         # Change these values to your desired credentials
-        desired_username = "a"
-        desired_password = "a"  # Replace with your actual desired password
+        # These lines are no longer needed as you're now using Streamlit secrets
+        # desired_username = "a"
+        # desired_password = "a"
 
-        if check_password(username, password, desired_username, desired_password):
+        if check_password(username, password):
             st.success("Login successful!")
             set_user_logged_in(True)
             # The balloons should be released after the successful message.
@@ -28,6 +29,7 @@ def show_login():
 
         else:
             st.error("Invalid username or password")
+
 
 def check_password(username, password):
     # Retrieve user's hashed password from Streamlit secrets
