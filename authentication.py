@@ -17,19 +17,16 @@ def show_login():
     password = st.text_input("Password", type="password")
 
     if st.button("Login"):
-        desired_username = st.secrets["username2"]
-        desired_password = st.secrets["password2"]
+        # Ensure these keys match exactly with your secrets
+        desired_username = st.secrets.get("username2")
+        desired_password = st.secrets.get("password2")
 
-        if check_password(username, password, desired_username, desired_password):
+        if desired_username is None or desired_password is None:
+            st.error("Login configuration error. Please check your Streamlit secrets.")
+        elif check_password(username, password, desired_username, desired_password):
             st.success("Login successful!")
             session_token = generate_session_token()
             st.session_state.session_token = session_token  # Set the session token
-
-            # If you want to redirect using URL parameters
-            # params = urllib.parse.urlencode({"session_token": session_token})
-            # st.experimental_set_query_params(**params)
-
-            # If you are not using URL parameters, just rerun the script
             st.experimental_rerun()
         else:
             st.error("Invalid username or password")
