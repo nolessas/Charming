@@ -15,8 +15,8 @@ def show_login():
 
     if st.button("Login"):
         # Change these values to your desired credentials
-        desired_username = st.secrets["username"]
-        desired_password = st.secrets["password"]
+        desired_username = st.secrets["username2"]
+        desired_password = st.secrets["password2"]
 
         if check_password(username, password, desired_username, desired_password):
             st.success("Login successful!")
