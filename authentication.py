@@ -13,21 +13,31 @@ def is_user_logged_in():
 
 def show_login():
     st.subheader("Login")
-    username = st.text_input("Username")
-    password = st.text_input("Password", type="password")
+    username = st.text_input("Username", key="username")
+    password = st.text_input("Password", type="password", key="password")
+
+    # Debug print
+    st.write(f"Debug: Username input is: {username}")
+    st.write(f"Debug: Password input is: {password}")
 
     if st.button("Login"):
-        # Ensure these keys match exactly with your secrets
-        desired_username = st.secrets.get("username2")
-        desired_password = st.secrets.get("password2")
+        st.write("Login button pressed")  # Debug print
+        desired_username = st.secrets["username2"]
+        desired_password = st.secrets["password2"]
 
-        if desired_username is None or desired_password is None:
-            st.error("Login configuration error. Please check your Streamlit secrets.")
-        elif check_password(username, password, desired_username, desired_password):
+        # Debug print
+        st.write(f"Debug: Desired Username is: {desired_username}")
+        st.write(f"Debug: Desired Password is: {desired_password}")
+
+        if check_password(username, password, desired_username, desired_password):
             st.success("Login successful!")
             session_token = generate_session_token()
             st.session_state.session_token = session_token  # Set the session token
-            st.rerun()
+
+            # Debug print
+            st.write("Login successful, session token set")
+
+            st.experimental_rerun()
         else:
             st.error("Invalid username or password")
 
