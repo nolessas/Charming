@@ -30,7 +30,8 @@ def fetch_client_data_for_calendar():
             'color': 'blue'  # or any other color
         }
         events.append(event)
-    return events
+    return [{"start": "2023-01-01T10:00:00", "end": "2023-01-01T12:00:00", "title": "Sample Event"}]  # Example return
+
 
 
 def display_calendar():
