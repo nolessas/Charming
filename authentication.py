@@ -30,6 +30,10 @@ def show_login():
             session_token = generate_session_token()
             st.session_state.session_token = session_token
             
+            # Set cookies to maintain the session across browser sessions
+            if hasattr(st, 'cookies'):
+                st.cookies.set("session_token", session_token)
+            
             st.experimental_rerun()
         else:
             st.error("Invalid username or password")
@@ -44,8 +48,12 @@ def set_user_logged_in(logged_in):
     # Set the logged-in state
     st.session_state.logged_in = logged_in
 
-# Check for the session token on app startup
-if "session_token" in st.session_state:
-    # You may want to perform additional validation here to ensure the session token is valid
+# Check for a session token in cookies on app startup
+if hasattr(st, 'cookies') and st.cookies.get("session_token"):
+    st.session_state.session_token = st.cookies.get("session_token")
     set_user_logged_in(True)
-
+else:
+    # Check for the session token in session_state
+    if "session_token" in st.session_state:
+        # You may want to perform additional validation here to ensure the session token is valid
+        set_user_logged_in(True)
