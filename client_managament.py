@@ -35,7 +35,7 @@ def show_registered_clients():
             df = pd.DataFrame(records)
 
             # Convert 'Date', 'Time in', and 'Time out' to proper formats
-            df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
+            df['Date'] = df['Date'].dt.date
             df['Time In'] = pd.to_datetime(df['Time in'], format='%H:%M').dt.strftime('%H:%M')
             df['Time Out'] = pd.to_datetime(df['Time out'], format='%H:%M').dt.strftime('%H:%M')
 
