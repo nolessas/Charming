@@ -16,7 +16,7 @@ def show_login():
     password = st.text_input("Password", type="password", key="password")
 
     if st.button("Login"):
-        stored_password = st.secrets["password"]  # Make sure the key matches exactly
+        desired_password = st.secrets["password"]  # Make sure the key matches exactly
 
         if password == stored_password:
             st.success("Login successful!")
