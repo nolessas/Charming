@@ -13,6 +13,8 @@ def is_user_logged_in():
 
 def show_login():
     st.subheader("Login")
+    # Temporary debug print to list all keys in secrets
+    st.write("Secrets keys:", list(st.secrets.keys()))
     password = st.text_input("Password", type="password")
 
     if st.button("Login"):
