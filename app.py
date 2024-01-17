@@ -26,7 +26,7 @@ gc = gspread.authorize(credentials)
 
 def main():
     st.title("Charming")
-    st.image(image.png)
+    st.image("image.png")
 
     # Check if the user is logged in
     if not is_user_logged_in():
