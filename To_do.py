@@ -19,7 +19,7 @@ def register_todo():
         st.write("No data available.")
     else:
         # Convert records to DataFrame
-    df = pd.DataFrame(records)
+        df = pd.DataFrame(records)
 
 
     # Display each client with a checkbox
