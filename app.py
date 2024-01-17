@@ -29,7 +29,7 @@ def main():
     st.write("Entered main function")
 
     # Check for a session token in the URL query parameters
-    query_params = st.get_query_params()
+    query_params = st.experimental_get_query_params()
     session_token = query_params.get("session_token", [None])[0]
 
     # Debug: Print session token
