@@ -27,24 +27,29 @@ gc = gspread.authorize(credentials)
 def main():
     st.write("Entered main function")
 
-    # Authentication logic here...
-    if "session_token" in st.session_state:
-        # Check if the session token is valid and if so, set the user as logged in
-        set_user_logged_in(True)
+    # Check for a session token in the URL query parameters
+    query_params = st.query_params
+    session_token = query_params.get("session_token", [None])[0]
+    st.write(f"Session token: {session_token}")
 
-    if is_user_logged_in():
-        st.write("Logged in! Showing main app...")
-        # Call function to display the main app content here
-        # For example:
-        # show_dashboard()
+    if session_token:
+        st.session_state.session_token = session_token
+        set_user_logged_in(True)
+        st.write(f"Logged in state: {st.session_state.get('logged_in', False)}")
+        # Continue to the app's main content
+        # ...
     else:
-        st.write("Not logged in, showing login form...")
-        show_login()
+        if not is_user_logged_in():
+            st.write("Not logged in, showing login form...")
+            show_login()
+        else:
+            # If we reach here but there's no content, it might be a rerun issue.
+            st.write("Logged in, but no content is being shown. Check rerun logic.")
+            # Continue to the app's main content
+            # ...
 
     st.write("End of main function")
 
-if __name__ == "__main__":
-    main()
 
 
 
