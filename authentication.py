@@ -9,11 +9,9 @@ import hashlib
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
-# Example usage
-hashed_password = hash_password("powerfull")  # Replace "powerfull" with your actual password
-print(hashed_password)  # This hashed password is what you will store in Streamlit secrets
-
-
+# Hash the password 'powerfull'
+hashed_password = hash_password("powerfull")
+print(hashed_password)  # You store this hashed value in Streamlit secrets
 
 def is_user_logged_in():
     return st.session_state.get('logged_in', False)
