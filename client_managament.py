@@ -39,9 +39,21 @@ def show_registered_clients():
             # Convert 'Date' to datetime and display just the date
             df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y').dt.date
             
-            # Create a 'Weekday' column
+            # Create a 'Weekday' column with English day names
             df['Weekday'] = pd.to_datetime(df['Date']).dt.day_name()
-            
+
+            # Map English day names to Lithuanian
+            day_name_map = {
+                'Monday': 'Pirmadienis',
+                'Tuesday': 'Antradienis',
+                'Wednesday': 'Trečiadienis',
+                'Thursday': 'Ketvirtadienis',
+                'Friday': 'Penktadienis',
+                'Saturday': 'Šeštadienis',
+                'Sunday': 'Sekmadienis'
+            }
+            df['Weekday'] = df['Weekday'].map(day_name_map)
+
             # Convert 'Phone Number' to string
             if 'Phone Number' in df.columns:
                 df['Phone Number'] = df['Phone Number'].astype(str)
