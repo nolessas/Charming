@@ -5,48 +5,45 @@ import pandas as pd
 from google_sheets import get_sheets_service
 
 
-def manage_todo_list():
-    st.title("To-Do List")
+def register_todo():
+    st.write("")
 
-    # Fetch data from Google Sheets
+    location_input = st.slider("1-100:", min_value=1, max_value=100, value=50)
+    item_input = st.text_input("A thing:")
+    if st.button("Add Entry"):
+        add_item_to_sheet2(item_input, location_input)
+
     records = fetch_data_from_sheets2()
-
     if not records:
-        st.write("No to-do items found.")
-        return
-    
-    # Initialize a session state for selected items if it doesn't exist
-    if 'selected_items' not in st.session_state:
-        st.session_state.selected_items = []
+        st.write("No data available.")
+    else:
+        # Initialize a session state for selected items if it doesn't exist
+        if 'selected_items' not in st.session_state:
+            st.session_state.selected_items = []
 
-    # Get the list of column names from the first record, assuming all records follow the same format
-    column_names = records[0].keys() if records else []
+        # Display each item with a checkbox
+        for index, record in enumerate(records):
+            # Use the unique index to create a key for the checkbox
+            key = f"delete_{index}"
+            # Use columns for layout
+            col1, col2 = st.columns([1, 4])
+            with col1:
+                # Create a checkbox and save its state
+                checked = st.checkbox("", key=key)
+            with col2:
+                st.write(f"{record['A thing']} - {record['1-100:']}")  # Adjust the keys based on your actual record keys
+            
+            # If the checkbox is checked, add the item to the list of selected items
+            if checked:
+                st.session_state.selected_items.append(index)
 
-    # Display each item with a checkbox
-    for index, record in enumerate(records):
-        # Use the first column name as the key for the item text
-        item_text = record[column_names[0]] if column_names else "Undefined"
-        # Create a unique key for the checkbox using the index
-        checkbox_key = f"delete_{index}"
-
-        # Create a checkbox and save its state
-        checked = st.checkbox("", key=checkbox_key)
-
-        # Display the item text
-        st.write(checked, item_text)
-        
-        # If the checkbox is checked, add the index to the list of selected items
-        if checked:
-            st.session_state.selected_items.append(index)
-
-    # Button to delete selected items
-    if st.button("Delete selected items"):
-        # Reverse sort the selected items to avoid index errors during deletion
-        for index in sorted(st.session_state.selected_items, reverse=True):
-            delete_row_from_sheet2(index + 2, records)  # Adjust for Google Sheets indexing
-        # Clear the selected items after deletion
-        st.session_state.selected_items = []
-        st.rerun()  # Rerun the app to refresh the data display after deletion
+        # Button to delete selected items
+        if st.button("Delete selected items"):
+            # Reverse sort the selected items to avoid index errors during deletion
+            for index in sorted(st.session_state.selected_items, reverse=True):
+                delete_row_from_sheet2(index + 2, records)  # Adjust for Google Sheets indexing
+            st.session_state.selected_items = []  # Reset the selected items
+            st.rerun()  # Rerun the app to refresh the data display after deletion
 
 
 def manage_todo_list():
