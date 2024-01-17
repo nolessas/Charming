@@ -27,16 +27,14 @@ gc = gspread.authorize(credentials)
 def main():
     st.title("Charming")
 
-
-    # Check if the user is logged in
-    if not is_user_logged_in():
+    # Check if the user is logged in persistently
+    if not is_user_persistently_logged_in():
         show_login()
     else:
         show_dashboard()
-
-        # You can add your logout logic here if needed
-        logout_button = st.sidebar.button("Logout", on_click=set_user_logged_in, args=(False,))
-
+        # Logout logic
+        if st.sidebar.button("Logout", on_click=set_user_logged_in, args=(False,)):
+            st.experimental_rerun()
 
 
 def show_dashboard():
