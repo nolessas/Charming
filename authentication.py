@@ -15,21 +15,18 @@ def show_login():
     st.subheader("Login")
 
     # Add login form elements here
-    username = st.text_input("Username")
-    password = st.text_input("Password", type="password")
+    username = st.text_input("Username", key="username", help="Enter your username")
+    password = st.text_input("Password", type="password", key="password", help="Enter your password")
 
-    if st.button("Login"):
+    if st.button("Login", key="login"):
         # Change these values to your desired credentials
         desired_username = st.secrets["username2"]
         desired_password = st.secrets["password2"]
 
         if check_password(username, password, desired_username, desired_password):
             st.success("Login successful!")
-            
-            # Generate a session token and store it in a cookie
             session_token = generate_session_token()
             st.session_state.session_token = session_token
-            
             st.experimental_rerun()
         else:
             st.error("Invalid username or password")
