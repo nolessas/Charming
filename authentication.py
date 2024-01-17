@@ -41,6 +41,7 @@ def show_login():
         else:
             st.error("Invalid username or password")
 
+
 def check_password(username, password, desired_username, desired_password):
     # Change this to your preferred password hashing method
     hashed_input_password = sha256(password.encode()).hexdigest()
