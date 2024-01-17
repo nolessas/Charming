@@ -39,6 +39,13 @@ def show_registered_clients():
             # Convert 'Date' to datetime and display just the date
             df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y').dt.date
 
+            # Add day of the week
+            df['Weekday'] = pd.to_datetime(df['Date']).dt.day_name()
+
+            # Convert 'Phone Number' to string
+            if 'Phone Number' in df.columns:
+                df['Phone Number'] = df['Phone Number'].astype(str)
+
             # Display the DataFrame
             st.write("Client Information:")
             st.dataframe(df)
@@ -47,9 +54,6 @@ def show_registered_clients():
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
 
-if __name__ == "__main__":
-    st.title("Registered Clients")
-    show_registered_clients()
 
 # The rest of your Streamlit app code, including register_client1 and other components
 # Don't forget to call show_registered_clients() in your main app flow to display the data
