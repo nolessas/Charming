@@ -5,38 +5,47 @@ import pandas as pd
 from google_sheets import get_sheets_service
 
 
-def manage_todo_list():
-    # ... [your existing code]
-
+def register_todo():
+    st.write("")
+    
+    location_input = st.slider("1-100:", min_value=1, max_value=100, value=50)
+    item_input = st.text_input("A thing:")
+    if st.button("Add Entry"):
+        add_item_to_sheet2(item_input, location_input)
+    
     records = fetch_data_from_sheets2()
-
-    if records:
-        # Print the keys from the first record
-        print(records[0].keys())
-
     if not records:
-        st.write("No to-do items found.")
-        return
+        st.write("No data available.")
+    else:
+        df = pd.DataFrame(records)
 
-    # Initialize an empty list to keep track of items to delete
-    items_to_delete = []
+        # Checkbox for sorting order
+        sort_ascending = st.checkbox("Rušiavimas", value=False)  # Set to True for ascending order
 
-    # Display each to-do item with a checkbox
-    for index, record in enumerate(records):
-        # Dynamically get the item text based on the first key in the record (assuming it's the item text)
-        item_key = list(record.keys())[0]  # Adjust the index if the item text is not the first key
-        item_text = record[item_key]
-        # Use the index and item text to create a unique key for each checkbox
-        if st.checkbox(item_text, key=f"checkbox-{index}"):
-            items_to_delete.append(index)
+        # Sort the DataFrame based on the second column (numbers)
+        df = df.sort_values(by=[df.columns[1]], ascending=[sort_ascending])
 
-    # If the delete button is pressed, delete all selected items
-    if st.button('Delete selected items') and items_to_delete:
-        # Iterate over the items_to_delete list to remove items
-        for index in reversed(items_to_delete):  # Reverse to avoid index shifting
-            delete_row_from_sheet2(index + 2, records)  # Adjust index for Google Sheets
-        st.experimental_rerun()  # Rerun the app to refresh the data display after deletion
-
+        # Display the data frame as a list with a delete button for each row
+        for index, row in df.iterrows():
+            # Create columns for layout
+            col1, col2, col3, col4, col5 = st.columns(5)  # Create columns for layout
+            with col1:
+                if len(row) > 0:
+                    st.write(row[0])  # Display the first column of the row
+            with col2:
+                if len(row) > 1:
+                    st.write(row[1])  # Display the second column of the row
+            with col3:
+                if len(row) > 2:
+                    st.write(row[2])  # Display the third column of the row
+            with col4:
+                if len(row) > 3:
+                    st.write(row[3])  # Display the fourth column of the row
+            with col5:
+                # Add a delete button for each row in the fifth column
+                if st.button(f"Delete Row {index + 1}"):
+                    delete_row_from_sheet2(index, records)  # Call function to delete the row
+                    st.rerun()  # Rerun
 
 def manage_todo_list():
     st.title("To-Do List")
