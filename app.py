@@ -25,7 +25,7 @@ gc = gspread.authorize(credentials)
 
 
 def main():
-    st.title("Hello world")
+    st.title("Charming")
 
     # Check if the user is logged in
     if not is_user_logged_in():
