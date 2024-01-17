@@ -25,16 +25,16 @@ gc = gspread.authorize(credentials)
 
 
 def main():
-    st.title("Hello world")
+    # Check for a session token in the URL query parameters
+    query_params = st.experimental_get_query_params()
+    session_token = query_params.get("session_token", [None])[0]
 
-    # Check if the user is logged in
-    if not is_user_logged_in():
-        show_login()
+    if session_token:
+        st.session_state.session_token = session_token
+        set_user_logged_in(True)
     else:
-        show_dashboard()
-
-        # You can add your logout logic here if needed
-        logout_button = st.sidebar.button("Logout", on_click=set_user_logged_in, args=(False,))
+        if not is_user_logged_in():
+            show_login()
 
 
 

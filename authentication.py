@@ -1,6 +1,7 @@
 import streamlit as st
 from hashlib import sha256
 import uuid
+import urllib.parse
 
 # Function to generate a random session token
 def generate_session_token():
@@ -13,27 +14,19 @@ def is_user_logged_in():
 
 def show_login():
     st.subheader("Login")
-
-    # Add login form elements here
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
 
     if st.button("Login"):
-        # Change these values to your desired credentials
         desired_username = st.secrets["username2"]
         desired_password = st.secrets["password2"]
 
         if check_password(username, password, desired_username, desired_password):
             st.success("Login successful!")
-            
-            # Generate a session token and store it in a cookie
             session_token = generate_session_token()
-            st.session_state.session_token = session_token
             
-            # Set cookies to maintain the session across browser sessions
-            if hasattr(st, 'cookies'):
-                st.cookies.set("session_token", session_token)
-            
+            # Redirect to the same page with a session token in the URL
+            params = urllib.parse.urlencode({"session_token": session_token})
             st.experimental_rerun()
         else:
             st.error("Invalid username or password")
