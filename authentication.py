@@ -24,9 +24,13 @@ def show_login():
         if check_password(username, password, desired_username, desired_password):
             st.success("Login successful!")
             session_token = generate_session_token()
-            
-            # Redirect to the same page with a session token in the URL
-            params = urllib.parse.urlencode({"session_token": session_token})
+            st.session_state.session_token = session_token  # Set the session token
+
+            # If you want to redirect using URL parameters
+            # params = urllib.parse.urlencode({"session_token": session_token})
+            # st.experimental_set_query_params(**params)
+
+            # If you are not using URL parameters, just rerun the script
             st.experimental_rerun()
         else:
             st.error("Invalid username or password")
