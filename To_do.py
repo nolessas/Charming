@@ -5,55 +5,36 @@ import pandas as pd
 from google_sheets import get_sheets_service
 
 
-import streamlit as st
-from google_sheets import get_sheets_service
 
-def manage_todo_list():
-    st.title("To-Do List")
-
-    # Fetch data from Google Sheets
-    records = fetch_data_from_sheets()
-
+def register_todo():
+    st.write("")
+    
+    location_input = st.slider("1-100:", min_value=1, max_value=100, value=50)
+    item_input = st.text_input("A thing:")
+    if st.button("Add Entry"):
+        add_item_to_sheet2(item_input, location_input)
+    
+    records = fetch_data_from_sheets2()
     if not records:
-        st.write("No to-do items found.")
-        return
+        st.write("No data available.")
+    else:
+        # Convert records to DataFrame
+    df = pd.DataFrame(records)
 
-    # Initialize a session state to store indices of items to delete
-    if 'delete_todo' not in st.session_state:
-        st.session_state.delete_todo = []
+    # Initialize an empty list to store indices of selected rows
+    selected_indices = []
 
-    # Iterate over the records and display them with checkboxes
-    for index, record in enumerate(records):
-        # Assuming 'Item' is a key in the record
-        item_text = record.get('Item', 'Unnamed Item')
-        # Create a checkbox for the current record
-        if st.checkbox(item_text, key=f"todo-{index}"):
-            # If checked, add the index to the list of items to delete
-            st.session_state.delete_todo.append(index)
+    # Display each client with a checkbox
+    for index, row in df.iterrows():
+        if st.checkbox(f"{row['Date']}{row['Full Name']}, {row['Phone Number']}, {row['Email']}, {row['Note']}", key=index):
+            selected_indices.append(index)
 
-    # Button to delete selected items
-    if st.button("Delete Selected Items"):
-        # Get a reference to the Google Sheet
-        service = get_sheets_service()
-        sheet = service.open_by_key('your-spreadsheet-key').sheet1
-
-        # Reverse the indices to delete items from the end of the list
-        for index in sorted(st.session_state.delete_todo, reverse=True):
-            # Delete the row from the sheet using the index
-            sheet.delete_row(index + 2)  # +2 to account for header and 1-based indexing
-
-        # Clear the selected items and rerun to refresh the display
-        st.session_state.delete_todo = []
-        st.experimental_rerun()
-
-# Utility functions
-def fetch_data_from_sheets():
-    # Fetch data from Google Sheets and return as a list of dictionaries
-    # This is a placeholder - replace with your actual data fetching logic
-    return []
-
-def ge
-
+    # Confirm deletion button
+    if st.button('Confirm deletion of selected clients'):
+        for i in selected_indices:
+            delete_row_from_sheet2(i, records)  # Delete selected clients
+        st.success("Selected clients deleted successfully!")
+        st.experimental_rerun()  # Rerun the app to refresh the data display
 
 def manage_todo_list():
     st.title("To-Do List")
