@@ -1,45 +1,27 @@
 import streamlit as st
 from hashlib import sha256
-import uuid
-
-# Function to generate a random session token
-def generate_session_token():
-    return str(uuid.uuid4())
 
 # Function to check if the user is logged in based on session token
 def is_user_logged_in():
-    session_token = st.session_state.get("session_token")
-    return session_token is not None
+    """ Check if the user is logged in based on session token. """
+    return "session_token" in st.session_state
 
 def show_login():
     st.subheader("Login")
-    username = st.text_input("Username", key="username")
+    # Only password input
     password = st.text_input("Password", type="password", key="password")
 
-    # Debug print
-    st.write(f"Debug: Username input is: {username}")
-    st.write(f"Debug: Password input is: {password}")
-
     if st.button("Login"):
-        st.write("Login button pressed")  # Debug print
-        desired_username = st.secrets["username2"]
-        desired_password = st.secrets["password2"]
+        # Retrieve the stored password from secrets
+        stored_password = st.secrets["password"]
 
-        # Debug print
-        st.write(f"Debug: Desired Username is: {desired_username}")
-        st.write(f"Debug: Desired Password is: {desired_password}")
-
-        if check_password(username, password, desired_username, desired_password):
+        if password == stored_password:
             st.success("Login successful!")
-            session_token = generate_session_token()
-            st.session_state.session_token = session_token  # Set the session token
-
-            # Debug print
-            st.write("Login successful, session token set")
-
+            # Generate a session token
+            st.session_state.session_token = "logged_in"  # Or use a generated token
             st.experimental_rerun()
         else:
-            st.error("Invalid username or password")
+            st.error("Invalid password")
 
 
 def check_password(username, password, desired_username, desired_password):
