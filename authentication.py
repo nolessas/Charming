@@ -42,16 +42,21 @@ def show_login():
 
 
 def check_password(username, password):
-    # Retrieve user's plaintext password from Streamlit secrets
-    user_password_plain = st.secrets["users"].get(username)
+    # Get the dictionary of users from Streamlit secrets
+    users = st.secrets.get("users", {})
 
-    return password == user_password_plain
+    # Check if the username exists in the secrets
+    if username in users:
+        # Retrieve the stored hashed password
+        stored_hashed_password = users[username]
 
-    
-def is_user_persistently_logged_in():
-    return st.server.server.Server.get_current()._session_data.get('logged_in', False)
+        # Hash the entered password
+        entered_hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
+        # Compare the entered hashed password with the stored hashed password
+        return entered_hashed_password == stored_hashed_password
+    else:
+        # Username not found in secrets
+        return False
 
-def set_user_logged_in(logged_in):
-    st.session_state['logged_in'] = logged_in
 
