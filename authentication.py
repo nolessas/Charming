@@ -15,8 +15,9 @@ def show_login():
     st.subheader("Login")
 
     # Add login form elements here
-    username = st.text_input("Username", key="username", help="Enter your username")
-    password = st.text_input("Password", type="password", key="password", help="Enter your password")
+    username = st.text_input("Username", placeholder="Enter username")
+    password = st.text_input("Password", type="password", placeholder="Enter password")
+
 
     if st.button("Login", key="login"):
         # Change these values to your desired credentials
