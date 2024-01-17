@@ -21,6 +21,17 @@ def get_unique_headers(worksheet):
     headers = worksheet.row_values(1)
     return len(headers) == len(set(headers)), headers
 
+day_name_map = {
+    'Monday': 'Pirmadienis',
+    'Tuesday': 'Antradienis',
+    'Wednesday': 'Trečiadienis',
+    'Thursday': 'Ketvirtadienis',
+    'Friday': 'Penktadienis',
+    'Saturday': 'Šeštadienis',
+    'Sunday': 'Sekmadienis'
+}
+
+
 def show_registered_clients():
     service = get_sheets_service()
     try:
@@ -74,6 +85,7 @@ def show_registered_clients():
             st.write("No registered clients found.")
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
+
 
 
 # The rest of your Streamlit app code, including register_client1 and other components
