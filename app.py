@@ -59,7 +59,7 @@ def show_dashboard():
         show_clients_with_deletion_option()
 
     elif choose_main == "4":
-        st.title("DoDo")
+        st.title("ToDo")
         register_todo()
         #manage_todo_list()
 
