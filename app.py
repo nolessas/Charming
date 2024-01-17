@@ -28,16 +28,15 @@ def main():
     st.write("Entered main function")
 
     # Authentication logic here...
-    if "session_token" in st.session_state and st.session_state["session_token"]:
+    if "session_token" in st.session_state:
         # Check if the session token is valid and if so, set the user as logged in
         set_user_logged_in(True)
 
     if is_user_logged_in():
         st.write("Logged in! Showing main app...")
-        try:
-            show_dashboard()  # Replace this with your function that shows the main app content
-        except Exception as e:
-            st.error(f"An error occurred while displaying the main app: {e}")
+        # Call function to display the main app content here
+        # For example:
+        # show_dashboard()
     else:
         st.write("Not logged in, showing login form...")
         show_login()
