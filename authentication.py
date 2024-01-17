@@ -8,8 +8,8 @@ def generate_session_token():
 
 # Function to check if the user is logged in based on session token
 def is_user_logged_in():
-    """ Check if the user is logged in based on session token. """
-    return "session_token" in st.session_state
+    session_token = st.session_state.get("session_token")
+    return session_token is not None
 
 def show_login():
     st.subheader("Login")
