@@ -17,28 +17,33 @@ def manage_todo_list():
         st.write("No to-do items found.")
         return
 
+    # DEBUG: Print records to check structure
+    st.write("Records:", records)
+
     # Initialize an empty list to store indices of selected rows
     selected_indices = []
-    
+
     # Display each to-do item with a checkbox and a slider for importance
     for index, record in enumerate(records):
         col1, col2, col3 = st.columns(3)
         with col1:
-            # Use the index and item text to create a unique key for each checkbox
-            if st.checkbox(record['Item'], key=index):
+            item_text = record.get('Item', 'No Item Label')  # Use .get to avoid KeyError
+            if st.checkbox(item_text, key=index):
                 selected_indices.append(index)
         with col2:
-            # Display a slider for importance
-            record['Importance'] = st.slider('Importance', min_value=0, max_value=100, value=50, key=f'slider-{index}')
+            # Assume that 'Importance' is a key in the record. If not, use a default value.
+            importance = record.get('Importance', 50)  # Default importance value set to 50
+            record['Importance'] = st.slider('Importance', min_value=0, max_value=100, value=importance, key=f'slider-{index}')
         with col3:
-            # Display the second column as plain text
-            st.text(record['Second Column'])  # Replace 'Second Column' with the actual column name
+            # Display the second column as plain text; handle missing key with a default message
+            second_col_text = record.get('Second Column', 'No Second Column Data')
+            st.text(second_col_text)
 
     # If the delete button is pressed, delete all selected items
     if st.button('Delete selected items'):
         for i in selected_indices:
             delete_row_from_sheet2(i, records)  # Delete selected items
-        st.rerun()  # Rerun the app to refresh the data display after deletion
+        st.experimental_rerun()  # Rerun the app to refresh the data display after deletion
 
 
 
