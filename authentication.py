@@ -13,27 +13,18 @@ def is_user_logged_in():
 
 def show_login():
     st.subheader("Login")
-    # Temporary debug print to list all keys in secrets
-    st.write("Secrets keys:", list(st.secrets.keys()))
-    password = st.text_input("Password", type="password")
+    password = st.text_input("Password", type="password", key="password")
 
     if st.button("Login"):
-        # Check if the entered password matches the one in Streamlit secrets
-        if password == st.secrets["password"]:
+        stored_password = st.secrets["password"]  # Make sure the key matches exactly
+
+        if password == stored_password:
             st.success("Login successful!")
-            # Generate a session token and store it in the session state
-            st.session_state['session_token'] = str(uuid.uuid4())
-            st.session_state['logged_in'] = True
-            # Redirect or show the main content here
+            # Create a session token or another method to keep the user logged in
+            st.session_state['logged_in'] = True  # Just a simple flag here
+            # Now redirect or show the main content
         else:
             st.error("Invalid password")
-
-def main():
-    if st.session_state.get('logged_in'):
-        st.write("You are logged in.")
-        # Show your main app content here
-    else:
-        show_login()
 
 
 def check_password(username, password, desired_username, desired_password):
