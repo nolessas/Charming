@@ -54,18 +54,25 @@ def manage_todo_list():
     records = fetch_data_from_sheets2()
 
     if not records:
+        st.write("No to-do items found.")
         return
 
     df = pd.DataFrame(records)
+    
+    # Add a column for checkboxes
+    df['Delete'] = [False] * len(df)
+
+    # Display the DataFrame with checkboxes
     st.write(df)
 
-    # Deletion of selected rows
-    selected_indices = st.multiselect('Select rows to delete:', df.index)
-    if st.button('Delete selected rows'):
-        # Reverse sort indices so we delete from the bottom of the list first
-        for i in sorted(selected_indices, reverse=True):
-            delete_row_from_sheet(i, records)  # Call function to delete the row
-        st.rerun()
+    # If the delete button is pressed, delete all selected items
+    if st.button('Delete selected items'):
+        # Reverse iterate over the DataFrame to avoid index issues during deletion
+        for index, row in reversed(list(df.iterrows())):
+            if row['Delete']:  # If the checkbox is selected
+                delete_row_from_sheet2(index + 2, records)  # Adjust for 1-indexing in Google Sheets
+        st.rerun()  # Rerun the app to refresh the data display after deletion
+
     
 def add_item_to_sheet2(item, location):
     service = get_sheets_service()
