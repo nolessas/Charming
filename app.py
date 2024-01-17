@@ -59,8 +59,8 @@ def show_dashboard():
 
     elif choose_main == "4":
         st.title("ToDo")
-        register_todo()
-        #manage_todo_list()
+        #register_todo()
+        manage_todo_list()
 
     elif choose_main == "5":
         st.write("This tab is on development")
