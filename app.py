@@ -28,15 +28,16 @@ def main():
     st.write("Entered main function")
 
     # Authentication logic here...
-    if "session_token" in st.session_state:
+    if "session_token" in st.session_state and st.session_state["session_token"]:
         # Check if the session token is valid and if so, set the user as logged in
         set_user_logged_in(True)
 
     if is_user_logged_in():
         st.write("Logged in! Showing main app...")
-        # Call function to display the main app content here
-        # For example:
-        # show_dashboard()
+        try:
+            show_dashboard()  # Replace this with your function that shows the main app content
+        except Exception as e:
+            st.error(f"An error occurred while displaying the main app: {e}")
     else:
         st.write("Not logged in, showing login form...")
         show_login()
@@ -44,32 +45,32 @@ def main():
     st.write("End of main function")
 
 
-    def show_dashboard():
-        st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: center;} </style>', unsafe_allow_html=True)
-        st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
-        choose_main = st.radio("", ("1", "2", "3", "4","5"))
+def show_dashboard():
+    st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: center;} </style>', unsafe_allow_html=True)
+    st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
+    choose_main = st.radio("", ("1", "2", "3", "4","5"))
 
-        if choose_main == "1":
-            st.title("")
+    if choose_main == "1":
+        st.title("")
 
-            show_registered_clients()
-            register_client1()
+        show_registered_clients()
+        register_client1()
 
-        elif choose_main == "2":
-            st.title("Calendar")
-            display_calendar()
+    elif choose_main == "2":
+        st.title("Calendar")
+        display_calendar()
 
-        elif choose_main == "3":
-            st.title("List of clients")
-            show_clients_with_deletion_option()
+    elif choose_main == "3":
+        st.title("List of clients")
+        show_clients_with_deletion_option()
 
-        elif choose_main == "4":
-            st.title("ToDo")
-            register_todo()
-            #manage_todo_list()
+    elif choose_main == "4":
+        st.title("ToDo")
+        register_todo()
+        #manage_todo_list()
 
-        elif choose_main == "5":
-            st.write("This tab is on development")
+    elif choose_main == "5":
+        st.write("This tab is on development")
 
 
 if __name__ == "__main__":
