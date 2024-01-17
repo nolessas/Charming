@@ -29,14 +29,11 @@ def manage_todo_list():
         # Create a unique key for the checkbox using the index
         checkbox_key = f"delete_{index}"
 
-        # Use columns for layout
-        col1, col2 = st.columns([1, 4])
-        with col1:
-            # Create a checkbox and save its state
-            checked = st.checkbox("", key=checkbox_key)
-        with col2:
-            # Display the item text
-            st.write(item_text)
+        # Create a checkbox and save its state
+        checked = st.checkbox("", key=checkbox_key)
+
+        # Display the item text
+        st.write(checked, item_text)
         
         # If the checkbox is checked, add the index to the list of selected items
         if checked:
