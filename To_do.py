@@ -63,7 +63,6 @@ def manage_todo_list():
     df['Delete'] = [False] * len(df)
 
     # Display the DataFrame with checkboxes
-    st.write(df)
 
     # If the delete button is pressed, delete all selected items
     if st.button('Delete selected items'):
