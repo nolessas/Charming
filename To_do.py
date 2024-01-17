@@ -17,26 +17,21 @@ def manage_todo_list():
         st.write("No to-do items found.")
         return
 
-    # DEBUG: Print records to check structure
-    st.write("Records:", records)
-
     # Initialize an empty list to store indices of selected rows
     selected_indices = []
-
+    
     # Display each to-do item with a checkbox and a slider for importance
     for index, record in enumerate(records):
         col1, col2, col3 = st.columns(3)
         with col1:
-            item_text = record.get('Item', 'No Item Label')  # Use .get to avoid KeyError
-            if st.checkbox(item_text, key=index):
+            if st.checkbox(record.get('A', 'No Item Label'), key=index):  # Assuming 'A' is the key for the item text
                 selected_indices.append(index)
         with col2:
-            # Assume that 'Importance' is a key in the record. If not, use a default value.
             importance = record.get('Importance', 50)  # Default importance value set to 50
             record['Importance'] = st.slider('Importance', min_value=0, max_value=100, value=importance, key=f'slider-{index}')
         with col3:
-            # Display the second column as plain text; handle missing key with a default message
-            second_col_text = record.get('Second Column', 'No Second Column Data')
+            # Use the actual key for the second column, here it's assumed to be 'B'
+            second_col_text = record.get('B', 'No Second Column Data')
             st.text(second_col_text)
 
     # If the delete button is pressed, delete all selected items
