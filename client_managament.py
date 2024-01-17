@@ -24,47 +24,32 @@ def get_unique_headers(worksheet):
 def show_registered_clients():
     service = get_sheets_service()
     try:
-        worksheet = service.open_by_key('1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ').worksheet('Sheet1')
-        unique, headers = get_unique_headers(worksheet)
-        if not unique:
-            st.error(f"The header row in the worksheet is not unique: {', '.join(headers)}")
-            return  # Stop execution if headers are not unique
-
+        spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+        worksheet_name = 'Sheet1'
+        
+        # Open the worksheet
+        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
+        
+        # Read all records
         records = worksheet.get_all_records()
+        
         if records:
             df = pd.DataFrame(records)
 
-            # Convert 'Date', 'Time in', and 'Time out' to proper formats
+            # Convert 'Date' to datetime and display just the date
             df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y').dt.date
-            df['Time In'] = pd.to_datetime(df['Time in'], format='%H:%M').dt.strftime('%H:%M')
-            df['Time Out'] = pd.to_datetime(df['Time out'], format='%H:%M').dt.strftime('%H:%M')
-
-            # Convert 'Phone Number' to string to prevent formatting issues
-            df['Phone Number'] = df['Phone Number'].astype(str)
-
-            # Add day of the week
-            df['Weekday'] = df['Date'].dt.day_name()
-
-            # Filter by time range
-            time_range = st.radio("Filter by time range:", ["Day", "Week", "Month", "Year"])
-            start_date = {
-                "Day": pd.Timestamp.now() - pd.DateOffset(days=1),
-                "Week": pd.Timestamp.now() - pd.DateOffset(weeks=1),
-                "Month": pd.Timestamp.now() - pd.DateOffset(months=1),
-                "Year": pd.Timestamp.now() - pd.DateOffset(years=1)
-            }.get(time_range, pd.Timestamp(1970, 1, 1))
-
-            filtered_df = df[df['Date'] >= start_date]
-            filtered_df = filtered_df.sort_values(by=["Date"])
 
             # Display the DataFrame
             st.write("Client Information:")
-            st.dataframe(filtered_df[['Date', 'Time In', 'Time Out', 'Full Name', 'Phone Number', 'Email', 'Note']])
-
+            st.dataframe(df)
         else:
             st.write("No registered clients found.")
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
+
+if __name__ == "__main__":
+    st.title("Registered Clients")
+    show_registered_clients()
 
 # The rest of your Streamlit app code, including register_client1 and other components
 # Don't forget to call show_registered_clients() in your main app flow to display the data
