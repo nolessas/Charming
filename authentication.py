@@ -56,3 +56,14 @@ else:
     else:
         # Session token is missing or invalid, show the login form again
         show_login()
+
+
+def set_user_logged_in(logged_in):
+    # Set the logged-in state
+    st.session_state.logged_in = logged_in
+
+# Check for the session token on app startup
+if "session_token" in st.session_state:
+    # You may want to perform additional validation here to ensure the session token is valid
+    set_user_logged_in(True)
+
