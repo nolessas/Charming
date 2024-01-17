@@ -24,7 +24,7 @@ def manage_todo_list():
     for index, record in enumerate(records):
         col1, col2, col3 = st.columns(3)
         with col1:
-            if st.checkbox(record.get('A', 'No Item Label'), key=index):  # Assuming 'A' is the key for the item text
+            if st.checkbox(record.get('A', ''), key=index):  # Assuming 'A' is the key for the item text
                 selected_indices.append(index)
         with col2:
             importance = record.get('Importance', 50)  # Default importance value set to 50
