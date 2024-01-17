@@ -13,9 +13,6 @@ def manage_todo_list():
     # Fetch data from Google Sheets
     records = fetch_data_from_sheets2()
 
-    # Debug: Print the records to verify their structure
-    st.write(records)
-
     if not records:
         st.write("No to-do items found.")
         return
@@ -27,14 +24,16 @@ def manage_todo_list():
     for index, record in enumerate(records):
         col1, col2, col3 = st.columns(3)
         with col1:
-            if st.checkbox(record.get('A', 'Del'), key=index):  # Assuming 'A' is the key for the item text
+            # Use string keys that correspond to the columns in Google Sheets
+            if st.checkbox(record.get("1", 'Del'), key=index):  # Replace "1" with the actual column number for the item text
                 selected_indices.append(index)
         with col2:
+            # For importance, you can keep a separate key or use one from the sheet if it exists
             importance = record.get('Importance', 50)  # Default importance value set to 50
             record['Importance'] = st.slider('Importance', min_value=0, max_value=100, value=importance, key=f'slider-{index}')
         with col3:
-            # Use the actual key for the second column, here it's assumed to be 'B'
-            second_col_text = record.get('B', 'No ')
+            # Use the string key for the second column, possibly "2"
+            second_col_text = record.get("2", 'No Data')  # Replace "2" with the actual column number for the second column
             st.text(second_col_text)
 
     # If the delete button is pressed, delete all selected items
