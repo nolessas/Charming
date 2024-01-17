@@ -28,12 +28,18 @@ def show_login():
         else:
             st.error("Invalid username or password")
 
-def check_password(username, password, desired_username, desired_password):
-    # Change this to your preferred password hashing method
-    hashed_input_password = sha256(password.encode()).hexdigest()
-    
-    return username == desired_username and hashed_input_password == sha256(desired_password.encode()).hexdigest()
+def check_password(username, password):
+    # Retrieve user's hashed password from Streamlit secrets
+    user_password_hash = st.secrets["users"].get(username)
 
+    if user_password_hash:
+        # Check if the provided password matches the stored hash
+        hashed_input_password = sha256(password.encode()).hexdigest()
+        return hashed_input_password == user_password_hash
+    else:
+        # Username not found in secrets
+        return False
+    
 def is_user_persistently_logged_in():
     return st.server.server.Server.get_current()._session_data.get('logged_in', False)
 
