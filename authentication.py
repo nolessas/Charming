@@ -4,7 +4,8 @@ import streamlit as st
 from hashlib import sha256
 
 def is_user_logged_in():
-    return st.session_state.get("logged_in", False)
+    return st.session_state.get('logged_in', False)
+
 
 def show_login():
     st.subheader("Login")
@@ -45,7 +46,5 @@ def is_user_persistently_logged_in():
 
 
 def set_user_logged_in(logged_in):
-    if logged_in:
-        st.server.server.Server.get_current()._session_data['logged_in'] = True
-    else:
-        st.server.server.Server.get_current()._session_data.pop('logged_in', None)
+    st.session_state['logged_in'] = logged_in
+
