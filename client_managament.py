@@ -46,7 +46,7 @@ def show_registered_clients():
             df = pd.DataFrame(records)
 
             # Convert 'Date' to datetime
-            df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
+            df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y').dt.date
 
             # Filter options
             time_filter = st.radio(
@@ -63,7 +63,7 @@ def show_registered_clients():
                 week_end = week_start + timedelta(days=6)
                 df = df[(df['Date'].dt.date >= week_start.date()) & (df['Date'].dt.date <= week_end.date())]
             elif time_filter == 'Month':
-                df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y').dt.date
+                df = df[df['Date'].dt.month == today.month]
 
             # Add day name in Lithuanian
             df['Weekday'] = df['Date'].dt.day_name().map(day_name_map)
