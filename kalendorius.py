@@ -36,10 +36,6 @@ def fetch_client_data_for_calendar():
 def display_calendar():
     event_list = fetch_client_data_for_calendar()
 
-    # UI elements for selecting the view
-    view = st.selectbox("Select View", ["Month", "Week", "Day"])
-    selected_date = st.date_input("Select Date", datetime.today())
-
     # Convert selected_date to a pandas Timestamp for consistent comparison
     selected_date_ts = pd.Timestamp(selected_date)
 
