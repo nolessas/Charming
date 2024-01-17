@@ -5,7 +5,6 @@ import pandas as pd
 from google_sheets import get_sheets_service
 
 
-        
 def register_todo():
     st.write("")
     
