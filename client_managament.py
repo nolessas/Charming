@@ -35,7 +35,7 @@ def show_registered_clients():
             df = pd.DataFrame(records)
 
             # Convert 'Date', 'Time in', and 'Time out' to proper formats
-            df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
+            df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y').dt.date
             df['Time In'] = pd.to_datetime(df['Time in'], format='%H:%M').dt.strftime('%H:%M')
             df['Time Out'] = pd.to_datetime(df['Time out'], format='%H:%M').dt.strftime('%H:%M')
 
@@ -65,7 +65,6 @@ def show_registered_clients():
             st.write("No registered clients found.")
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
-
 
 # The rest of your Streamlit app code, including register_client1 and other components
 # Don't forget to call show_registered_clients() in your main app flow to display the data
