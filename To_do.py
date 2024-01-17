@@ -4,32 +4,7 @@ from datetime import time, datetime
 import pandas as pd
 from google_sheets import get_sheets_service
 
-st.title("")
 
-    # Fetch data from Google Sheets
-    records = fetch_data_from_sheets()
-
-    if not records:
-        st.write("No clients found.")
-        return
-
-    # Convert records to DataFrame
-    df = pd.DataFrame(records)
-
-    # Initialize an empty list to store indices of selected rows
-    selected_indices = []
-
-    # Display each client with a checkbox
-    for index, row in df.iterrows():
-        if st.checkbox(f"{row['Date']}{row['Full Name']}, {row['Phone Number']}, {row['Email']}, {row['Note']}", key=index):
-            selected_indices.append(index)
-
-    # Confirm deletion button
-    if st.button('Confirm deletion of selected clients'):
-        for i in selected_indices:
-            delete_row_from_sheet(i, records)  # Delete selected clients
-        st.success("Selected clients deleted successfully!")
-        st.experimental_rerun()  # Rerun the app to refresh the data display
         
 def register_todo():
     st.write("")
