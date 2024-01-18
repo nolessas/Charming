@@ -6,7 +6,7 @@ from client_managament import get_sheets_service
 
 
 
-def show_clients_with_deletion_option():
+def show_clients_with_deletion_option(selected_date, filter_by_day):
     st.title("")
 
     # Fetch data from Google Sheets
@@ -18,6 +18,16 @@ def show_clients_with_deletion_option():
 
     # Convert records to DataFrame
     df = pd.DataFrame(records)
+
+    # Filter clients by date if selected_date is provided
+    if selected_date:
+        df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y', errors='coerce')
+        df = df[df['Date'].dt.date == selected_date]
+
+    # Filter clients by day if filter_by_day is True
+    if filter_by_day:
+        today = date.today()
+        df = df[df['Date'].dt.date == today]
 
     # Initialize an empty list to store indices of selected rows
     selected_indices = []
@@ -33,6 +43,7 @@ def show_clients_with_deletion_option():
             delete_row_from_sheet(i, records)  # Delete selected clients
         st.success("Selected clients deleted successfully!")
         st.experimental_rerun()  # Rerun the app to refresh the data display
+
 
 
 
