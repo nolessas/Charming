@@ -6,9 +6,20 @@ from google_sheets import get_sheets_service
 
 
 def register_todo():
-    st.title("Add New To-Do Item")
+    st.title("To-Do List")
 
-    # User input fields
+    # Display current to-do list
+    records = fetch_data_from_sheets2()
+
+    if records:
+        # Convert records to DataFrame
+        df = pd.DataFrame(records)
+        st.write("Current To-Do List:")
+        st.dataframe(df)  # Display the current to-do list
+    else:
+        st.write("No to-do items found.")
+
+    # User input fields to add a new to-do item
     kiek = st.slider("Kiek", min_value=1, max_value=100, value=50)
     ko = st.text_input("Ko")
 
@@ -18,12 +29,11 @@ def register_todo():
             try:
                 add_item_to_sheet2(kiek, ko)
                 st.success("To-Do item added successfully!")
-                st.experimental_rerun()
+                st.experimental_rerun()  # Refresh the page to show updated data
             except Exception as e:
                 st.error(f"Failed to add item to sheet: {str(e)}")
         else:
             st.error("Please enter some text for 'Ko'.")
-    
 
 
 def add_item_to_sheet2(kiek, ko):
@@ -33,7 +43,6 @@ def add_item_to_sheet2(kiek, ko):
     try:
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
         worksheet.append_row([kiek, ko])
-        st.success("Item added successfully!")
     except Exception as e:
         st.error(f"Failed to add item to sheet: {str(e)}")
 
@@ -55,17 +64,13 @@ def fetch_data_from_sheets2():
     worksheet_name = 'Sheet2'
     try:
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        # Get all values except the first row which is usually the header
-        data = worksheet.get_all_values()[1:]  # skip the first row if it's not the header
-        # Define your own headers here
-        headers = ['Keik', 'Ko']  # The headers you want to use
-        # Create a DataFrame with the defined headers
-        df = pd.DataFrame(data, columns=headers)
-        return df.to_dict('records')  # Convert DataFrame back to a list of dictionaries
+        data = worksheet.get_all_values()
+        headers = data[0]  # Assumes the first row is the header
+        records = data[1:]  # The rest is data
+        return [dict(zip(headers, record)) for record in records]
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
         return []
-
 
 
 
