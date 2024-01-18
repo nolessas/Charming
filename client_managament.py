@@ -226,4 +226,3 @@ def get_and_update_client_notes(client_name):
         # Update the note in the Google Sheet
         worksheet.update_cell(client_row_number, 7, updated_note)  # Assuming note is in the 7th column
         st.success("Note updated successfully for " + client_name)
-        st.experimental_rerun()
