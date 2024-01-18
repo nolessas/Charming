@@ -36,7 +36,7 @@ def main():
 
 
 
-
+st.image("image.png")
 def show_dashboard():
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: center;} </style>', unsafe_allow_html=True)
     st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
@@ -64,7 +64,7 @@ def show_dashboard():
         #manage_todo_list()
 
     elif choose_main == "5":
-        st.write("This tab is on development")
+        st.title("Add to note")
         # Inside the relevant section of your Streamlit app
         client_name_search = st.text_input("Enter the client's full name:")
 
