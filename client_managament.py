@@ -3,8 +3,7 @@ import streamlit as st
 from datetime import datetime, time, timedelta, date
 import pandas as pd
 import gspread
-from google_sheets import write_to_sheets, get_sheets_service, delete_client
-
+from google.oauth2 import service_account
 
 #class SessionState:
     #def __init__(self, **kwargs):
