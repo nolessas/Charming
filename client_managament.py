@@ -68,7 +68,7 @@ def show_registered_clients():
             df.set_index('Weekday', inplace=True)
 
             st.write("Client Information:")
-            st.dataframe(df[['Date', 'Your Columns Here']])  # Replace 'Your Columns Here' with the columns you want to display
+            st.dataframe(df[['Date', 'Time in', 'Full name', 'Phone Number', 'Note' ]])  # Replace 'Your Columns Here' with the columns you want to display
         else:
             st.write("No registered clients found.")
     except Exception as e:
