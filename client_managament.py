@@ -200,19 +200,29 @@ def get_and_update_client_notes(client_name):
     # Retrieve all records
     records = worksheet.get_all_records()
     
-    # Find the row number for the client
-    row_number = next((i + 2 for i, r in enumerate(records) if r['Full Name'].strip().lower() == client_name.strip().lower()), None)
-    
-    if not row_number:
+    # Find the row for the client
+    client_row = None
+    for index, row in enumerate(records):
+        if row['Full Name'].strip().lower() == client_name.strip().lower():
+            client_row = row
+            row_number = index + 2  # Adjust for header row
+            break
+
+    if client_row is None:
         st.error("Client not found.")
         return
 
     # Display current note and ask for new note
-    current_note = worksheet.cell(row_number, 7).value  # Assuming the note is in the 7th column
+    current_note = client_row['Note']
     st.write("Current Note: ", current_note)
     new_note = st.text_area("New Note for " + client_name, height=150)
 
     if st.button('Update Note'):
-        # Update the note in the sheet
-        worksheet.update_cell(row_number, 7, new_note)
+        # Prepare updated row data
+        updated_row = [client_row[col] if col != 'Note' else new_note for col in worksheet.row_values(1)]
+        
+        # Replace the entire row with updated data
+        worksheet.delete_rows(row_number)
+        worksheet.insert_row(updated_row, row_number)
+        
         st.success("Note updated successfully for " + client_name)
