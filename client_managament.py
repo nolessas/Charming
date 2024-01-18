@@ -75,12 +75,6 @@ def show_registered_clients():
 
 
 
-# The rest of your Streamlit app code, including register_client1 and other components
-# Don't forget to call show_registered_clients() in your main app flow to display the data
-
-# Example call within your Streamlit layout:
-if st.sidebar.button('Show Registered Clients'):
-    show_registered_clients()
 
 
 def register_client1():
@@ -119,12 +113,11 @@ def register_client1():
                 ]
 
                 # Then you write sheet_data to the Google Sheet as before
-                write_to_sheets(sheet_data)
+                write_to_sheets(sheet_data)  # Your function to write data to Google Sheets
 
-                # User feedback
                 st.success("Client registered successfully!")
+                st.experimental_rerun()  # Refresh the page to show updated data
             except Exception as e:
                 st.error(f"Failed to register client: {e}")
         else:
             st.error("Please fill in all required fields.")
-            st.rerun()
