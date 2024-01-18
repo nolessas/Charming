@@ -60,6 +60,9 @@ def show_registered_clients():
             if 'Phone Number' in df.columns:
                 df['Phone Number'] = df['Phone Number'].astype(str)
 
+            # Format the 'Date' column to display without the time part
+            df['Date'] = df['Date'].dt.strftime('%Y-%m-%d')
+
             df.set_index('Weekday', inplace=True)
 
             st.write("Client Information:")
