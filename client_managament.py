@@ -49,21 +49,11 @@ def show_registered_clients():
             df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y', errors='coerce')
             df.dropna(subset=['Date'], inplace=True)
             
-            time_filter = st.radio(
-                "Filter by:",
-                ('Day', 'Week', 'Month'),
-                index=0
-            )
+            # Add a date picker to select a day for filtering
+            selected_date = st.date_input("Select a Date:")
             
-            today = datetime.today()
-            if time_filter == 'Day':
-                df = df[df['Date'].dt.date == today.date()]
-            elif time_filter == 'Week':
-                week_start = today - timedelta(days=today.weekday())
-                week_end = week_start + timedelta(days=6)
-                df = df[(df['Date'].dt.date >= week_start.date()) & (df['Date'].dt.date <= week_end.date())]
-            elif time_filter == 'Month':
-                df = df[df['Date'].dt.month == today.month]
+            if selected_date:
+                df = df[df['Date'].dt.date == selected_date.date()]
 
             df['Weekday'] = df['Date'].dt.day_name().map(day_name_map)
             
@@ -78,7 +68,6 @@ def show_registered_clients():
             st.write("No registered clients found.")
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
-
 
 
 
