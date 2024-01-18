@@ -50,7 +50,7 @@ def show_registered_clients():
             df.dropna(subset=['Date'], inplace=True)
             
             # Add a date picker to select a day for filtering
-            selected_date = st.date_input("Select a Date:")
+            selected_date = st.date_input("Pasirinkite data")
             
             if selected_date:
                 df = df[df['Date'].dt.date == selected_date]
@@ -65,10 +65,10 @@ def show_registered_clients():
 
             df.set_index('Weekday', inplace=True)
 
-            st.write("Client Information:")
+            st.write("Pasirinktos dienos klientai:")
             st.dataframe(df)
         else:
-            st.write("No registered clients found.")
+            st.write("Šiuo metu registruotu kleintu nėra.")
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
 
@@ -76,7 +76,7 @@ def show_registered_clients():
 
 
 def register_client1():
-    st.title("Register New Client")
+    st.title("Registruoti naują klientą")
 
     # Input fields for registration
     date_input = st.date_input("Date:")
