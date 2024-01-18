@@ -2,9 +2,12 @@
 import streamlit as st
 from datetime import time, datetime
 import pandas as pd
+from google.oauth2 import service_account
 from client_managament import get_sheets_service
 
 
+
+SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
 def show_clients_with_date_filter(selected_date):
     st.title("Client Information")
@@ -20,7 +23,6 @@ def show_clients_with_date_filter(selected_date):
     df = pd.DataFrame(records)
 
     # Filter clients based on selected date
-    selected_date = selected_date.date()
     df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y', errors='coerce').dt.date
     filtered_df = df[df['Date'] == selected_date]
 
