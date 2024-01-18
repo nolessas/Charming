@@ -197,23 +197,20 @@ def get_and_update_client_notes(client_name):
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
     worksheet = service.open_by_key(spreadsheet_id).worksheet('Sheet1')
 
-    # Attempt to find the cell with the client's name
     try:
         cell = worksheet.find(client_name)
     except gspread.exceptions.CellNotFound:
         st.error("Client not found.")
         return
 
-    # Ensure the cell is not None and in the expected column (e.g., Full Name column)
-    if cell is None or cell.col != EXPECTED_COLUMN_INDEX_FOR_NAME:
+    # Assuming "Full Name" is in the first column (index 1)
+    if cell is None or cell.col != 1:
         st.error("Client not found or in unexpected column.")
         return
 
-    # Fetch the current note from the 7th column in the client's row
     current_note = worksheet.cell(cell.row, 7).value  # Assuming note is in the 7th column
     new_note = st.text_area("Update Note for " + client_name, value=current_note, height=150)
 
     if st.button('Save Note'):
-        # Update the note in the sheet
         worksheet.update_cell(cell.row, 7, new_note)
         st.success(f"Note updated successfully for {client_name}")
