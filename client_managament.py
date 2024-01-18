@@ -34,7 +34,7 @@ def show_registered_clients():
     try:
         spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
         worksheet_name = 'Sheet1'
-
+        
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
         records = worksheet.get_all_records()
 
@@ -42,13 +42,13 @@ def show_registered_clients():
             df = pd.DataFrame(records)
             df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y', errors='coerce')
             df.dropna(subset=['Date'], inplace=True)
-
+            
             time_filter = st.radio(
                 "Filter by:",
                 ('Day', 'Week', 'Month'),
                 index=0
             )
-
+            
             today = datetime.today()
             if time_filter == 'Day':
                 df = df[df['Date'].dt.date == today.date()]
@@ -60,15 +60,14 @@ def show_registered_clients():
                 df = df[df['Date'].dt.month == today.month]
 
             df['Weekday'] = df['Date'].dt.day_name().map(day_name_map)
-
+            
             if 'Phone Number' in df.columns:
                 df['Phone Number'] = df['Phone Number'].astype(str)
 
-            df = df.sort_values(by='Date')  # Sort by Date in ascending order
             df.set_index('Weekday', inplace=True)
 
             st.write("Client Information:")
-            st.dataframe(df[['Date', 'Time in', 'Full name', 'Phone Number', 'Note' ]])  # Replace 'Your Columns Here' with the columns you want to display
+            st.dataframe(df)
         else:
             st.write("No registered clients found.")
     except Exception as e:
