@@ -53,7 +53,7 @@ def show_registered_clients():
             selected_date = st.date_input("Select a Date:")
             
             if selected_date:
-                df = df[df['Date'].dt.date == selected_date.date()]
+                df = df[df['Date'].dt.date == selected_date]
 
             df['Weekday'] = df['Date'].dt.day_name().map(day_name_map)
             
