@@ -201,30 +201,22 @@ def get_and_update_client_notes(client_name):
     records = worksheet.get_all_records()
     
     # Find the row number for the client
-    row_number = None
-    for i, record in enumerate(records):
-        if record['Full Name'].strip().lower() == client_name.strip().lower():
-            row_number = i + 2  # Account for header row and 1-indexing
+    client_row = None
+    for index, row in enumerate(records):
+        if row['Full Name'].strip().lower() == client_name.strip().lower():
+            client_row = index + 2  # Adjust for header row
             break
 
-    if row_number is None:
+    if client_row is None:
         st.error("Client not found.")
         return
 
-    # Display current note and get new note
-    current_note = worksheet.cell(row_number, 7).value  # Assuming note is in the 7th column
-    new_note = st.text_area("New Note for " + client_name, height=150)
+    # Display current note
+    current_note = worksheet.cell(client_row, 7).value  # Assuming note is in the 7th column
+    new_note = st.text_area("Update Note for " + client_name, value=current_note, height=150)
 
-    if st.button('Update Note'):
-        # Prepare the request body for batch update
-        body = {
-            "valueInputOption": "USER_ENTERED",
-            "data": [{
-                "range": f'Sheet1!G{row_number}',
-                "values": [[new_note]]
-            }]
-        }
-        
-        # Update the note in the sheet
-        service.spreadsheets().values().batchUpdate(spreadsheetId=spreadsheet_id, body=body).execute()
-        st.success("Note updated successfully for " + client_name)
+    if st.button('Save Note'):
+        # Use A1 notation to identify the specific cell for the note
+        note_cell = f'G{client_row}'  # Assuming note is in the 7th column (G)
+        worksheet.update_acell(note_cell, new_note)
+        st.success(f"Note updated successfully for {client_name}")
