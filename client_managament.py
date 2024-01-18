@@ -152,3 +152,74 @@ def delete_client(index):
         st.experimental_rerun()  # Rerun the app to refresh the data display
     except Exception as e:
         st.error(f"Failed to delete client: {str(e)}")
+
+
+# ... existing imports and functions ...
+        
+def add_client_note(client_id, note):
+    """
+    Adds or updates a note for a given client.
+    :param client_id: The unique identifier for the client.
+    :param note: The note to be added.
+    """
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    notes_worksheet_name = 'Client Notes'  # Assume there is a sheet for notes
+    
+    try:
+        # Open the notes worksheet
+        notes_worksheet = service.open_by_key(spreadsheet_id).worksheet(notes_worksheet_name)
+        
+        # Fetch all the notes records
+        notes_records = notes_worksheet.get_all_records()
+        
+        # Convert the records to a DataFrame for easier searching
+        notes_df = pd.DataFrame(notes_records)
+        
+        # Check if the client already has a note
+        if client_id in notes_df['Client ID'].values:
+            # Update the existing note
+            row_index = notes_df.index[notes_df['Client ID'] == client_id].tolist()[0] + 2  # Offset for header and 1-indexing
+            notes_worksheet.update_cell(row_index, notes_df.columns.get_loc('Note') + 1, note)  # Update the note
+        else:
+            # Add a new note entry
+            new_row = [client_id, note]
+            notes_worksheet.append_row(new_row)  # Append a new row with the client ID and note
+        
+        st.success("Note added/updated successfully for client ID: " + str(client_id))
+    except Exception as e:
+        st.error(f"Failed to add/update note for client: {str(e)}")
+        
+                
+
+def get_and_update_client_notes(client_name):
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    worksheet_name = 'Sheet1'
+    worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
+    clients_data = worksheet.get_all_records()
+
+    # Find client by name and get the note
+    client_note = ""
+    for row in clients_data:
+        if row['Full Name'] == client_name:
+            client_note = row['Note']
+            break
+    
+    # If the client is not found, return a message
+    if client_note == "":
+        return "Client not found."
+
+    # Display the current note
+    st.text_area("Current Note:", value=client_note, height=150, key='current_note')
+    
+    # Input for the new note
+    new_note = st.text_area("Add New Note:", height=150, key='new_note')
+
+    if st.button('Update Note'):
+        updated_note = client_note + " " + new_note if client_note else new_note
+        # Now find the row number of the client
+        cell = worksheet.find(client_name)
+        worksheet.update_cell(cell.row, cell.col + 5, updated_note)  # Assuming note is 5 columns away from name
+        st.success("Note updated successfully.")
+        st.rerun()
