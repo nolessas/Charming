@@ -46,24 +46,24 @@ def show_registered_clients():
 
         if records:
             df = pd.DataFrame(records)
-            df['Diena'] = pd.to_datetime(df['Diena'], format='%d/%m/%Y', errors='coerce')
-            df.dropna(subset=['Diena'], inplace=True)
+            df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y', errors='coerce')
+            df.dropna(subset=['Date'], inplace=True)
             
             # Add a date picker to select a day for filtering
             selected_date = st.date_input("Pasirinkite data")
             
             if selected_date:
-                df = df[df['Diena'].dt.date == selected_date]
+                df = df[df['Date'].dt.date == selected_date]
 
-            df['Diena'] = df['Diena'].dt.day_name().map(day_name_map)
+            df['Weekday'] = df['Date'].dt.day_name().map(day_name_map)
             
             if 'Phone Number' in df.columns:
-                df['Telefonas'] = df['Telefonas'].astype(str)
+                df['Phone Number'] = df['Phone Number'].astype(str)
 
             # Format the 'Date' column to display without the time part
-            df['Diena'] = df['Diena'].dt.strftime('%Y-%m-%d')
+            df['Date'] = df['Date'].dt.strftime('%Y-%m-%d')
 
-            df.set_index('Diena', inplace=True)
+            df.set_index('Weekday', inplace=True)
 
             st.write("Pasirinktos dienos klientai:")
             st.dataframe(df)
