@@ -199,28 +199,21 @@ def get_and_update_client_notes(client_name):
     worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
     clients_data = worksheet.get_all_records()
 
-    client_found = False
-    client_row_number = None
-
+    # Find the row number for the client
+    client_row = None
     for index, row in enumerate(clients_data):
-        if row['Full Name'] == client_name:
-            client_found = True
-            client_row_number = index + 2  # Adjusting for the header row
+        if row['Full Name'].strip().lower() == client_name.strip().lower():
+            client_row = index + 2  # 1-indexed and adjusting for header
             break
 
-    if not client_found:
+    if client_row is None:
         st.write("Client not found.")
         return
 
-    # Display the current note
-    current_note = worksheet.cell(client_row_number, 7).value  # Assuming notes are in the 7th column
-    st.text_area("Current Note:", value=current_note, height=150, key='current_note')
-    
-    # Input for the new note
-    new_note = st.text_area("Add New Note:", height=150, key='new_note')
+    # Display and update the note
+    current_note = worksheet.cell(client_row, 7).value  # Assuming note is in the 7th column
+    new_note = st.text_area("Update Note for " + client_name, value=current_note, height=150)
 
-    if st.button('Update Note'):
-        updated_note = current_note + " " + new_note if current_note else new_note
-        worksheet.update_cell(client_row_number, 7, updated_note)  # Update the note in the 7th column
+    if st.button('Save Note'):
+        worksheet.update_cell(client_row, 7, new_note)
         st.success("Note updated successfully for " + client_name)
-        st.experimental_rerun()
