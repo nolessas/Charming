@@ -2,7 +2,7 @@
 import streamlit as st
 from datetime import time, datetime
 import pandas as pd
-from google_sheets import get_sheets_service
+from client_managament import get_sheets_service
 
 
 def register_todo():
