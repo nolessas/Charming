@@ -192,6 +192,31 @@ def add_client_note(client_id, note):
 
 
 
+def display_client_note(client_name):
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    worksheet = service.open_by_key(spreadsheet_id).worksheet('Sheet1')
+
+    try:
+        cell = worksheet.find(client_name)
+        current_note = worksheet.cell(cell.row, 7).value  # Assuming note is in the 7th column
+        st.text_area("Current Note for " + client_name, value=current_note, height=150, key='current_note')
+        return cell.row  # Return the row number for the update function
+    except gspread.exceptions.CellNotFound:
+        st.error("Client not found.")
+        return None
+
+def update_client_note(row_number, client_name, new_note):
+    if row_number is None:
+        return  # Do nothing if row number is not provided
+
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    worksheet = service.open_by_key(spreadsheet_id).worksheet('Sheet1')
+
+    worksheet.update_cell(row_number, 7, new_note)  # Update the note in the 7th column
+    st.success("Note updated successfully for " + client_name)
+
 def get_and_update_client_notes(client_name):
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
