@@ -35,47 +35,38 @@ def show_registered_clients():
         spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
         worksheet_name = 'Sheet1'
         
-        # Open the worksheet
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        
-        # Read all records
         records = worksheet.get_all_records()
 
         if records:
             df = pd.DataFrame(records)
+            df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y', errors='coerce')
+            df.dropna(subset=['Date'], inplace=True)
+            df['Date'] = df['Date'].dt.date
 
-            # Ensure 'Date' column is in datetime format and remove the time component
-            df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y', errors='coerce').dt.date
-
-            # Filter options
             time_filter = st.radio(
                 "Filter by:",
                 ('Day', 'Week', 'Month'),
-                index=0  # Default is 'Day'
+                index=0
             )
             
-            # Filter based on the selected time period
             today = datetime.today()
             if time_filter == 'Day':
                 df = df[df['Date'] == today.date()]
             elif time_filter == 'Week':
-                week_start = today - timedelta(days=today.weekday())  # Calculate the start of the week
+                week_start = today - timedelta(days=today.weekday())
                 week_end = week_start + timedelta(days=6)
-                df = df[(df['Date'] >= week_start) & (df['Date'] <= week_end)]
+                df = df[(df['Date'] >= week_start.date()) & (df['Date'] <= week_end.date())]
             elif time_filter == 'Month':
-                df = df[df['Date'].dt.month == today.month]
+                df = df[df['Date'].month == today.month]
 
-            # Add day name in Lithuanian
-            df['Weekday'] = pd.to_datetime(df['Date']).dt.day_name().map(day_name_map)
+            df['Weekday'] = df['Date'].apply(lambda x: day_name_map[x.strftime('%A')])
             
-            # Convert 'Phone Number' to string if the column exists
             if 'Phone Number' in df.columns:
                 df['Phone Number'] = df['Phone Number'].astype(str)
 
-            # Set the 'Weekday' column as the index of the DataFrame
             df.set_index('Weekday', inplace=True)
 
-            # Display the filtered DataFrame
             st.write("Client Information:")
             st.dataframe(df)
         else:
