@@ -19,19 +19,27 @@ def show_clients_with_date_filter(selected_date):
         st.write("No clients found.")
         return
 
-    # Convert records to DataFrame
-    df = pd.DataFrame(records)
+    st.write("Client Information for Selected Date:")
 
-    # Filter clients based on selected date
-    df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y', errors='coerce').dt.date
-    filtered_df = df[df['Date'] == selected_date]
+    # Initialize an empty list to store indices of selected rows
+    selected_indices = []
 
-    if not filtered_df.empty:
-        st.write("Client Information for Selected Date:")
-        st.dataframe(filtered_df)
-    else:
-        st.write("No clients found for the selected date.")
+    # Display each client with a checkbox for the selected date
+    for index, record in enumerate(records):
+        date_string = record['Date']
+        try:
+            date_obj = datetime.strptime(date_string, "%d/%m/%Y").date()
+            if date_obj == selected_date:
+                if st.checkbox(f"{date_string}, {record['Full Name']}, {record['Phone Number']}, {record['Email']}, {record['Note']}", key=index):
+                    selected_indices.append(index)
+        except ValueError:
+            pass
 
+    if st.button('Confirm deletion of selected clients'):
+        for i in selected_indices:
+            delete_row_from_sheet(i, records)  # Delete selected clients
+        st.success("Selected clients deleted successfully!")
+        st.experimental_rerun()  # Rerun the app to refresh the data display
 
 
 
