@@ -196,27 +196,18 @@ def get_and_update_client_notes(client_name):
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
     worksheet = service.open_by_key(spreadsheet_id).worksheet('Sheet1')
-    
-    # Retrieve all records
-    records = worksheet.get_all_records()
-    
-    # Find the row number for the client
-    client_row = None
-    for index, row in enumerate(records):
-        if row['Full Name'].strip().lower() == client_name.strip().lower():
-            client_row = index + 2  # Adjust for header row
-            break
 
-    if client_row is None:
+    # Find the row number for the client
+    try:
+        cell = worksheet.find(client_name)
+    except gspread.exceptions.CellNotFound:
         st.error("Client not found.")
         return
 
-    # Display current note
-    current_note = worksheet.cell(client_row, 7).value  # Assuming note is in the 7th column
+    # Assuming note is in the 7th column and client names are unique
+    current_note = worksheet.cell(cell.row, 7).value
     new_note = st.text_area("Update Note for " + client_name, value=current_note, height=150)
 
     if st.button('Save Note'):
-        # Use A1 notation to identify the specific cell for the note
-        note_cell = f'G{client_row}'  # Assuming note is in the 7th column (G)
-        worksheet.update_acell(note_cell, new_note)
+        worksheet.update_cell(cell.row, 7, new_note)
         st.success(f"Note updated successfully for {client_name}")
