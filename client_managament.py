@@ -53,9 +53,9 @@ def show_registered_clients():
             selected_date = st.date_input("Pasirinkite data")
             
             if selected_date:
-                df = df[df['Date'].dt.date == selected_date]
+                df = df[df['Diena'].dt.date == selected_date]
 
-            df['Diena'] = df['Data'].dt.day_name().map(day_name_map)
+            df['Diena'] = df['Diena'].dt.day_name().map(day_name_map)
             
             if 'Phone Number' in df.columns:
                 df['Telefonas'] = df['Telefonas'].astype(str)
