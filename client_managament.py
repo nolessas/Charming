@@ -200,29 +200,31 @@ def get_and_update_client_notes(client_name):
     # Retrieve all records
     records = worksheet.get_all_records()
     
-    # Find the row for the client
-    client_row = None
-    for index, row in enumerate(records):
-        if row['Full Name'].strip().lower() == client_name.strip().lower():
-            client_row = row
-            row_number = index + 2  # Adjust for header row
+    # Find the row number for the client
+    row_number = None
+    for i, record in enumerate(records):
+        if record['Full Name'].strip().lower() == client_name.strip().lower():
+            row_number = i + 2  # Account for header row and 1-indexing
             break
 
-    if client_row is None:
+    if row_number is None:
         st.error("Client not found.")
         return
 
-    # Display current note and ask for new note
-    current_note = client_row['Note']
-    st.write("Current Note: ", current_note)
+    # Display current note and get new note
+    current_note = worksheet.cell(row_number, 7).value  # Assuming note is in the 7th column
     new_note = st.text_area("New Note for " + client_name, height=150)
 
     if st.button('Update Note'):
-        # Prepare updated row data
-        updated_row = [client_row[col] if col != 'Note' else new_note for col in worksheet.row_values(1)]
+        # Prepare the request body for batch update
+        body = {
+            "valueInputOption": "USER_ENTERED",
+            "data": [{
+                "range": f'Sheet1!G{row_number}',
+                "values": [[new_note]]
+            }]
+        }
         
-        # Replace the entire row with updated data
-        worksheet.delete_rows(row_number)
-        worksheet.insert_row(updated_row, row_number)
-        
+        # Update the note in the sheet
+        service.spreadsheets().values().batchUpdate(spreadsheetId=spreadsheet_id, body=body).execute()
         st.success("Note updated successfully for " + client_name)
