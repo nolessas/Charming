@@ -44,7 +44,8 @@ def show_dashboard():
 
     if choose_main == "1":
         st.title("")
-        st.image("\image.png")
+        st.image("image.png")
+
 
         show_registered_clients()
         register_client1()
