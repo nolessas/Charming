@@ -25,85 +25,52 @@ def get_sheets_service():
 
 
 
+day_name_map = {
+    'Monday': 'Pirmadienis',
+    'Tuesday': 'Antradienis',
+    'Wednesday': 'Trečiadienis',
+    'Thursday': 'Ketvirtadienis',
+    'Friday': 'Penktadienis',
+    'Saturday': 'Šeštadienis',
+    'Sunday': 'Sekmadienis'
+}
 
-
-def show_registered_clients(selected_date):
-    st.title("Client Information")
-
-    # Fetch data from Google Sheets
-    records = fetch_data_from_sheets()
-
-    if not records:
-        st.write("No clients found.")
-        return
-
-    st.write("Client Information for Selected Date:")
-
-    # Initialize an empty list to store indices of selected rows
-    selected_indices = []
-
-    # Display each client with a checkbox for the selected date
-    for index, record in enumerate(records):
-        date_string = record['Date']
-        try:
-            date_obj = datetime.strptime(date_string, "%d/%m/%Y").date()
-            if date_obj == selected_date:
-                if st.checkbox(f"{date_string}, {record['Full Name']}, {record['Phone Number']}, {record['Email']}, {record['Note']}", key=index):
-                    selected_indices.append(index)
-        except ValueError:
-            pass
-
-    if st.button('Confirm deletion of selected clients'):
-        for i in selected_indices:
-            delete_client(i, records)  # Delete selected clients
-        st.success("Selected clients deleted successfully!")
-        st.experimental_rerun()  # Rerun the app to refresh the data display
-
-
-
-
-def write_to_sheets(data, value_input_option='USER_ENTERED'):
+def show_registered_clients():
     service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-    worksheet_name = 'Sheet1'
     try:
-        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        # Append the new data row
-        worksheet.append_row(data, value_input_option=value_input_option)
-    except Exception as e:
-        st.error(f"Error writing to Google Sheets: {str(e)}")
-
-
-
-def delete_client(index, records):
-    service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-    worksheet_name = 'Sheet1'
-    try:
-        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        worksheet.delete_rows(index + 2)  # Adjust for header row and 1-indexing
-        del records[index]
-        st.success("Selected rows deleted successfully!")
-    except Exception as e:
-        st.error(f"Failed to delete row from sheet: {str(e)}")
-
-
-def fetch_data_from_sheets():
-    service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-    worksheet_name = 'Sheet1'  # Change this to 'Sheet1'
-    try:
+        spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+        worksheet_name = 'Sheet1'
+        
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
         records = worksheet.get_all_records()
-        return records
+
+        if records:
+            df = pd.DataFrame(records)
+            df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y', errors='coerce')
+            df.dropna(subset=['Date'], inplace=True)
+            
+            # Add a date picker to select a day for filtering
+            selected_date = st.date_input("Select a Date:")
+            
+            if selected_date:
+                df = df[df['Date'].dt.date == selected_date]
+
+            df['Weekday'] = df['Date'].dt.day_name().map(day_name_map)
+            
+            if 'Phone Number' in df.columns:
+                df['Phone Number'] = df['Phone Number'].astype(str)
+
+            # Format the 'Date' column to display without the time part
+            df['Date'] = df['Date'].dt.strftime('%Y-%m-%d')
+
+            df.set_index('Weekday', inplace=True)
+
+            st.write("Client Information:")
+            st.dataframe(df)
+        else:
+            st.write("No registered clients found.")
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
-        return []
-
-
-
-
-
 
 
 
@@ -153,3 +120,35 @@ def register_client1():
         else:
             st.error("Please fill in all required fields.")
 
+
+
+
+
+
+
+
+def write_to_sheets(data, value_input_option='USER_ENTERED'):
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    worksheet_name = 'Sheet1'
+    try:
+        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
+        # Append the new data row
+        worksheet.append_row(data, value_input_option=value_input_option)
+    except Exception as e:
+        st.error(f"Error writing to Google Sheets: {str(e)}")
+
+
+
+def delete_client(index):
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    worksheet_name = 'Sheet1'
+    try:
+        worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
+        # Delete the row; add 2 to index to account for header row and 0-based indexing
+        worksheet.delete_rows(index + 2)
+        st.success(f"Client at row {index + 1} deleted successfully.")
+        st.experimental_rerun()  # Rerun the app to refresh the data display
+    except Exception as e:
+        st.error(f"Failed to delete client: {str(e)}")

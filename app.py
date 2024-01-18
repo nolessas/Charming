@@ -11,7 +11,7 @@ from kalendorius import display_calendar
 import streamlit as st
 from pathlib import Path
 from client_managament import show_registered_clients, register_client1, get_sheets_service, write_to_sheets, delete_client
-#from data_base import show_clients_with_date_filter, delete_row_from_sheet, fetch_data_from_sheets
+from data_base import show_clients_with_date_filter, delete_row_from_sheet, fetch_data_from_sheets
 from To_do import register_todo, add_item_to_sheet2, delete_row_from_sheet2, fetch_data_from_sheets2
 
 
@@ -54,8 +54,8 @@ def show_dashboard():
 
     elif choose_main == "3":
         st.title("List of clients")
-        #selected_date = st.date_input("Select a Date:")
-        #show_clients_with_date_filter(selected_date)  # Call the new function
+        selected_date = st.date_input("Select a Date:")
+        show_clients_with_date_filter(selected_date)  # Call the new function
 
 
     elif choose_main == "4":
