@@ -207,11 +207,12 @@ def get_and_update_client_notes(client_name):
         st.error("Client not found.")
         return
 
-    # Display current note
+    # Display current note and ask for new note
     current_note = worksheet.cell(row_number, 7).value  # Assuming the note is in the 7th column
-    updated_note = st.text_area("Note for " + client_name, value=current_note, height=150)
+    st.write("Current Note: ", current_note)
+    new_note = st.text_area("New Note for " + client_name, height=150)
 
     if st.button('Update Note'):
         # Update the note in the sheet
-        worksheet.update_cell(row_number, 7, updated_note)
+        worksheet.update_cell(row_number, 7, new_note)
         st.success("Note updated successfully for " + client_name)
