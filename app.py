@@ -55,7 +55,7 @@ def show_dashboard():
     elif choose_main == "3":
         st.title("List of clients")
         selected_date = st.date_input("Select a Date:")
-        #show_clients_with_date_filter(selected_date)  # Call the new function
+        show_clients_with_date_filter(selected_date)  # Call the new function
 
 
     elif choose_main == "4":
