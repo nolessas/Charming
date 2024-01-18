@@ -6,49 +6,33 @@ from google_sheets import get_sheets_service
 
 
 def register_todo():
-    st.title("ToDo List")
+    st.title("Add New To-Do Item")
 
-    # Fetch data from Google Sheets
-    records = fetch_data_from_sheets2()
+    # User input fields
+    kiek = st.slider("Kiek", min_value=1, max_value=100, value=50)
+    ko = st.text_input("Ko")
 
-    if not records:
-        st.write("No tasks found.")
-        return
-
-    # Convert records to DataFrame
-    df = pd.DataFrame(records)
-
-    # Check if the required columns are present in the DataFrame
-    required_columns = ['Keik', 'Ko']
-    for column in required_columns:
-        if column not in df.columns:
-            st.error(f"Column '{column}' not found in the data.")
-            return
-
-    # Initialize an empty list to store indices of selected rows
-    selected_indices = []
-
-    # Display each task with a checkbox
-    for index, row in df.iterrows():
-        if st.checkbox(f"{row['Keik']} {row['Ko']}", key=index):
-            selected_indices.append(index)
-
-    # Confirm deletion button
-    if st.button('Confirm deletion of selected tasks'):
-        for i in selected_indices:
-            delete_row_from_sheet2(i, records)  # Delete selected tasks
-        st.success("Selected tasks deleted successfully!")
-        st.experimental_rerun() 
+    # Button to add the new item
+    if st.button("Add To-Do Item"):
+        if ko:  # Make sure 'Ko' is not empty
+            try:
+                add_item_to_sheet2(kiek, ko)
+                st.success("To-Do item added successfully!")
+                st.experimental_rerun()
+            except Exception as e:
+                st.error(f"Failed to add item to sheet: {str(e)}")
+        else:
+            st.error("Please enter some text for 'Ko'.")
     
 
 
-def add_item_to_sheet2(item, location):
+def add_item_to_sheet2(kiek, ko):
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
     worksheet_name = 'Sheet2'
     try:
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        worksheet.append_row([item, location])
+        worksheet.append_row([kiek, ko])
         st.success("Item added successfully!")
     except Exception as e:
         st.error(f"Failed to add item to sheet: {str(e)}")
