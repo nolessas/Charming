@@ -127,3 +127,4 @@ def register_client1():
                 st.error(f"Failed to register client: {e}")
         else:
             st.error("Please fill in all required fields.")
+            st.rerun()
