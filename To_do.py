@@ -68,15 +68,19 @@ def delete_row_from_sheet2(index, records):
 def fetch_data_from_sheets2():
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
-    worksheet_name = 'Sheet2'  # Change this to 'Sheet1'
+    worksheet_name = 'Sheet2'
     try:
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
-        records = worksheet.get_all_records()
-        return records
+        # Get all values except the first row which is usually the header
+        data = worksheet.get_all_values()[1:]  # skip the first row if it's not the header
+        # Define your own headers here
+        headers = ['Keik', 'Ko']  # The headers you want to use
+        # Create a DataFrame with the defined headers
+        df = pd.DataFrame(data, columns=headers)
+        return df.to_dict('records')  # Convert DataFrame back to a list of dictionaries
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
         return []
-
 
 
 
