@@ -15,6 +15,13 @@ from google.oauth2 import service_account
  #   1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ
 #registered_clients = []
 
+SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
+
+def get_sheets_service():
+    service_account_info = st.secrets["google_oauth"]
+    credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES_SHEETS)
+    service = gspread.authorize(credentials)
+    return service
 
 
 
@@ -126,13 +133,7 @@ def register_client1():
 
 
 
-            SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
-def get_sheets_service():
-    service_account_info = st.secrets["google_oauth"]
-    credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES_SHEETS)
-    service = gspread.authorize(credentials)
-    return service
 
 def write_to_sheets(data, value_input_option='USER_ENTERED'):
     service = get_sheets_service()
