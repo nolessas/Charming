@@ -6,7 +6,7 @@ from client_managament import get_sheets_service
 
 
 
-def show_clients_with_deletion_option(selected_date):
+def show_clients_with_deletion_option():
     st.title("")
 
     # Fetch data from Google Sheets
@@ -19,16 +19,12 @@ def show_clients_with_deletion_option(selected_date):
     # Convert records to DataFrame
     df = pd.DataFrame(records)
 
-    # Filter clients for the selected date
-    df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y', errors='coerce')
-    df = df[df['Date'].dt.date == selected_date]
-
     # Initialize an empty list to store indices of selected rows
     selected_indices = []
 
     # Display each client with a checkbox
     for index, row in df.iterrows():
-        if st.checkbox(f"{row['Date'].strftime('%d/%m/%Y')}, {row['Full Name']}, {row['Phone Number']}, {row['Email']}, {row['Note']}", key=index):
+        if st.checkbox(f"{row['Date']}{row['Full Name']}, {row['Phone Number']}, {row['Email']}, {row['Note']}", key=index):
             selected_indices.append(index)
 
     # Confirm deletion button
@@ -36,7 +32,8 @@ def show_clients_with_deletion_option(selected_date):
         for i in selected_indices:
             delete_row_from_sheet(i, records)  # Delete selected clients
         st.success("Selected clients deleted successfully!")
-        st.experimental_rerun()  # Rerun the app to ref
+        st.experimental_rerun()  # Rerun the app to refresh the data display
+
 
 
 def delete_row_from_sheet(index, records):
