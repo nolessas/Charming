@@ -189,8 +189,8 @@ def add_client_note(client_id, note):
         st.success("Note added/updated successfully for client ID: " + str(client_id))
     except Exception as e:
         st.error(f"Failed to add/update note for client: {str(e)}")
-        
-                
+
+
 
 def get_and_update_client_notes(client_name):
     service = get_sheets_service()
@@ -199,16 +199,21 @@ def get_and_update_client_notes(client_name):
     worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
     clients_data = worksheet.get_all_records()
 
+    # Initialize a variable to store the row number of the client
+    client_row_number = None
+
     # Find client by name and get the note
     client_note = ""
-    for row in clients_data:
+    for index, row in enumerate(clients_data):
         if row['Full Name'] == client_name:
             client_note = row['Note']
+            client_row_number = index + 2  # Adjust for header row
             break
-    
-    # If the client is not found, return a message
+
+    # If the client is not found, display a message
     if client_note == "":
-        return "Client not found."
+        st.write("Client not found.")
+        return
 
     # Display the current note
     st.text_area("Current Note:", value=client_note, height=150, key='current_note')
@@ -217,9 +222,8 @@ def get_and_update_client_notes(client_name):
     new_note = st.text_area("Add New Note:", height=150, key='new_note')
 
     if st.button('Update Note'):
-        updated_note = client_note + " " + new_note if client_note else new_note
-        # Now find the row number of the client
-        cell = worksheet.find(client_name)
-        worksheet.update_cell(cell.row, cell.col + 5, updated_note)  # Assuming note is 5 columns away from name
-        st.success("Note updated successfully.")
+        updated_note = (client_note + " " + new_note).strip() if client_note else new_note
+        # Update the note in the Google Sheet
+        worksheet.update_cell(client_row_number, 7, updated_note)  # Assuming note is in the 7th column
+        st.success("Note updated successfully for " + client_name)
         st.rerun()
