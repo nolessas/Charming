@@ -6,32 +6,39 @@ from google_sheets import get_sheets_service
 
 
 def register_todo():
-    st.title("")
+    st.title("ToDo List")
 
     # Fetch data from Google Sheets
     records = fetch_data_from_sheets2()
 
     if not records:
-        st.write("No clients found.")
+        st.write("No tasks found.")
         return
 
     # Convert records to DataFrame
     df = pd.DataFrame(records)
 
+    # Check if the required columns are present in the DataFrame
+    required_columns = ['Keik', 'Ko']
+    for column in required_columns:
+        if column not in df.columns:
+            st.error(f"Column '{column}' not found in the data.")
+            return
+
     # Initialize an empty list to store indices of selected rows
     selected_indices = []
 
-    # Display each client with a checkbox
+    # Display each task with a checkbox
     for index, row in df.iterrows():
-        if st.checkbox(f"{row['Keik']}{row['Ko']}", key=index):
+        if st.checkbox(f"{row['Keik']} {row['Ko']}", key=index):
             selected_indices.append(index)
 
     # Confirm deletion button
-    if st.button('Confirm deletion of selected clients'):
+    if st.button('Confirm deletion of selected tasks'):
         for i in selected_indices:
-            delete_row_from_sheet2(i, records)  # Delete selected clients
-        st.success("Selected clients deleted successfully!")
-        st.rerun()  # Rerun the app to refresh the data display
+            delete_row_from_sheet2(i, records)  # Delete selected tasks
+        st.success("Selected tasks deleted successfully!")
+        st.experimental_rerun() 
     
 
 
