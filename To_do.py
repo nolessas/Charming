@@ -69,13 +69,16 @@ def fetch_data_from_sheets2():
         headers = data[0]  # Assumes the first row is the header
         records = data[1:]  # The rest is data
         df = pd.DataFrame(records, columns=headers)
+        # Convert 'Kiek' to numeric type, errors='coerce' will set invalid parsing as NaN
+        df['Kiek'] = pd.to_numeric(df['Kiek'], errors='coerce')
+        # Drop rows with NaN values in 'Kiek' column
+        df = df.dropna(subset=['Kiek'])
+        # Sort the DataFrame based on 'Kiek' column in descending order
+        df = df.sort_values('Kiek', ascending=False)
         return df
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
         return pd.DataFrame()
-
-
-
 
 
 
