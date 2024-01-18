@@ -199,21 +199,24 @@ def get_and_update_client_notes(client_name):
     worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
     clients_data = worksheet.get_all_records()
 
-    # Find the row number for the client
     client_row = None
     for index, row in enumerate(clients_data):
         if row['Full Name'].strip().lower() == client_name.strip().lower():
-            client_row = index + 2  # 1-indexed and adjusting for header
+            client_row = index + 2  # Adjust for header row
             break
 
     if client_row is None:
         st.write("Client not found.")
         return
 
-    # Display and update the note
+    # Fetch the current note directly from the sheet
     current_note = worksheet.cell(client_row, 7).value  # Assuming note is in the 7th column
-    new_note = st.text_area("Update Note for " + client_name, value=current_note, height=150)
+    new_note = st.text_area("Note for " + client_name, value=current_note, height=150, key='note')
 
-    if st.button('Save Note'):
-        worksheet.update_cell(client_row, 7, new_note)
-        st.success("Note updated successfully for " + client_name)
+    if st.button('Update Note'):
+        try:
+            # Update the note in the Google Sheet
+            worksheet.update_cell(client_row, 7, new_note)
+            st.success("Note updated successfully for " + client_name)
+        except Exception as e:
+            st.error(f"Error updating note: {e}")
