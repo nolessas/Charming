@@ -5,7 +5,10 @@ import pandas as pd
 from google.oauth2 import service_account
 import gspread
 from datetime import datetime
+import locale
 
+# Set the locale to Lithuanian
+locale.setlocale(locale.LC_TIME, 'lt_LT')
 
 # Function to get Google Sheets service
 def get_sheets_service():
