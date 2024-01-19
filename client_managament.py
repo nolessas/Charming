@@ -82,6 +82,9 @@ def show_registered_clients():
 # List to store batched client registration data
 batched_data = []
 
+# List to store client registration data
+client_data = []
+
 def register_client1():
     st.title("Registruoti naują klientą")
 
@@ -99,43 +102,42 @@ def register_client1():
     email_input = st.text_input("Emailas:")
     note_input = st.text_area("Pastabos:")
 
-    if st.button("Registruoti kleintą"):
+    if st.button("Pereiti prie žingsnio 2"):
         if full_name_input and phone_input and email_input:  # Ensure all required fields are filled
-            try:
-                # Format the data for Google Sheets as strings
-                formatted_date = date_input.strftime("%d/%m/%Y")  # 'DD/MM/YYYY' format for the date
-                formatted_time_in = time_in.strftime("%H:%M")     # 'HH:MM' format for time
-                formatted_time_out = time_out.strftime("%H:%M")   # 'HH:MM' format for time
+            formatted_date = date_input.strftime("%d/%m/%Y")  # 'DD/MM/YYYY' format for the date
+            formatted_time_in = time_in.strftime("%H:%M")     # 'HH:MM' format for time
+            formatted_time_out = time_out.strftime("%H:%M")   # 'HH:MM' format for time
 
-                # Create a list with client data
-                client_data = [
-                    formatted_date,
-                    formatted_time_in,
-                    formatted_time_out,
-                    full_name_input, 
-                    phone_input, 
-                    email_input, 
-                    note_input
-                ]
+            # Create a dictionary with client data
+            client_info = {
+                'Date': formatted_date,
+                'Time In': formatted_time_in,
+                'Time Out': formatted_time_out,
+                'Full Name': full_name_input,
+                'Phone Number': phone_input,
+                'Email': email_input,
+                'Note': note_input
+            }
 
-                # Append the client data to the batched_data list
-                batched_data.append(client_data)
+            # Append the client data to the list
+            client_data.append(client_info)
 
-                # Display a success message
-                st.success("Client registered successfully!")
+            # Clear the input fields
+            st.experimental_rerun()
 
-            except Exception as e:
-                st.error(f"Failed to register client: {e}")
         else:
             st.error("Please fill in all required fields.")
 
-    # Check if there is data in batched_data and write it to Google Sheets
-    if batched_data:
+    # Check if client data is ready for submission
+    if client_data and st.button("Registruoti klientą"):
         try:
-            write_to_sheets(batched_data)  # Write the batched data to Google Sheets
-            batched_data.clear()  # Clear the batched_data list
+            # Write the client data to Google Sheets
+            write_to_sheets(client_data)  # Write the batched data to Google Sheets
+            st.success("Client registered successfully!")
+
         except Exception as e:
-            st.error(f"Failed to write batched data to Google Sheets: {e}")
+            st.error(f"Failed to register client: {e}")
+
 
 
 
