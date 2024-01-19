@@ -90,7 +90,7 @@ def register_client1():
     st.write(f"Vizito pabaiga: {time_out.strftime('%H:%M')}")
 
     full_name_input = st.text_input("Vardas Pavardė:")
-    phone_input = st.text_input("Telefono numeris:")
+    phone_input = st.text_input("Telefono numeris: Pavizdys 61271128:")
     email_input = st.text_input("Emailas:")
     note_input = st.text_area("Pastabos:")
 
