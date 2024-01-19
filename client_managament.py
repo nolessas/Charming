@@ -81,7 +81,7 @@ def register_client1():
     st.title("Registruoti naują klientą")
 
     # Input fields for registration
-    date_input = st.date_input("Date:")
+    date_input = st.date_input("Data:")
     time_in = st.slider("Time In:", value=time(8, 0), format="HH:mm", key='time_in')
     duration = st.slider("Duration (hours):", min_value=0, max_value=12, value=1, step=1, key='duration')
 
@@ -94,7 +94,7 @@ def register_client1():
     email_input = st.text_input("Email:")
     note_input = st.text_area("Note:")
 
-    if st.button("Register Client"):
+    if st.button("Registruoti kleintą"):
         if full_name_input and phone_input and email_input:  # Ensure all required fields are filled
             try:
                 # Format the data for Google Sheets as strings
