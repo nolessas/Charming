@@ -239,3 +239,51 @@ def get_and_update_client_notes(client_name):
     if st.button('Update Note'):
         worksheet.update_cell(cell.row, 7, new_note)
         st.success("Note updated successfully for " + client_name)
+
+
+
+
+def edit_appointment_details(client_name):
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    worksheet = service.open_by_key(spreadsheet_id).worksheet('Sheet1')
+
+    try:
+        # Find the client in the worksheet
+        cell = worksheet.find(client_name)
+        # Get the current details from the worksheet
+        current_date = worksheet.cell(cell.row, 1).value
+        current_time_in = worksheet.cell(cell.row, 2).value
+        current_time_out = worksheet.cell(cell.row, 3).value
+        
+        # Display the current details
+        st.write("Current appointment details for " + client_name + ":")
+        st.write("Date: " + current_date)
+        st.write("Time In: " + current_time_in)
+        st.write("Time Out: " + current_time_out)
+        
+        # Provide inputs for new details
+        new_date = st.date_input("New Date:", value=pd.to_datetime(current_date, dayfirst=True))
+        new_time_in = st.time_input("New Time In:", value=pd.to_datetime(current_time_in).time())
+        new_duration = st.slider("New Duration (hours):", min_value=0, max_value=12, value=(pd.to_datetime(current_time_out).time() - pd.to_datetime(current_time_in).time()).seconds // 3600, step=1)
+        
+        # Calculate the new Time Out based on the new Time In and Duration
+        new_time_out = (datetime.combine(new_date, new_time_in) + timedelta(hours=new_duration)).time()
+        
+        if st.button("Update Appointment Details"):
+            # Format the new details for Google Sheets
+            formatted_new_date = new_date.strftime("%d/%m/%Y")  # 'DD/MM/YYYY' format for the date
+            formatted_new_time_in = new_time_in.strftime("%H:%M")  # 'HH:MM' format for time
+            formatted_new_time_out = new_time_out.strftime("%H:%M")  # 'HH:MM' format for time
+            
+            # Update the details in the worksheet
+            worksheet.update_cell(cell.row, 1, formatted_new_date)
+            worksheet.update_cell(cell.row, 2, formatted_new_time_in)
+            worksheet.update_cell(cell.row, 3, formatted_new_time_out)
+            
+            st.success("Appointment details updated successfully for " + client_name)
+    except gspread.exceptions.CellNotFound:
+        st.error("Client not found.")
+        return
+    except Exception as e:
+        st.error("An error occurred: " + str(e))
