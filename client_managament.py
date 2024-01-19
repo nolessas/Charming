@@ -284,8 +284,11 @@ def edit_appointment_details(client_name):
             worksheet.update_cell(cell.row, 3, formatted_new_time_out)
             
             st.success("Appointment details updated successfully for " + client_name)
-    except CellNotFound:  # Change this line
-        st.error("Client not found.")
-        return
+    except gspread.exceptions.APIError as e:  # Use a more generic exception
+        if "Cell not found" in str(e):
+            st.error("Client not found.")
+            return
+        else:
+            raise
     except Exception as e:
-        st.error("An error occurred: " + str(e))
+        st.error(f"An error occurred: {str(e)}")
