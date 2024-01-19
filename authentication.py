@@ -20,7 +20,6 @@ def show_login():
 
         if password == stored_password:
             st.success("Login successful!")
-            st.rerun()
             # Toggle the balloon state
             st.session_state.show_balloons = not st.session_state.get("show_balloons", False)
             st.session_state.session_token = "logged_in"
