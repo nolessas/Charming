@@ -56,30 +56,25 @@ def show_registered_clients():
             # Add a date picker to select a day for filtering
             selected_date = st.date_input("Pasirinkite data")
             
-            # Filter the DataFrame by the selected date and ensure 'Time' column exists
-            if selected_date and 'Time' in df.columns:
-                df['Time'] = pd.to_datetime(df['Time'], format='%H:%M').dt.time
+            if selected_date:
                 df = df[df['Date'].dt.date == selected_date]
-                # Sort by 'Time' column
-                df = df.sort_values(by='Time')
-            
-            # Map day names to Lithuanian
+
             df['Weekday'] = df['Date'].dt.day_name().map(day_name_map)
             
             if 'Phone Number' in df.columns:
                 df['Phone Number'] = df['Phone Number'].astype(str)
-            
+
+            # Format the 'Date' column to display without the time part
             df['Date'] = df['Date'].dt.strftime('%Y-%m-%d')
-            
+
             df.set_index('Weekday', inplace=True)
-            
+
             st.write("Pasirinktos dienos klientai:")
             st.dataframe(df)
         else:
             st.write("Šiuo metu registruotu kleintu nėra.")
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
-
 
 
 
