@@ -6,21 +6,21 @@ from client_managament import get_sheets_service
 
 
 def register_todo():
-    st.title("To-Do List")
+    st.title("To-Do")
 
     # User input fields to add a new to-do item
     kiek = st.slider("Kiek", min_value=1, max_value=100, value=50)
     ko = st.text_input("Ko", placeholder="Enter task description here...")
 
     # Button to add the new item
-    if st.button("Add To-Do Item"):
+    if st.button("Pridėti"):
         if ko:  # Ensure 'Ko' is not empty
             add_item_to_sheet2(kiek, ko)
 
     # Fetch and display current to-do list
     df = fetch_data_from_sheets2()
     if not df.empty:
-        st.write("Current To-Do List:")
+        st.write("Sarašas ką reikia padaryti:")
         # Display to-do list with checkboxes
         selected_indices = []
         for index, row in df.iterrows():
@@ -28,7 +28,7 @@ def register_todo():
                 selected_indices.append(index + 2)  # +2 to account for header and 1-indexing in Sheets
 
         # Button to delete selected items
-        if st.button('Delete Selected Items'):
+        if st.button('Ištrinti pasirinktus'):
             for i in selected_indices:
                 delete_row_from_sheet2(i)
             st.rerun()
