@@ -79,6 +79,9 @@ def show_registered_clients():
 
 
 
+# List to store batched client registration data
+batched_data = []
+
 def register_client1():
     st.title("Registruoti naują klientą")
 
@@ -104,7 +107,8 @@ def register_client1():
                 formatted_time_in = time_in.strftime("%H:%M")     # 'HH:MM' format for time
                 formatted_time_out = time_out.strftime("%H:%M")   # 'HH:MM' format for time
 
-                sheet_data = [
+                # Create a list with client data
+                client_data = [
                     formatted_date,
                     formatted_time_in,
                     formatted_time_out,
@@ -114,15 +118,25 @@ def register_client1():
                     note_input
                 ]
 
-                # Then you write sheet_data to the Google Sheet as before
-                write_to_sheets(sheet_data)  # Your function to write data to Google Sheets
+                # Append the client data to the batched_data list
+                batched_data.append(client_data)
 
+                # Display a success message
                 st.success("Client registered successfully!")
-                st.rerun()  # Refresh the page to show updated data
+
             except Exception as e:
                 st.error(f"Failed to register client: {e}")
         else:
             st.error("Please fill in all required fields.")
+
+    # Check if there is data in batched_data and write it to Google Sheets
+    if batched_data:
+        try:
+            write_to_sheets(batched_data)  # Write the batched data to Google Sheets
+            batched_data.clear()  # Clear the batched_data list
+        except Exception as e:
+            st.error(f"Failed to write batched data to Google Sheets: {e}")
+
 
 
 
