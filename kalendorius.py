@@ -6,6 +6,13 @@ from google.oauth2 import service_account
 import gspread
 from datetime import datetime
 
+# URL to Google Calendar
+google_calendar_url = "https://calendar.google.com/calendar/u/0/r/month/2024/1/1"
+
+# Using markdown to open link in a new tab
+if st.button('Open Google Calendar'):
+    st.markdown(f'<a href="{google_calendar_url}" target="_blank">Click here to open Google Calendar</a>', unsafe_allow_html=True)
+
 
 # Function to get Google Sheets service
 def get_sheets_service():
