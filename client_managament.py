@@ -4,6 +4,8 @@ from datetime import datetime, time, timedelta, date
 import pandas as pd
 import gspread
 from google.oauth2 import service_account
+from gspread.exceptions import CellNotFound
+
 
 #class SessionState:
     #def __init__(self, **kwargs):
@@ -282,7 +284,7 @@ def edit_appointment_details(client_name):
             worksheet.update_cell(cell.row, 3, formatted_new_time_out)
             
             st.success("Appointment details updated successfully for " + client_name)
-    except gspread.exceptions.CellNotFound:
+    except CellNotFound:  # Change this line
         st.error("Client not found.")
         return
     except Exception as e:
