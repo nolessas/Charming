@@ -309,3 +309,36 @@ def edit_appointment_details(client_name):
         st.error(f"An error occurred: {str(e)}")
 
 
+def archive_old_clients():
+    service = get_sheets_service()
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    today = datetime.today().date()
+
+    # Open the current and archive worksheets
+    current_worksheet = service.open_by_key(spreadsheet_id).worksheet('Sheet1')
+    archive_worksheet = service.open_by_key(spreadsheet_id).worksheet('Sheet3')
+
+    # Get all records from the current worksheet
+    records = current_worksheet.get_all_records()
+    df = pd.DataFrame(records)
+    df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y', errors='coerce')
+
+    # Filter out old clients
+    old_clients_df = df[df['Date'].dt.date < today]
+
+    if not old_clients_df.empty:
+        # Find rows to transfer to the archive
+        rows_to_archive = old_clients_df.index.tolist()
+        for row in rows_to_archive:
+            # Adjust for 1-based indexing and header row
+            row_number = row + 2
+            # Get the client data from the row
+            client_data = current_worksheet.row_values(row_number)
+            # Append the client data to the archive worksheet
+            archive_worksheet.append_row(client_data)
+            # Delete the client row from the current worksheet
+            current_worksheet.delete_rows(row_number)
+
+        st.success(f"Archived {len(rows_to_archive)} old clients.")
+    else:
+        st.info("No old clients to archive.")
