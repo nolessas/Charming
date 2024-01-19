@@ -30,6 +30,7 @@ def main():
 
     # Attempt to display content after login
     if is_user_logged_in():
+        archive_old_clients()
         show_dashboard()  # This function displays your app's content
     else:
         show_login()
@@ -45,9 +46,6 @@ def show_dashboard():
         st.title("")
         show_registered_clients()
         register_client1()
-    if st.button('Archive Old Clients'):
-        archive_old_clients()
-
 
     elif choose_main == "2":
         st.title("Kalendorius")
