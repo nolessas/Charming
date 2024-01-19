@@ -13,21 +13,18 @@ def is_user_logged_in():
 
 def show_login():
     st.subheader("")
-    # Only password input
     password = st.text_input("Slaptažodis", type="password", key="password")
 
     if st.button("Prisijungti"):
-        # Retrieve the stored password from secrets
         stored_password = st.secrets["password"]
 
         if password == stored_password:
             st.success("Login successful!")
-            # Generate a session token
+            st.balloons()  # Add this line for the balloon effect
             st.session_state.session_token = "logged_in"  # Or use a generated token
             st.experimental_rerun()
         else:
             st.error("Invalid password")
-
 
 def check_password(username, password, desired_username, desired_password):
     # Change this to your preferred password hashing method
