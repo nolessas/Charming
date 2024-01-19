@@ -19,11 +19,13 @@ from google.oauth2 import service_account
 
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
+# Function to get Google Sheets service
 def get_sheets_service():
     service_account_info = st.secrets["google_oauth"]
-    credentials = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPES_SHEETS)
-    service = gspread.authorize(credentials)
-    return service
+    credentials = service_account.Credentials.from_service_account_info(
+        service_account_info, scopes=['https://www.googleapis.com/auth/spreadsheets']
+    )
+    return gspread.authorize(credentials)
 
 
 
@@ -325,13 +327,12 @@ def archive_old_clients():
 
     # Filter out old clients
     old_clients_df = df[df['Date'].dt.date < today]
+    rows_to_archive = old_clients_df.index.tolist() + 2  # Adjust for header row
 
-    if not old_clients_df.empty:
-        # Find rows to transfer to the archive
-        rows_to_archive = old_clients_df.index.tolist()
-        for row in rows_to_archive:
-            # Adjust for 1-based indexing and header row
-            row_number = row + 2
+    if rows_to_archive:
+        # Reverse the rows to archive to avoid index shifting
+        rows_to_archive.reverse()
+        for row_number in rows_to_archive:
             # Get the client data from the row
             client_data = current_worksheet.row_values(row_number)
             # Append the client data to the archive worksheet
@@ -342,3 +343,4 @@ def archive_old_clients():
         st.success(f"Archived {len(rows_to_archive)} old clients.")
     else:
         st.info("No old clients to archive.")
+
