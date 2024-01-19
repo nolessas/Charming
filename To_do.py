@@ -10,7 +10,7 @@ def register_todo():
 
     # User input fields to add a new to-do item
     kiek = st.slider("Kiek", min_value=1, max_value=100, value=50)
-    ko = st.text_input("Ko", placeholder="Iveskit ka reikia padaryti...")
+    ko = st.text_input("Ko", placeholder="Iveskit ką reikia padaryti...")
 
     # Button to add the new item
     if st.button("Pridėti"):
