@@ -42,7 +42,7 @@ def main():
 def show_dashboard():
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: center;} </style>', unsafe_allow_html=True)
     st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
-    choose_main = st.radio("", ("1", "📰", "❌", "📎","🔨","🪓"))
+    choose_main = st.radio("", ("✅", "📰", "❌", "📎","🔨","🪓"))
 
     if choose_main == "✅":
         st.title("")
