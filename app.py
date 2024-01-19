@@ -26,14 +26,16 @@ gc = gspread.authorize(credentials)
 
 
 def main():
-    # Check for session token and set logged in status
     if "session_token" in st.session_state and st.session_state["session_token"]:
         set_user_logged_in(True)
 
-    # Attempt to display content after login
     if is_user_logged_in():
-        #archive_old_clients()
-        show_dashboard()  
+        # Show balloons if the state is true
+        if st.session_state.get("show_balloons", False):
+            st.balloons()
+            # Reset the state so it doesn't show continuously
+            st.session_state.show_balloons = False
+        show_dashboard()
     else:
         show_login()
 
