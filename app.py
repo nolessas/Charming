@@ -55,17 +55,11 @@ def show_dashboard():
         display_calendar()
         # URL to Google Calendar
         google_calendar_url = "https://calendar.google.com/calendar/u/0/r/month/2024/1/1"
-
+        google_sheets_url = "https://docs.google.com/spreadsheets/d/1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ/edit#gid=0"
         # Using markdown to open link in a new tab
         if st.button('Open Google Calendar'):
             st.markdown(f'<a href="{google_calendar_url}" target="_blank">Click here to open Google Calendar</a>', unsafe_allow_html=True)
-        google_sheets_url = "https://docs.google.com/spreadsheets/d/1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ/edit#gid=0"
-
-        # Creating a button to open Google Sheets
-        if st.button('Open Google Sheets'):
-            js = f"window.open('{google_sheets_url}')"  # JavaScript to open a new window/tab
-            html = f'<img src onerror="{js}">'  # HTML to execute the JavaScript
-            st.markdown(html, unsafe_allow_html=True)
+            st.markdown(f'<a href="{google_sheets_url}" target="_blank">Click here to open Google Sheets</a>', unsafe_allow_html=True)
 
     elif choose_main == "3":
         st.title("Pašalinti klientą")
