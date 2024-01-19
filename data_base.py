@@ -35,10 +35,10 @@ def show_clients_with_date_filter(selected_date):
         except ValueError:
             pass
 
-    if st.button('Confirm deletion of selected clients'):
+    if st.button('Ištrinti pasirinktus'):
         for i in selected_indices:
             delete_row_from_sheet(i, records)  # Delete selected clients
-        st.success("Selected clients deleted successfully!")
+        st.success("Ištrinta sekmingai!")
         st.experimental_rerun()  # Rerun the app to refresh the data display
 
 
