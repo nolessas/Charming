@@ -245,6 +245,11 @@ def get_and_update_client_notes(client_name):
 
 
 
+import streamlit as st
+from datetime import datetime, timedelta
+import pandas as pd
+from client_managament import get_sheets_service  # Make sure this import is correct based on your project structure
+
 def edit_appointment_details(client_name):
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
@@ -258,6 +263,14 @@ def edit_appointment_details(client_name):
         current_time_in = worksheet.cell(cell.row, 2).value
         current_time_out = worksheet.cell(cell.row, 3).value
         
+        # Convert time to datetime objects for calculation
+        time_format = '%H:%M'
+        current_time_in_obj = datetime.strptime(current_time_in, time_format)
+        current_time_out_obj = datetime.strptime(current_time_out, time_format)
+
+        # Calculate duration in hours
+        current_duration_hours = (current_time_out_obj - current_time_in_obj).seconds // 3600
+        
         # Display the current details
         st.write("Current appointment details for " + client_name + ":")
         st.write("Date: " + current_date)
@@ -266,8 +279,8 @@ def edit_appointment_details(client_name):
         
         # Provide inputs for new details
         new_date = st.date_input("New Date:", value=pd.to_datetime(current_date, dayfirst=True))
-        new_time_in = st.time_input("New Time In:", value=pd.to_datetime(current_time_in).time())
-        new_duration = st.slider("New Duration (hours):", min_value=0, max_value=12, value=(pd.to_datetime(current_time_out).time() - pd.to_datetime(current_time_in).time()).seconds // 3600, step=1)
+        new_time_in = st.time_input("New Time In:", value=current_time_in_obj.time())
+        new_duration = st.slider("New Duration (hours):", min_value=0, max_value=12, value=current_duration_hours, step=1)
         
         # Calculate the new Time Out based on the new Time In and Duration
         new_time_out = (datetime.combine(new_date, new_time_in) + timedelta(hours=new_duration)).time()
@@ -284,11 +297,7 @@ def edit_appointment_details(client_name):
             worksheet.update_cell(cell.row, 3, formatted_new_time_out)
             
             st.success("Appointment details updated successfully for " + client_name)
-    except gspread.exceptions.APIError as e:  # Use a more generic exception
-        if "Cell not found" in str(e):
-            st.error("Client not found.")
-            return
-        else:
-            raise
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
+
+
