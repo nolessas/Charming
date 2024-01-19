@@ -36,7 +36,6 @@ def main():
 
 
 
-
 def show_dashboard():
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: center;} </style>', unsafe_allow_html=True)
     st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
@@ -44,11 +43,11 @@ def show_dashboard():
 
     if choose_main == "1":
         st.title("")
-
-
-
         show_registered_clients()
         register_client1()
+    if st.button('Archive Old Clients'):
+        archive_old_clients()
+
 
     elif choose_main == "2":
         st.title("Kalendorius")
@@ -70,7 +69,6 @@ def show_dashboard():
     elif choose_main == "4":
         st.title("")
         register_todo()
-        #manage_todo_list()
 
     elif choose_main == "5":
         st.title("Pakoreguoti kliento pastabas")
@@ -93,9 +91,6 @@ def show_dashboard():
             # Call the function to edit appointment details
             edit_appointment_details(client_name_to_edit)
         # app.py or within a specific part of your Streamlit application
-        if st.button('Archive Old Clients'):
-            archive_old_clients()
-
 
 
 if __name__ == "__main__":
