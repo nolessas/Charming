@@ -4,7 +4,7 @@ from datetime import datetime, time, timedelta, date
 import pandas as pd
 import gspread
 from google.oauth2 import service_account
-from gspread.exceptions import CellNotFound
+
 
 
 #class SessionState:
