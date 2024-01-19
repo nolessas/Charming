@@ -51,24 +51,24 @@ def show_dashboard():
         register_client1()
 
     elif choose_main == "2":
-        st.title("Calendar")
+        st.title("Kalendorius")
         display_calendar()
 
     elif choose_main == "3":
-        st.title("List of clients")
-        selected_date = st.date_input("Select a Date:")
+        st.title("Pašalinti klientą")
+        selected_date = st.date_input("Pasirinkite dieną:")
         show_clients_with_date_filter(selected_date)  # Call the new function
 
 
     elif choose_main == "4":
-        st.title("ToDo")
+        st.title("")
         register_todo()
         #manage_todo_list()
 
     elif choose_main == "5":
-        st.title("Add to note")
+        st.title("Pakoreguoti kliento pastabas")
         # Inside the relevant section of your Streamlit app
-        client_name_search = st.text_input("Enter the client's full name:")
+        client_name_search = st.text_input("EIveskite kliento Vardą Pavardę:")
 
         if client_name_search:
             row_number = display_client_note(client_name_search)
@@ -79,9 +79,9 @@ def show_dashboard():
                 update_client_note(row_number, client_name_search, new_note)
 
     elif choose_main == "6":
-        st.title("Edit Appointment Details")
+        st.title("Keisti kliento atvykimo dieną")
         # Provide an input to enter the client's name
-        client_name_to_edit = st.text_input("Enter the client's full name to edit appointment details:")
+        client_name_to_edit = st.text_input("Iveskite kliento Vardą Pavardę:")
         if client_name_to_edit:
             # Call the function to edit appointment details
             edit_appointment_details(client_name_to_edit)
