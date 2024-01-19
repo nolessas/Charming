@@ -12,11 +12,11 @@ def is_user_logged_in():
     return session_token is not None
 
 def show_login():
-    st.subheader("Login")
+    st.subheader("Prisijunkti")
     # Only password input
-    password = st.text_input("Password", type="password", key="password")
+    password = st.text_input("Slaptažodis", type="password", key="password")
 
-    if st.button("Login"):
+    if st.button("Prisijungti"):
         # Retrieve the stored password from secrets
         stored_password = st.secrets["password"]
 
