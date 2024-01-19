@@ -322,7 +322,7 @@ def archive_old_clients():
 
     # Get all records from the current worksheet
     records = None
-    max_attempts = 3  # Maximum number of retry attempts
+    max_attempts = 1  # Maximum number of retry attempts
 
     for attempt in range(max_attempts):
         try:
