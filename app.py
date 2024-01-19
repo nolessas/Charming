@@ -32,7 +32,7 @@ def main():
 
     # Attempt to display content after login
     if is_user_logged_in():
-        archive_old_clients()
+        #archive_old_clients()
         show_dashboard()  
     else:
         show_login()
