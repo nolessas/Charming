@@ -53,6 +53,13 @@ def show_dashboard():
     elif choose_main == "2":
         st.title("Kalendorius")
         display_calendar()
+        # URL to Google Calendar
+        google_calendar_url = "https://calendar.google.com/calendar/u/0/r/month/2024/1/1"
+
+        # Using markdown to open link in a new tab
+        if st.button('Open Google Calendar'):
+            st.markdown(f'<a href="{google_calendar_url}" target="_blank">Click here to open Google Calendar</a>', unsafe_allow_html=True)
+
 
     elif choose_main == "3":
         st.title("Pašalinti klientą")
