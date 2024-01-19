@@ -82,8 +82,8 @@ def register_client1():
 
     # Input fields for registration
     date_input = st.date_input("Data:")
-    time_in = st.slider("Time In:", value=time(8, 0), format="HH:mm", key='time_in')
-    duration = st.slider("Duration (hours):", min_value=0, max_value=12, value=1, step=1, key='duration')
+    time_in = st.slider("Nuo:", value=time(8, 0), format="HH:mm", key='time_in')
+    duration = st.slider("Kiek laiko truks vizitas:", min_value=0, max_value=12, value=1, step=1, key='duration')
 
     # Calculate Time Out
     time_out = (datetime.combine(date_input, time_in) + timedelta(hours=duration)).time()
