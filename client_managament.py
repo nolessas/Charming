@@ -267,20 +267,37 @@ def edit_appointment_details(client_name):
             st.error("Klientas nerastas.")
             return None
         
-        # Allow user to select which client to edit
-        row_options = [f"Eilutė {cell.row}" for cell in cells]
-        selected_row = st.selectbox("Pasirinkite kliento eilutę redagavimui:", row_options)
-        selected_row_number = int(selected_row.split()[1])
+        # Display current details for all clients with the name and allow selection
+        appointment_options = []
+        for cell in cells:
+            current_date = worksheet.cell(cell.row, 1).value
+            current_time_in = worksheet.cell(cell.row, 2).value
+            current_time_out = worksheet.cell(cell.row, 3).value
+            appointment_details = f"Eilutė {cell.row}: {current_date} nuo {current_time_in} iki {current_time_out}"
+            appointment_options.append(appointment_details)
+            st.write(appointment_details)
+
+        # Allow user to select which appointment to edit
+        selected_appointment = st.selectbox("Pasirinkite vizito eilutę redagavimui:", appointment_options)
+        selected_row_number = int(selected_appointment.split(":")[0].split()[1])
         
-        # Get the current details from the worksheet
+        # Provide inputs for new details
         current_date = worksheet.cell(selected_row_number, 1).value
+        new_date = st.date_input("New Date:", value=pd.to_datetime(current_date, dayfirst=True))
         current_time_in = worksheet.cell(selected_row_number, 2).value
+        new_time_in = st.time_input("New Time In:", value=pd.to_datetime(current_time_in, format='%H:%M').time())
         current_time_out = worksheet.cell(selected_row_number, 3).value
-        # ... rest of your function ...
+        current_duration_hours = int((pd.to_datetime(current_time_out, format='%H:%M') - pd.to_datetime(current_time_in, format='%H:%M')).seconds / 3600)
+        new_duration = st.slider("New Duration (hours):", min_value=0, max_value=12, value=current_duration_hours, step=1)
         
-        # Use 'selected_row_number' instead of 'cell.row' in the update section
+        # Calculate the new Time Out based on the new Time In and Duration
+        new_time_out = (datetime.combine(new_date, new_time_in) + timedelta(hours=new_duration)).time()
+        
         if st.button("Update Appointment Details"):
-            # ... formatting new details ...
+            # Format the new details for Google Sheets
+            formatted_new_date = new_date.strftime("%d/%m/%Y")  # 'DD/MM/YYYY' format for the date
+            formatted_new_time_in = new_time_in.strftime("%H:%M")  # 'HH:MM' format for time
+            formatted_new_time_out = new_time_out.strftime("%H:%M")  # 'HH:MM' format for time
             
             # Update the details in the worksheet
             worksheet.update_cell(selected_row_number, 1, formatted_new_date)
