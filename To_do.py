@@ -42,7 +42,7 @@ def add_item_to_sheet2(kiek, ko):
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
         worksheet.append_row([kiek, ko])
         st.success("Item added successfully!")
-        st.experimental_rerun()  # Refresh the list after adding an item
+        st.rerun()  # Refresh the list after adding an item
     except Exception as e:
         st.error(f"Failed to add item to sheet: {str(e)}")
 

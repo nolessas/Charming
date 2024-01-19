@@ -118,7 +118,7 @@ def register_client1():
                 write_to_sheets(sheet_data)  # Your function to write data to Google Sheets
 
                 st.success("Client registered successfully!")
-                st.experimental_rerun()  # Refresh the page to show updated data
+                st.rerun()  # Refresh the page to show updated data
             except Exception as e:
                 st.error(f"Failed to register client: {e}")
         else:
@@ -153,7 +153,7 @@ def delete_client(index):
         # Delete the row; add 2 to index to account for header row and 0-based indexing
         worksheet.delete_rows(index + 2)
         st.success(f"Client at row {index + 1} deleted successfully.")
-        st.experimental_rerun()  # Rerun the app to refresh the data display
+        st.rerun()  # Rerun the app to refresh the data display
     except Exception as e:
         st.error(f"Failed to delete client: {str(e)}")
 

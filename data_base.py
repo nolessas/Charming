@@ -39,7 +39,7 @@ def show_clients_with_date_filter(selected_date):
         for i in selected_indices:
             delete_row_from_sheet(i, records)  # Delete selected clients
         st.success("Ištrinta sekmingai!")
-        st.experimental_rerun()  # Rerun the app to refresh the data display
+        st.rerun()  # Rerun the app to refresh the data display
 
 
 

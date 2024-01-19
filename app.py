@@ -31,7 +31,7 @@ def main():
     # Attempt to display content after login
     if is_user_logged_in():
         archive_old_clients()
-        show_dashboard()  # This function displays your app's content
+        show_dashboard()  
     else:
         show_login()
 
@@ -50,10 +50,8 @@ def show_dashboard():
     elif choose_main == "2":
         st.title("Kalendorius")
         display_calendar()
-        # URL to Google Calendar
         google_calendar_url = "https://calendar.google.com/calendar/u/0/r/month/2024/1/1"
         google_sheets_url = "https://docs.google.com/spreadsheets/d/1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ/edit#gid=0"
-        # Using markdown to open link in a new tab
         if st.button('Open Sheets or Calendar'):
             st.markdown(f'<a href="{google_calendar_url}" target="_blank">Click here to open Google Calendar</a>', unsafe_allow_html=True)
             st.markdown(f'<a href="{google_sheets_url}" target="_blank">Click here to open Google Sheets</a>', unsafe_allow_html=True)
@@ -70,7 +68,6 @@ def show_dashboard():
 
     elif choose_main == "5":
         st.title("Pakoreguoti kliento pastabas")
-        # Inside the relevant section of your Streamlit app
         client_name_search = st.text_input("Įveskite kliento Vardą Pavardę:")
 
         if client_name_search:
@@ -83,12 +80,10 @@ def show_dashboard():
 
     elif choose_main == "6":
         st.title("Keisti kliento atvykimo dieną")
-        # Provide an input to enter the client's name
         client_name_to_edit = st.text_input("Iveskite kliento Vardą Pavardę:")
         if client_name_to_edit:
-            # Call the function to edit appointment details
             edit_appointment_details(client_name_to_edit)
-        # app.py or within a specific part of your Streamlit application
+
 
 
 if __name__ == "__main__":
