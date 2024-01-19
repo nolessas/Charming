@@ -12,7 +12,7 @@ def is_user_logged_in():
     return session_token is not None
 
 def show_login():
-    st.subheader("Prisijunkti")
+    st.subheader("")
     # Only password input
     password = st.text_input("Slaptažodis", type="password", key="password")
 
