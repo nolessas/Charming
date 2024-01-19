@@ -202,10 +202,10 @@ def display_client_note(client_name):
     try:
         cell = worksheet.find(client_name)
         current_note = worksheet.cell(cell.row, 7).value  # Assuming note is in the 7th column
-        st.text_area("Current Note for " + client_name, value=current_note, height=150, key='current_note')
+        st.text_area("Dabartinis aprašymas " + client_name, value=current_note, height=150, key='current_note')
         return cell.row  # Return the row number for the update function
     except gspread.exceptions.CellNotFound:
-        st.error("Client not found.")
+        st.error("Klientas nerastas.")
         return None
 
 def update_client_note(row_number, client_name, new_note):
@@ -217,7 +217,7 @@ def update_client_note(row_number, client_name, new_note):
     worksheet = service.open_by_key(spreadsheet_id).worksheet('Sheet1')
 
     worksheet.update_cell(row_number, 7, new_note)  # Update the note in the 7th column
-    st.success("Note updated successfully for " + client_name)
+    st.success("Pastaba atnaujinta! " + client_name)
 
 def get_and_update_client_notes(client_name):
     service = get_sheets_service()
@@ -227,20 +227,20 @@ def get_and_update_client_notes(client_name):
     try:
         cell = worksheet.find(client_name)
     except gspread.exceptions.CellNotFound:
-        st.error("Client not found.")
+        st.error("Kleintas nerastas.")
         return
 
     if not cell:
-        st.error("Error finding the client.")
+        st.error("Klaida ieškant kliento.")
         return
 
     # Fetch the current note from the 7th column in the client's row
     current_note = worksheet.cell(cell.row, 7).value
     new_note = st.text_area("Note for " + client_name, value=current_note, height=150)
 
-    if st.button('Update Note'):
+    if st.button('Atnaujinti'):
         worksheet.update_cell(cell.row, 7, new_note)
-        st.success("Note updated successfully for " + client_name)
+        st.success("Sekmingai atnaujinta " + client_name)
 
 
 
