@@ -118,7 +118,6 @@ def register_client1():
                 write_to_sheets(sheet_data)  # Your function to write data to Google Sheets
 
                 st.success("Client registered successfully!")
-                st.rerun()  # Refresh the page to show updated data
             except Exception as e:
                 st.error(f"Failed to register client: {e}")
         else:
