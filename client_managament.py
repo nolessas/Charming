@@ -39,15 +39,17 @@ day_name_map = {
     'Sunday': 'Sekmadienis'
 }
 
+
+@st.cache(ttl=600)  # Cache for 10 minutes (adjust as needed)
 def show_registered_clients():
-    service = get_sheets_service()
     try:
+        service = get_sheets_service()  # Use your existing function to get the Sheets service
         spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
         worksheet_name = 'Sheet1'
         
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
         records = worksheet.get_all_records()
-
+        
         if records:
             df = pd.DataFrame(records)
             df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y', errors='coerce')
@@ -69,12 +71,22 @@ def show_registered_clients():
 
             df.set_index('Weekday', inplace=True)
 
-            st.write("Pasirinktos dienos klientai:")
-            st.dataframe(df)
+            return df
         else:
-            st.write("Šiuo metu registruotu kleintu nėra.")
+            return None
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
+        return None
+
+# Now, you can call the `fetch_data_from_google_sheets` function to get the data
+data_from_sheets = show_registered_clients()
+
+# Check if data was successfully fetched
+if data_from_sheets is not None:
+    st.write("Pasirinktos dienos klientai:")
+    st.dataframe(data_from_sheets)
+else:
+    st.write("Šiuo metu registruotų klientų nėra.")
 
 
 
