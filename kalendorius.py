@@ -7,13 +7,6 @@ import gspread
 from datetime import datetime
 
 
-
-
-
-
-
-
-
 # Function to get Google Sheets service
 def get_sheets_service():
     service_account_info = st.secrets["google_oauth"]
@@ -38,25 +31,6 @@ def fetch_client_data_for_calendar():
         }
         events.append(event)
     return events
-
-month_names_lithuanian = [
-    "Sausis", "Vasaris", "Kovas", "Balandis", "Gegužė", "Birželis",
-    "Liepa", "Rugpjūtis", "Rugsėjis", "Spalis", "Lapkritis", "Gruodis"
-]
-
-month_change_script = f"""
-<script>
-document.addEventListener('DOMContentLoaded', (event) => {{
-    var monthElements = document.querySelectorAll('.some-month-class');
-    var monthNames = {month_names_lithuanian};
-    monthElements.forEach((element, index) => {{
-        element.textContent = monthNames[index];
-    }});
-}});
-</script>
-"""
-
-st.markdown(month_change_script, unsafe_allow_html=True)
 
 
 def display_calendar():
