@@ -342,7 +342,4 @@ def archive_old_clients():
             # Delete the client row from the current worksheet
             current_worksheet.delete_rows(row_number)
 
-        st.success(f"Archived {len(rows_to_archive)} old clients.")
-    else:
-        st.info("No old clients to archive.")
 
