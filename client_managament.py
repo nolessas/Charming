@@ -30,7 +30,7 @@ def get_sheets_service():
 
 
 # Modify the day_name_map to a tuple of key-value pairs
-day_name_map = (
+Weekday = (
     ('Monday', 'Pirmadienis'),
     ('Tuesday', 'Antradienis'),
     ('Wednesday', 'Trečiadienis'),
