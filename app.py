@@ -68,7 +68,7 @@ def show_dashboard():
     elif choose_main == "5":
         st.title("Pakoreguoti kliento pastabas")
         # Inside the relevant section of your Streamlit app
-        client_name_search = st.text_input("EIveskite kliento Vardą Pavardę:")
+        client_name_search = st.text_input("Įveskite kliento Vardą Pavardę:")
 
         if client_name_search:
             row_number = display_client_note(client_name_search)
