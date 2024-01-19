@@ -59,9 +59,9 @@ def show_registered_clients():
             if selected_date:
                 df = df[df['Date'].dt.date == selected_date]
                 # Convert 'Time' column to datetime, then format to 'HH:MM'
-                df['Time'] = pd.to_datetime(df['Time'], format='%H:%M').dt.time
-                df['Time'] = df['Time'].apply(lambda x: x.strftime('%H:%M'))  # Format to 'HH:MM'
-                df = df.sort_values(by='Time')
+                df['Time in'] = pd.to_datetime(df['Time in'], format='%H:%M').dt.time
+                df['Time in'] = df['Time in'].apply(lambda x: x.strftime('%H:%M'))  # Format to 'HH:MM'
+                df = df.sort_values(by='Time in')
             
             df['Weekday'] = df['Date'].dt.day_name().map(day_name_map)
             
