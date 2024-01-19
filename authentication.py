@@ -22,6 +22,7 @@ def show_login():
             st.success("Login successful!")
             st.balloons()  # Add this line for the balloon effect
             st.session_state.session_token = "logged_in"  # Or use a generated token
+            st.rerun()  # Refresh the page to display the content
         else:
             st.error("Invalid password")
 
