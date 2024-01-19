@@ -66,7 +66,7 @@ def show_registered_clients():
             df['Weekday'] = df['Date'].dt.day_name().map(day_name_map)
             
             if 'Phone Number' in df.columns:
-                df['Phone  '] = df['Phone Number'].astype(str)
+                df['Phone Number'] = df['Phone Number'].astype(str)
 
             # Format the 'Date' column to display without the time part
             df['Date'] = df['Date'].dt.strftime('%Y-%m-%d')
