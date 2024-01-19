@@ -87,12 +87,12 @@ def register_client1():
 
     # Calculate Time Out
     time_out = (datetime.combine(date_input, time_in) + timedelta(hours=duration)).time()
-    st.write(f"Time Out: {time_out.strftime('%H:%M')}")
+    st.write(f"Vizito pabaiga: {time_out.strftime('%H:%M')}")
 
-    full_name_input = st.text_input("Full Name:")
-    phone_input = st.text_input("Phone Number:")
-    email_input = st.text_input("Email:")
-    note_input = st.text_area("Note:")
+    full_name_input = st.text_input("Vardas Pavardė:")
+    phone_input = st.text_input("Telefono numeris:")
+    email_input = st.text_input("Emailas:")
+    note_input = st.text_area("Pastabos:")
 
     if st.button("Registruoti kleintą"):
         if full_name_input and phone_input and email_input:  # Ensure all required fields are filled
