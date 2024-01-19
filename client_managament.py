@@ -56,18 +56,18 @@ def show_registered_clients():
             # Add a date picker to select a day for filtering
             selected_date = st.date_input("Pasirinkite data")
             
-            # Filter the DataFrame by the selected date and sort by time
             if selected_date:
                 df = df[df['Date'].dt.date == selected_date]
-                # Assuming 'Time' column exists and is in format 'HH:MM'
-                df['Time in'] = pd.to_datetime(df['Time in'], format='%H:%M').dt.time
-                df = df.sort_values(by='Time in')
+                # Convert 'Time' column to datetime, then format to 'HH:MM'
+                df['Time'] = pd.to_datetime(df['Time'], format='%H:%M').dt.time
+                df['Time'] = df['Time'].apply(lambda x: x.strftime('%H:%M'))  # Format to 'HH:MM'
+                df = df.sort_values(by='Time')
             
             df['Weekday'] = df['Date'].dt.day_name().map(day_name_map)
             
             if 'Phone Number' in df.columns:
                 df['Phone Number'] = df['Phone Number'].astype(str)
-            
+
             # Format the 'Date' column to display without the time part
             df['Date'] = df['Date'].dt.strftime('%Y-%m-%d')
 
@@ -76,7 +76,7 @@ def show_registered_clients():
             st.write("Pasirinktos dienos klientai:")
             st.dataframe(df)
         else:
-            st.write("Šiuo metu registruotu kleintu nėra.")
+            st.write("Šiuo metu registruotu klientu nėra.")
     except Exception as e:
         st.error(f"Failed to fetch data from Google Sheets: {str(e)}")
 
