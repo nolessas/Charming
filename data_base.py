@@ -10,7 +10,7 @@ from client_managament import get_sheets_service
 SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
 def show_clients_with_date_filter(selected_date):
-    st.title("Client Information")
+    st.title("Klientai šią dieną")
 
     # Fetch data from Google Sheets
     records = fetch_data_from_sheets()
@@ -19,7 +19,7 @@ def show_clients_with_date_filter(selected_date):
         st.write("No clients found.")
         return
 
-    st.write("Client Information for Selected Date:")
+    st.write("Pasirinkite klientus kuriuos norite ištrinti:")
 
     # Initialize an empty list to store indices of selected rows
     selected_indices = []
