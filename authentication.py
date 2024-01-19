@@ -20,8 +20,9 @@ def show_login():
 
         if password == stored_password:
             st.success("Login successful!")
-            st.balloons()  # Add this line for the balloon effect
-            st.session_state.session_token = "logged_in"  # Or use a generated token
+            # Toggle the balloon state
+            st.session_state.show_balloons = not st.session_state.get("show_balloons", False)
+            st.session_state.session_token = "logged_in"
         else:
             st.error("Invalid password")
 
