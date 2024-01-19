@@ -327,7 +327,9 @@ def archive_old_clients():
 
     # Filter out old clients
     old_clients_df = df[df['Date'].dt.date < today]
-    rows_to_archive = old_clients_df.index.tolist() + 2  # Adjust for header row
+
+    # Adjust for header row and 1-based indexing
+    rows_to_archive = [row_index + 2 for row_index in old_clients_df.index.tolist()]
 
     if rows_to_archive:
         # Reverse the rows to archive to avoid index shifting
