@@ -29,15 +29,17 @@ def get_sheets_service():
 
 
 
-day_name_map = {
-    'Monday': 'Pirmadienis',
-    'Tuesday': 'Antradienis',
-    'Wednesday': 'Trečiadienis',
-    'Thursday': 'Ketvirtadienis',
-    'Friday': 'Penktadienis',
-    'Saturday': 'Šeštadienis',
-    'Sunday': 'Sekmadienis'
-}
+# Modify the day_name_map to a tuple of key-value pairs
+day_name_map = (
+    ('Monday', 'Pirmadienis'),
+    ('Tuesday', 'Antradienis'),
+    ('Wednesday', 'Trečiadienis'),
+    ('Thursday', 'Ketvirtadienis'),
+    ('Friday', 'Penktadienis'),
+    ('Saturday', 'Šeštadienis'),
+    ('Sunday', 'Sekmadienis')
+)
+
 
 
 @st.cache(ttl=600)  # Cache for 10 minutes (adjust as needed)
