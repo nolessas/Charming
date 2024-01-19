@@ -337,14 +337,27 @@ def archive_old_clients():
     archive_worksheet = service.open_by_key(spreadsheet_id).worksheet('Sheet3')
 
     # Get all records from the current worksheet
-    records = current_worksheet.get_all_records()
+    records = None
+    max_attempts = 3  # Maximum number of retry attempts
+
+    for attempt in range(max_attempts):
+        try:
+            records = current_worksheet.get_all_records()
+            break  # Break out of the loop if successful
+        except gspread.exceptions.APIError as api_error:
+            if attempt < max_attempts - 1:
+                print(f"API error encountered. Retrying in 5 seconds. Attempt {attempt + 1}/{max_attempts}")
+                time.sleep(5)  # Wait for 5 seconds before retrying
+            else:
+                print(f"Failed to retrieve data from Google Sheets after {max_attempts} attempts. Error: {api_error}")
+                return
+
+    # Convert records to DataFrame and filter old clients
     df = pd.DataFrame(records)
     df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y', errors='coerce')
-
-    # Filter out old clients
     old_clients_df = df[df['Date'].dt.date < today]
 
-    # Adjust for header row and 1-based indexing
+    # Archive old clients
     rows_to_archive = [row_index + 2 for row_index in old_clients_df.index.tolist()]
 
     if rows_to_archive:
@@ -357,5 +370,3 @@ def archive_old_clients():
             archive_worksheet.append_row(client_data)
             # Delete the client row from the current worksheet
             current_worksheet.delete_rows(row_number)
-
-
