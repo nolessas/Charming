@@ -11,10 +11,7 @@ SCOPES_SHEETS = ['https://www.googleapis.com/auth/spreadsheets']
 
 def show_clients_with_date_filter(selected_date):
     st.title("Klientai šią dieną")
-
-    # Fetch data from Google Sheets
     records = fetch_data_from_sheets()
-
     if not records:
         st.write("No clients found.")
         return

@@ -79,7 +79,7 @@ def show_dashboard():
             
             new_note = st.text_area("Nauja pastaba " + client_name_search, height=150)
 
-            if st.button('Update Note') and row_number is not None:
+            if st.button('Atnaujinti pastaba') and row_number is not None:
                 update_client_note(row_number, client_name_search, new_note)
 
     elif choose_main == "6":

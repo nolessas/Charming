@@ -82,8 +82,6 @@ def show_registered_clients():
 
 
 
-
-
 def register_client1():
     st.title("Registruoti naują klientą")
 
@@ -101,7 +99,7 @@ def register_client1():
     email_input = st.text_input("Emailas:")
     note_input = st.text_area("Pastabos:")
 
-    if st.button("Registruoti kleintą"):
+    if st.button("Registruoti klientą"):
         if full_name_input and phone_input and email_input:  # Ensure all required fields are filled
             try:
                 # Format the data for Google Sheets as strings
@@ -128,10 +126,6 @@ def register_client1():
                 st.error(f"Failed to register client: {e}")
         else:
             st.error("Please fill in all required fields.")
-
-
-
-
 
 
 
@@ -163,7 +157,6 @@ def delete_client(index):
         st.error(f"Failed to delete client: {str(e)}")
 
 
-# ... existing imports and functions ...
         
 def add_client_note(client_id, note):
     """
@@ -176,16 +169,9 @@ def add_client_note(client_id, note):
     notes_worksheet_name = 'Client Notes'  # Assume there is a sheet for notes
     
     try:
-        # Open the notes worksheet
         notes_worksheet = service.open_by_key(spreadsheet_id).worksheet(notes_worksheet_name)
-        
-        # Fetch all the notes records
-        notes_records = notes_worksheet.get_all_records()
-        
-        # Convert the records to a DataFrame for easier searching
+        notes_records = notes_worksheet.get_all_records()       
         notes_df = pd.DataFrame(notes_records)
-        
-        # Check if the client already has a note
         if client_id in notes_df['Client ID'].values:
             # Update the existing note
             row_index = notes_df.index[notes_df['Client ID'] == client_id].tolist()[0] + 2  # Offset for header and 1-indexing
