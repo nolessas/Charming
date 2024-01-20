@@ -96,7 +96,7 @@ def register_client1():
 
     full_name_input = st.text_input("Vardas Pavardė:")
     phone_input = st.text_input("Telefono numeris: Pavyzdys 61271128:")
-    email_input = st.text_input("Emailas:")
+    email_input = st.text_input("Email:")
     note_input = st.text_area("Pastabos:")
 
     if st.button("Registruoti klientą"):
