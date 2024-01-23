@@ -254,7 +254,7 @@ def get_and_update_client_notes(client_name):
 
 def edit_appointment_details(client_name):
     service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    spreadsheet_id = 'YOUR_SPREADSHEET_ID'
     worksheet = service.open_by_key(spreadsheet_id).worksheet('Sheet1')
 
     try:
@@ -263,7 +263,7 @@ def edit_appointment_details(client_name):
         if not cells:
             st.error("Klientas nerastas.")
             return None
-        
+
         # Display current details for all clients with the name and allow selection
         appointment_options = []
         for cell in cells:
@@ -277,35 +277,43 @@ def edit_appointment_details(client_name):
         # Allow user to select which appointment to edit
         selected_appointment = st.selectbox("Pasirinkite vizito eilutę redagavimui:", appointment_options)
         selected_row_number = int(selected_appointment.split(":")[0].split()[1])
-        
+
         # Provide inputs for new details
         current_date = worksheet.cell(selected_row_number, 1).value
         new_date = st.date_input("New Date:", value=pd.to_datetime(current_date, dayfirst=True))
+
         current_time_in = worksheet.cell(selected_row_number, 2).value
-        new_time_in = st.time_input("New Time In:", value=pd.to_datetime(current_time_in, format='%H:%M').time())
+        try:
+            parsed_time_in = pd.to_datetime(current_time_in, format='%H:%M').time()
+        except ValueError:
+            st.error(f"Invalid time format for 'Time In': {current_time_in}")
+            return
+
+        new_time_in = st.time_input("New Time In:", value=parsed_time_in)
+
         current_time_out = worksheet.cell(selected_row_number, 3).value
         current_duration_hours = int((pd.to_datetime(current_time_out, format='%H:%M') - pd.to_datetime(current_time_in, format='%H:%M')).seconds / 3600)
         new_duration = st.slider("New Duration (hours):", min_value=0, max_value=12, value=current_duration_hours, step=1)
-        
+
         # Calculate the new Time Out based on the new Time In and Duration
         new_time_out = (datetime.combine(new_date, new_time_in) + timedelta(hours=new_duration)).time()
-        
+
         if st.button("Update Appointment Details"):
             # Format the new details for Google Sheets
-            formatted_new_date = new_date.strftime("%d/%m/%Y")  # 'DD/MM/YYYY' format for the date
-            formatted_new_time_in = new_time_in.strftime("%H:%M")  # 'HH:MM' format for time
-            formatted_new_time_out = new_time_out.strftime("%H:%M")  # 'HH:MM' format for time
-            
+            formatted_new_date = new_date.strftime("%d/%m/%Y")
+            formatted_new_time_in = new_time_in.strftime("%H:%M")
+            formatted_new_time_out = new_time_out.strftime("%H:%M")
+
             # Update the details in the worksheet
             worksheet.update_cell(selected_row_number, 1, formatted_new_date)
             worksheet.update_cell(selected_row_number, 2, formatted_new_time_in)
             worksheet.update_cell(selected_row_number, 3, formatted_new_time_out)
-            
+
             st.success(f"Appointment details updated successfully for {client_name} (Eilutė {selected_row_number})")
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
 
-
+        
 def archive_old_clients():
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
