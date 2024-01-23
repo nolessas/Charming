@@ -87,7 +87,15 @@ def register_client1():
 
     # Input fields for registration
     date_input = st.date_input("Data:")
-    # Custom time picker will be implemented here (next step)
+
+    # Implementing custom time picker in 10-minute increments
+    business_hours_start = time(9, 0)  # Business hours start at 8:00 AM
+    business_hours_end = time(21, 0)  # Business hours end at 6:00 PM
+    time_options = [(datetime.combine(date.today(), business_hours_start) + timedelta(minutes=10 * i)).time() 
+                    for i in range(int((datetime.combine(date.today(), business_hours_end) - 
+                                        datetime.combine(date.today(), business_hours_start)).seconds / 600))]
+    time_in = st.selectbox("Nuo:", time_options, format_func=lambda x: x.strftime("%H:%M"))
+
 
     full_name_input = st.text_input("Vardas Pavardė:")
     phone_input = st.text_input("Telefono numeris: Pavyzdys 61271128:")
@@ -101,11 +109,11 @@ def register_client1():
                 formatted_date = date_input.strftime("%d/%m/%Y")  # 'DD/MM/YYYY' format for the date
                 # The time picker value will be used here (next step)
 
-                # Removed time_out calculation
+                formatted_time_in = time_in.strftime("%H:%M")
 
                 sheet_data = [
                     formatted_date,
-                    # Add formatted time_in here (next step)
+                    formatted_time_in,
                     full_name_input, 
                     phone_input, 
                     # Removed email
