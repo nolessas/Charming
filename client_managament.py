@@ -87,33 +87,28 @@ def register_client1():
 
     # Input fields for registration
     date_input = st.date_input("Data:")
-    time_in = st.slider("Nuo:", value=time(8, 0), format="HH:mm", key='time_in')
-    duration = st.slider("Vizito trukmė:", min_value=0, max_value=12, value=1, step=1, key='duration')
-
-    # Calculate Time Out
-    time_out = (datetime.combine(date_input, time_in) + timedelta(hours=duration)).time()
-    st.write(f"Vizito pabaiga: {time_out.strftime('%H:%M')}")
+    # Custom time picker will be implemented here (next step)
 
     full_name_input = st.text_input("Vardas Pavardė:")
     phone_input = st.text_input("Telefono numeris: Pavyzdys 61271128:")
-    email_input = st.text_input("Email:")
+    # Removed email input
     note_input = st.text_area("Pastabos:")
 
     if st.button("Registruoti klientą"):
-        if full_name_input and phone_input and email_input:  # Ensure all required fields are filled
+        if full_name_input and phone_input:  # Ensure required fields are filled
             try:
                 # Format the data for Google Sheets as strings
                 formatted_date = date_input.strftime("%d/%m/%Y")  # 'DD/MM/YYYY' format for the date
-                formatted_time_in = time_in.strftime("%H:%M")     # 'HH:MM' format for time
-                formatted_time_out = time_out.strftime("%H:%M")   # 'HH:MM' format for time
+                # The time picker value will be used here (next step)
+
+                # Removed time_out calculation
 
                 sheet_data = [
                     formatted_date,
-                    formatted_time_in,
-                    formatted_time_out,
+                    # Add formatted time_in here (next step)
                     full_name_input, 
                     phone_input, 
-                    email_input, 
+                    # Removed email
                     note_input
                 ]
 
@@ -126,6 +121,7 @@ def register_client1():
                 st.error(f"Failed to register client: {e}")
         else:
             st.error("Please fill in all required fields.")
+
 
 
 
