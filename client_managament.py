@@ -171,11 +171,12 @@ def edit_appointment_details(client_name):
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
     worksheet = service.open_by_key(spreadsheet_id).worksheet('Sheet1')
+
     try:
         # Find all cells with the client name
         cells = worksheet.findall(client_name)
         if not cells:
-            st.error("Client not found.")
+            st.error("Klientas nerastas.")
             return None
 
         # Display current details for all clients with the name and allow selection
@@ -184,14 +185,7 @@ def edit_appointment_details(client_name):
             current_date = worksheet.cell(cell.row, 1).value
             current_time_in = worksheet.cell(cell.row, 2).value
             current_time_out = worksheet.cell(cell.row, 3).value
-
-            # Format the date and time for display
-            formatted_current_date = current_date.strftime("%d/%m/%Y")
-            formatted_current_time_in = current_time_in.strftime("%H:%M")
-            formatted_current_time_out = current_time_out.strftime("%H:%M")
-
-            # Combine date and time for each appointment
-            appointment_details = f"Eilutė {cell.row}: {formatted_current_date} nuo {formatted_current_time_in} iki {formatted_current_time_out}"
+            appointment_details = f"Eilutė {cell.row}: {current_date} nuo {current_time_in} iki {current_time_out}"
             appointment_options.append(appointment_details)
             st.write(appointment_details)
 
@@ -205,11 +199,12 @@ def edit_appointment_details(client_name):
 
         current_time_in = worksheet.cell(selected_row_number, 2).value
         try:
-            parsed_time_in = pd.to_datetime(current_time_in, format='%H:%M', errors='coerce')
-            new_time_in = st.time_input("New Time In:", value=parsed_time_in)
+            parsed_time_in = pd.to_datetime(current_time_in, format='%H:%M').time()
         except ValueError:
             st.error(f"Invalid time format for 'Time In': {current_time_in}")
             return
+
+        new_time_in = st.time_input("New Time In:", value=parsed_time_in)
 
         current_time_out = worksheet.cell(selected_row_number, 3).value
         current_duration_hours = int((pd.to_datetime(current_time_out, format='%H:%M') - pd.to_datetime(current_time_in, format='%H:%M')).seconds / 3600)
@@ -218,11 +213,6 @@ def edit_appointment_details(client_name):
         # Calculate the new Time Out based on the new Time In and Duration
         new_time_out = (datetime.combine(new_date, new_time_in) + timedelta(hours=new_duration)).time()
 
-        # Update appointment note
-        edit_note = st.text_area("Edit appointment note:")
-        if edit_note:
-            worksheet.update_cell(selected_row_number, 4, edit_note)
-
         if st.button("Update Appointment Details"):
             # Format the new details for Google Sheets
             formatted_new_date = new_date.strftime("%d/%m/%Y")
@@ -230,7 +220,12 @@ def edit_appointment_details(client_name):
             formatted_new_time_out = new_time_out.strftime("%H:%M")
 
             # Update the details in the worksheet
-            worksheet.update_cell(selected_row_number, 1, formatted_new
+            worksheet.update_cell(selected_row_number, 1, formatted_new_date)
+            worksheet.update_cell(selected_row_number, 2, formatted_new_time_in)
+            worksheet.update_cell(selected_row_number, 3, formatted_new_time_out)
 
+            st.success(f"Appointment details updated successfully for {client_name} (Eilutė {selected_row_number})")
+    except Exception as e:
+        st.error(f"An error occurred: {str(e)}")
 
 
