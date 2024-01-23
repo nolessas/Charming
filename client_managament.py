@@ -231,7 +231,6 @@ def edit_appointment_details(client_name):
             formatted_new_time_out = new_time_out.strftime("%H:%M")
 
             # Update the details in the worksheet
-            worksheet.update_cell(selected_row_number, 1, formatted_new
-
+            worksheet.update_cell(selected_row_number,
 
 
