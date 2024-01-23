@@ -186,19 +186,22 @@ def edit_appointment_details(client_name):
             current_time_in = worksheet.cell(cell.row, 2).value
             current_time_out = worksheet.cell(cell.row, 3).value
 
-            # Format the date and time for display
-            formatted_current_date = current_date.strftime("%d/%m/%Y")
-            formatted_current_time_in = current_time_in.strftime("%H:%M")
-            formatted_current_time_out = current_time_out.strftime("%H:%M")
+            # Convert and format the date and time for display
+            try:
+                formatted_current_date = pd.to_datetime(current_date, format='%d/%m/%Y').strftime("%d/%m/%Y")
+                formatted_current_time_in = pd.to_datetime(current_time_in, format='%H:%M').strftime("%H:%M")
+                formatted_current_time_out = pd.to_datetime(current_time_out, format='%H:%M').strftime("%H:%M")
+            except ValueError:
+                st.error(f"Invalid date or time format in row {cell.row}")
+                continue
 
-            # Combine date and time for each appointment
             appointment_details = f"Eilutė {cell.row}: {formatted_current_date} nuo {formatted_current_time_in} iki {formatted_current_time_out}"
             appointment_options.append(appointment_details)
             st.write(appointment_details)
 
-        # Allow user to select which appointment to edit
         selected_appointment = st.selectbox("Pasirinkite vizito eilutę redagavimui:", appointment_options)
         selected_row_number = int(selected_appointment.split(":")[0].split()[1])
+
 
         # Provide inputs for new details
         current_date = worksheet.cell(selected_row_number, 1).value
@@ -232,5 +235,6 @@ def edit_appointment_details(client_name):
 
             # Update the details in the worksheet
             worksheet.update_cell(selected_row_number,
-
+    except Exception as e:
+        st.error(f"An error occurred: {str(e)}")
 
