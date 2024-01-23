@@ -27,7 +27,7 @@ def show_clients_with_date_filter(selected_date):
         try:
             date_obj = datetime.strptime(date_string, "%d/%m/%Y").date()
             if date_obj == selected_date:
-                if st.checkbox(f"{date_string}, {record['Full Name']}, {record['Phone Number']}, {record['Email']}, {record['Note']}", key=index):
+                if st.checkbox(f"{date_string}, {record['Full Name']}, {record['Phone Number']}, {record['Note']}", key=index):
                     selected_indices.append(index)
         except ValueError:
             pass
