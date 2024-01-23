@@ -254,7 +254,7 @@ def get_and_update_client_notes(client_name):
 
 def edit_appointment_details(client_name):
     service = get_sheets_service()
-    spreadsheet_id = 'YOUR_SPREADSHEET_ID'
+    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
     worksheet = service.open_by_key(spreadsheet_id).worksheet('Sheet1')
 
     try:
@@ -313,7 +313,7 @@ def edit_appointment_details(client_name):
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
 
-        
+
 def archive_old_clients():
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
