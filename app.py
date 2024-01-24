@@ -74,7 +74,7 @@ def show_dashboard():
 
     elif choose_main == "💎":
         st.title("Keisti kliento duomenis arba užregistruoti dar karta")
-        client_name_to_edit = str(st.text_input("Iveskite kliento Vardą Pavardę:"))
+        client_name_to_edit = str(st.text_input("Iveskite kliento Vardą Pavardę:")).strip()
         if client_name_to_edit:
             edit_appointment_details(client_name_to_edit)
 

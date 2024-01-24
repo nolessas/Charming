@@ -166,18 +166,17 @@ def delete_client(index):
 
 
 
-def edit_appointment_details(client_name):
+def edit_appointment_details(client_name_input):
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
     worksheet = service.open_by_key(spreadsheet_id).worksheet('Sheet1')
 
-    client_name_input = str(st.text_input("Enter client's name:"))
     client_row = None
     row_number = 1  # Assuming the first row is the header
 
     for row in worksheet.get_all_values()[1:]:  # Skip header row
         row_number += 1
-        if client_name_input in row:
+        if client_name_input.lower() == row[2].lower().strip():
             client_date = pd.to_datetime(row[0], errors='coerce')
             client_time = row[1]
             client_full_name = row[2]
