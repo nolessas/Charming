@@ -162,9 +162,7 @@ def delete_client(index):
 
 
         
-from datetime import datetime, time, timedelta
-import pandas as pd
-import streamlit as st
+
 
 def edit_appointment_details(client_name):
     service = get_sheets_service()
@@ -196,9 +194,9 @@ def edit_appointment_details(client_name):
 
         updated_date = st.date_input("New Date:", value=client_date)
 
-        # Custom time picker with 10-minute increments
-        business_hours_start = time(0, 0)  # Assuming start time at 00:00
-        business_hours_end = time(23, 50)  # Assuming end time at 23:50
+        # Custom time picker with 10-minute increments from 9:00 AM to 9:00 PM
+        business_hours_start = time(9, 0)  # Start time at 9:00 AM
+        business_hours_end = time(21, 0)  # End time at 9:00 PM
         time_options = [(datetime.combine(datetime.today(), business_hours_start) + timedelta(minutes=10 * i)).time() 
                         for i in range(int((datetime.combine(datetime.today(), business_hours_end) - 
                                             datetime.combine(datetime.today(), business_hours_start)).seconds / 600) + 1)]
