@@ -166,7 +166,6 @@ def delete_client(index):
 
 
 
-
 def edit_appointment_details(client_name):
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
@@ -188,11 +187,25 @@ def edit_appointment_details(client_name):
     if client_row is not None:
         # Update the client details
         updated_date = st.date_input("New Date:", value=client_date)
+        updated_time = st.time_input("New Time:", value=client_time)
+        updated_full_name = st.text_input("New Full Name:", value=client_full_name)
+        updated_phone = st.text_input("New Phone Number:", value=client_phone)
+        updated_note = st.text_area("New Notes:", value=client_note)
+
         if st.button("Update Client Details"):
-            # Convert updated date to datetime format
+            # Format the data for Google Sheets as strings
             updated_formatted_date = updated_date.strftime("%d/%m/%Y")
+            updated_formatted_time = updated_time.strftime("%H:%M")
 
-            # Update the cell in the Google Sheet
+            # Update the row in the Google Sheet
             worksheet.update_cell(int(client_row[0]), 0, updated_formatted_date)
+            worksheet.update_cell(int(client_row[1]), 1, updated_formatted_time)
+            worksheet.update_cell(int(client_row[2]), 2, updated_full_name)
+            worksheet.update_cell(int(client_row[3]), 3, updated_phone)
+            worksheet.update_cell(int(client_row[4]), 4, updated_note)
 
+            st.success("Client details updated successfully!")
+            st.rerun()  # Refresh the app to show updated data
+    else:
+        st.error("Client not found: " + client_name)
 
