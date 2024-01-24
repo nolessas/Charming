@@ -164,8 +164,6 @@ def delete_client(index):
         
 
 
-
-
 def edit_appointment_details(client_name):
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
@@ -177,7 +175,11 @@ def edit_appointment_details(client_name):
     for row in worksheet.get_all_values():
         if client_name in row:
             client_date = pd.to_datetime(row[0])
-            client_time = row[1]
+            # Convert the client_time string to a datetime object
+            if client_time:
+                client_time = datetime.fromisoformat(client_time)
+            else:
+                client_time = None
             client_full_name = row[2]
             client_phone = row[3]
             client_note = row[4]
@@ -195,7 +197,7 @@ def edit_appointment_details(client_name):
         if st.button("Update Client Details"):
             # Format the data for Google Sheets as strings
             updated_formatted_date = updated_date.strftime("%d/%m/%Y")
-            updated_formatted_time = updated_time.strftime("%H:%M")
+            updated_formatted_time = updated_time.strftime("%H:%M") if updated_time else None
 
             # Update the row in the Google Sheet
             worksheet.update_cell(int(client_row[0]), 0, updated_formatted_date)
@@ -208,4 +210,3 @@ def edit_appointment_details(client_name):
             st.rerun()  # Refresh the app to show updated data
     else:
         st.error("Client not found: " + client_name)
-
