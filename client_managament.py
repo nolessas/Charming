@@ -177,18 +177,17 @@ def edit_appointment_details(client_name):
     client_row = None
     for row in worksheet.get_all_values():
         if client_name in row:
+            client_date = pd.to_datetime(row[0])
+            client_time = row[1]
+            client_full_name = row[2]
+            client_phone = row[3]
+            client_note = row[4]
             client_row = row
             break
 
     if client_row is not None:
-        client_date = client_row[0]
-        client_time = client_row[1]
-        client_full_name = client_row[2]
-        client_phone = client_row[3]
-        client_note = client_row[4]
-
         # Update the client details
-        updated_date = st.date_input("New Date:", value=pd.to_datetime(client_date))
+        updated_date = st.date_input("New Date:", value=client_date)
         updated_time = st.time_input("New Time In:", value=pd.to_datetime(client_time).time())
         updated_full_name = st.text_input("New Full Name:", value=client_full_name)
         updated_phone = st.text_input("New Phone Number:", value=client_phone)
@@ -200,15 +199,16 @@ def edit_appointment_details(client_name):
             formatted_updated_time = updated_time.strftime("%H:%M")
 
             # Write the updated details to the worksheet
-            worksheet.update_cell(client_row[0], 0, formatted_updated_date)
-            worksheet.update_cell(client_row[1], 1, formatted_updated_time)
-            worksheet.update_cell(client_row[2], 2, updated_full_name)
-            worksheet.update_cell(client_row[3], 3, updated_phone)
-            worksheet.update_cell(client_row[4], 4, updated_note)
+            worksheet.update_cell(int(client_row[0]), 0, formatted_updated_date)
+            worksheet.update_cell(int(client_row[1]), 1, formatted_updated_time)
+            worksheet.update_cell(int(client_row[2]), 2, updated_full_name)
+            worksheet.update_cell(int(client_row[3]), 3, updated_phone)
+            worksheet.update_cell(int(client_row[4]), 4, updated_note)
 
             st.success("Client details updated successfully!")
             st.rerun()
     else:
         st.error(f"Client not found: {client_name}")
+
 
 
