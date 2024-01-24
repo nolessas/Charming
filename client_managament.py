@@ -194,14 +194,35 @@ def edit_appointment_details(client_name):
             client_time = None
 
         updated_date = st.date_input("New Date:", value=client_date)
-        updated_time = st.time_input("New Time:", value=client_time)
+
+        # Create a list of 10-minute time intervals starting from the current time
+        time_intervals = []
+        current_time = client_time
+        while current_time != None:
+            time_intervals.append(current_time)
+            current_time = current_time + timedelta(minutes=10)
+
+        # Use a slider to select the desired time interval
+        selected_time_interval = st.slider(
+            "Select the new appointment time:",
+            0,
+            len(time_intervals) - 1,
+        )
+
+        updated_time = time_intervals[selected_time_interval]
+        updated_time_str = updated_time.strftime("%H:%M")
+
         updated_full_name = st.text_input("New Full Name:", value=client_full_name)
         updated_phone = st.text_input("New Phone Number:", value=client_phone)
         updated_note = st.text_area("New Notes:", value=client_note)
 
         if st.button("Update Client Details"):
-            worksheet.update_cell(client_row, 1, updated_date.strftime("%d/%m/%Y"))
-            worksheet.update_cell(client_row, 2, updated_time.strftime("%H:%M") if updated_time else '')
+            worksheet.update_cell(
+                client_row, 1, updated_date.strftime("%d/%m/%Y")
+            )
+            worksheet.update_cell(
+                client_row, 2, updated_time_str if updated_time else ''
+            )
             worksheet.update_cell(client_row, 3, updated_full_name)
             worksheet.update_cell(client_row, 4, updated_phone)
             worksheet.update_cell(client_row, 5, updated_note)
@@ -210,3 +231,4 @@ def edit_appointment_details(client_name):
             st.rerun()
     else:
         st.error("Client not found: " + client_name_input)
+
