@@ -76,9 +76,10 @@ def show_dashboard():
 
     elif choose_main == "6":
         st.title("Keisti kliento atvykimo dieną")
-        client_name_to_edit = st.text_input("Iveskite kliento Vardą Pavardę:")
+        client_name_to_edit = str(st.text_input("Iveskite kliento Vardą Pavardę:"))
         if client_name_to_edit:
             edit_appointment_details(client_name_to_edit)
+
 
 
 
