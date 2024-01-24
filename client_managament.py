@@ -166,26 +166,27 @@ def delete_client(index):
 
 
 
-
 def edit_appointment_details(client_name):
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
     worksheet = service.open_by_key(spreadsheet_id).worksheet('Sheet1')
 
-    client_name_input = str(st.text_input("Enter client's name:")).strip().lower()  # Normalize input
-    client_found = False
+    client_name_input = str(st.text_input("Enter client's name:"))
+    client_row = None
+    row_number = 1  # Assuming the first row is the header
 
     for row in worksheet.get_all_values()[1:]:  # Skip header row
-        client_full_name = row[2].strip().lower()  # Normalize data in the sheet
-        if client_name_input == client_full_name:
+        row_number += 1
+        if client_name_input in row:
             client_date = pd.to_datetime(row[0], errors='coerce')
             client_time = row[1]
+            client_full_name = row[2]
             client_phone = row[3]
             client_note = row[4]
-            client_found = True
+            client_row = row_number
             break
 
-    if client_found:
+    if client_row:
         try:
             client_time = datetime.strptime(client_time, '%H:%M').time() if client_time else None
         except ValueError:
@@ -217,5 +218,5 @@ def edit_appointment_details(client_name):
 
             st.success("Client details updated successfully!")
             st.rerun()
- else:
+    else:
         st.error("Client not found: " + client_name_input)
