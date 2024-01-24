@@ -180,11 +180,11 @@ def edit_appointment_details(client_name):
                 client_time = datetime.fromisoformat(client_time)
             else:
                 client_time = None
-            client_full_name = row[2]
-            client_phone = row[3]
-            client_note = row[4]
-            client_row = row
-            break
+                client_full_name = row[2]
+                client_phone = row[3]
+                client_note = row[4]
+                client_row = row
+                break
 
     if client_row is not None:
         # Update the client details
