@@ -44,14 +44,14 @@ def main():
 def show_dashboard():
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: center;} </style>', unsafe_allow_html=True)
     st.write('<style>div.st-bf{flex-direction:column;} div.st-ag{font-weight:bold;padding-left:2px;}</style>', unsafe_allow_html=True)
-    choose_main = st.radio("", ("1", "2", "3", "4","5","6"))
+    choose_main = st.radio("", ("✔", "📖", "❌", "🪁","💎"))
 
-    if choose_main == "1":
+    if choose_main == "✔":
         st.title("")
         show_registered_clients()
         register_client1()
 
-    elif choose_main == "2":
+    elif choose_main == "📖":
         st.title("Kalendorius")
         display_calendar()
         google_calendar_url = "https://calendar.google.com/calendar/u/0/r/month/2024/1/1"
@@ -60,21 +60,19 @@ def show_dashboard():
             st.markdown(f'<a href="{google_calendar_url}" target="_blank">Click here to open Google Calendar</a>', unsafe_allow_html=True)
             st.markdown(f'<a href="{google_sheets_url}" target="_blank">Click here to open Google Sheets</a>', unsafe_allow_html=True)
 
-    elif choose_main == "3":
+    elif choose_main == "❌":
         st.title("Pašalinti klientą")
         selected_date = st.date_input("Pasirinkite dieną:")
         show_clients_with_date_filter(selected_date)  # Call the new function
 
 
-    elif choose_main == "4":
+    elif choose_main == "🪁":
         st.title("")
         register_todo()
 
-    elif choose_main == "5":
-        st.title("Kolkas nieko")
       
 
-    elif choose_main == "6":
+    elif choose_main == "💎":
         st.title("Keisti kliento duomenis arba užregistruoti dar karta")
         client_name_to_edit = str(st.text_input("Iveskite kliento Vardą Pavardę:"))
         if client_name_to_edit:
