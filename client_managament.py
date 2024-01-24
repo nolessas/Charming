@@ -164,6 +164,13 @@ def delete_client(index):
         
 
 
+import streamlit as st
+import pandas as pd
+from datetime import datetime, timedelta, time
+
+def get_sheets_service():
+    # Your existing code to authenticate and create a service instance for Google Sheets
+
 def edit_appointment_details(client_name):
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
@@ -185,7 +192,6 @@ def edit_appointment_details(client_name):
             break
 
     if client_row:
-        # Convert the client_time string to a datetime object, if it's valid
         try:
             client_time = datetime.strptime(client_time, '%H:%M').time() if client_time else None
         except ValueError:
@@ -197,10 +203,12 @@ def edit_appointment_details(client_name):
         # Custom time picker with 10-minute increments from 9:00 AM to 9:00 PM
         business_hours_start = time(9, 0)  # Start time at 9:00 AM
         business_hours_end = time(21, 0)  # End time at 9:00 PM
-        time_options = [(datetime.combine(datetime.today(), business_hours_start) + timedelta(minutes=10 * i)).time() 
-                        for i in range(int((datetime.combine(datetime.today(), business_hours_end) - 
+        time_options = [(datetime.combine(datetime.today(), business_hours_start) + timedelta(minutes=10 * i)).time()
+                        for i in range(int((datetime.combine(datetime.today(), business_hours_end) -
                                             datetime.combine(datetime.today(), business_hours_start)).seconds / 600) + 1)]
-        updated_time = st.selectbox("New Time:", time_options, index=time_options.index(client_time) if client_time else 0, format_func=lambda x: x.strftime("%H:%M"))
+        nearest_time = min(time_options, key=lambda t: abs(datetime.combine(datetime.today(), t) - datetime.combine(datetime.today(), client_time)))
+        time_index = time_options.index(nearest_time) if client_time else 0
+        updated_time = st.selectbox("New Time:", time_options, index=time_index, format_func=lambda x: x.strftime("%H:%M"))
 
         updated_full_name = st.text_input("New Full Name:", value=client_full_name)
         updated_phone = st.text_input("New Phone Number:", value=client_phone)
