@@ -162,6 +162,10 @@ def delete_client(index):
 
 
         
+from datetime import datetime, time, timedelta
+import pandas as pd
+import streamlit as st
+
 def edit_appointment_details(client_name):
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
@@ -184,45 +188,29 @@ def edit_appointment_details(client_name):
 
     if client_row:
         # Convert the client_time string to a datetime object, if it's valid
-        if client_time:
-            try:
-                client_time = datetime.strptime(client_time, '%H:%M').time()
-            except ValueError:
-                st.error(f"Invalid time format: {client_time}")
-                return
-        else:
-            client_time = None
+        try:
+            client_time = datetime.strptime(client_time, '%H:%M').time() if client_time else None
+        except ValueError:
+            st.error(f"Invalid time format: {client_time}")
+            return
 
         updated_date = st.date_input("New Date:", value=client_date)
 
-        # Create a list of 10-minute time intervals starting from the current time
-        time_intervals = []
-        current_time = client_time
-        while current_time != None:
-            time_intervals.append(current_time)
-            current_time = current_time + timedelta(minutes=10)
-
-        # Use a slider to select the desired time interval
-        selected_time_interval = st.slider(
-            "Select the new appointment time:",
-            0,
-            len(time_intervals) - 1,
-        )
-
-        updated_time = time_intervals[selected_time_interval]
-        updated_time_str = updated_time.strftime("%H:%M")
+        # Custom time picker with 10-minute increments
+        business_hours_start = time(0, 0)  # Assuming start time at 00:00
+        business_hours_end = time(23, 50)  # Assuming end time at 23:50
+        time_options = [(datetime.combine(datetime.today(), business_hours_start) + timedelta(minutes=10 * i)).time() 
+                        for i in range(int((datetime.combine(datetime.today(), business_hours_end) - 
+                                            datetime.combine(datetime.today(), business_hours_start)).seconds / 600) + 1)]
+        updated_time = st.selectbox("New Time:", time_options, index=time_options.index(client_time) if client_time else 0, format_func=lambda x: x.strftime("%H:%M"))
 
         updated_full_name = st.text_input("New Full Name:", value=client_full_name)
         updated_phone = st.text_input("New Phone Number:", value=client_phone)
         updated_note = st.text_area("New Notes:", value=client_note)
 
         if st.button("Update Client Details"):
-            worksheet.update_cell(
-                client_row, 1, updated_date.strftime("%d/%m/%Y")
-            )
-            worksheet.update_cell(
-                client_row, 2, updated_time_str if updated_time else ''
-            )
+            worksheet.update_cell(client_row, 1, updated_date.strftime("%d/%m/%Y"))
+            worksheet.update_cell(client_row, 2, updated_time.strftime("%H:%M"))
             worksheet.update_cell(client_row, 3, updated_full_name)
             worksheet.update_cell(client_row, 4, updated_phone)
             worksheet.update_cell(client_row, 5, updated_note)
@@ -231,4 +219,3 @@ def edit_appointment_details(client_name):
             st.rerun()
     else:
         st.error("Client not found: " + client_name_input)
-
