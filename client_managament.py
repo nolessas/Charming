@@ -164,12 +164,7 @@ def delete_client(index):
         
 
 
-import streamlit as st
-import pandas as pd
-from datetime import datetime, timedelta, time
 
-def get_sheets_service():
-    # Your existing code to authenticate and create a service instance for Google Sheets
 
 def edit_appointment_details(client_name):
     service = get_sheets_service()
