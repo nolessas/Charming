@@ -194,15 +194,5 @@ def edit_appointment_details(client_name):
 
             # Update the cell in the Google Sheet
             worksheet.update_cell(int(client_row[0]), 0, updated_formatted_date)
-            worksheet.update_cell(int(client_row[1]), 1, formatted_updated_time)
-            worksheet.update_cell(int(client_row[2]), 2, updated_full_name)
-            worksheet.update_cell(int(client_row[3]), 3, updated_phone)
-            worksheet.update_cell(int(client_row[4]), 4, updated_note)
-
-            st.success("Client details updated successfully!")
-            st.rerun()
-    else:
-        st.error(f"Client not found: {client_name}")
-
 
 
