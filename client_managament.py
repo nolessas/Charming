@@ -162,32 +162,37 @@ def delete_client(index):
 
 
         
-
-
 def edit_appointment_details(client_name):
     service = get_sheets_service()
     spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
     worksheet = service.open_by_key(spreadsheet_id).worksheet('Sheet1')
 
-    # Search for the client by name
-    client_name = str(st.text_input("Enter client's name:"))
+    client_name_input = str(st.text_input("Enter client's name:"))
     client_row = None
-    for row in worksheet.get_all_values():
-        if client_name in row:
-            client_date = pd.to_datetime(row[0])
-            # Convert the client_time string to a datetime object
-            if client_time:
-                client_time = datetime.fromisoformat(client_time)
-            else:
-                client_time = None
-                client_full_name = row[2]
-                client_phone = row[3]
-                client_note = row[4]
-                client_row = row
-                break
+    row_number = 1  # Assuming the first row is the header
 
-    if client_row is not None:
-        # Update the client details
+    for row in worksheet.get_all_values()[1:]:  # Skip header row
+        row_number += 1
+        if client_name_input in row:
+            client_date = pd.to_datetime(row[0], errors='coerce')
+            client_time = row[1]
+            client_full_name = row[2]
+            client_phone = row[3]
+            client_note = row[4]
+            client_row = row_number
+            break
+
+    if client_row:
+        # Convert the client_time string to a datetime object, if it's valid
+        if client_time:
+            try:
+                client_time = datetime.strptime(client_time, '%H:%M').time()
+            except ValueError:
+                st.error(f"Invalid time format: {client_time}")
+                return
+        else:
+            client_time = None
+
         updated_date = st.date_input("New Date:", value=client_date)
         updated_time = st.time_input("New Time:", value=client_time)
         updated_full_name = st.text_input("New Full Name:", value=client_full_name)
@@ -195,18 +200,13 @@ def edit_appointment_details(client_name):
         updated_note = st.text_area("New Notes:", value=client_note)
 
         if st.button("Update Client Details"):
-            # Format the data for Google Sheets as strings
-            updated_formatted_date = updated_date.strftime("%d/%m/%Y")
-            updated_formatted_time = updated_time.strftime("%H:%M") if updated_time else None
-
-            # Update the row in the Google Sheet
-            worksheet.update_cell(int(client_row[0]), 0, updated_formatted_date)
-            worksheet.update_cell(int(client_row[1]), 1, updated_formatted_time)
-            worksheet.update_cell(int(client_row[2]), 2, updated_full_name)
-            worksheet.update_cell(int(client_row[3]), 3, updated_phone)
-            worksheet.update_cell(int(client_row[4]), 4, updated_note)
+            worksheet.update_cell(client_row, 1, updated_date.strftime("%d/%m/%Y"))
+            worksheet.update_cell(client_row, 2, updated_time.strftime("%H:%M") if updated_time else '')
+            worksheet.update_cell(client_row, 3, updated_full_name)
+            worksheet.update_cell(client_row, 4, updated_phone)
+            worksheet.update_cell(client_row, 5, updated_note)
 
             st.success("Client details updated successfully!")
-            st.rerun()  # Refresh the app to show updated data
+            st.rerun()
     else:
-        st.error("Client not found: " + client_name)
+        st.error("Client not found: " + client_name_input)
