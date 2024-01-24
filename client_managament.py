@@ -173,7 +173,7 @@ def edit_appointment_details(client_name):
     worksheet = service.open_by_key(spreadsheet_id).worksheet('Sheet1')
 
     # Search for the client by name
-    client_name = st.text_input("Enter client's name:")
+    client_name = str(st.text_input("Enter client's name:"))
     client_row = None
     for row in worksheet.get_all_values():
         if client_name in row:
@@ -188,18 +188,13 @@ def edit_appointment_details(client_name):
     if client_row is not None:
         # Update the client details
         updated_date = st.date_input("New Date:", value=client_date)
-        updated_time = st.time_input("New Time In:", value=pd.to_datetime(client_time).time())
-        updated_full_name = st.text_input("New Full Name:", value=client_full_name)
-        updated_phone = st.text_input("New Phone Number:", value=client_phone)
-        updated_note = st.text_area("New Note:", value=client_note)
-
         if st.button("Update Client Details"):
-            # Format the updated details for Google Sheets
-            formatted_updated_date = updated_date.strftime("%d/%m/%Y")
-            formatted_updated_time = updated_time.strftime("%H:%M")
+            # Convert updated date to datetime format
+            updated_formatted_date = updated_date.strftime("%d/%m/%Y")
 
-            # Write the updated details to the worksheet
-            worksheet.update_cell(int(client_row[0]), 0, formatted_updated_date)
+            # Update the cell in the Google Sheet
+            worksheet.update_cell(int(client_row[0]), 0, updated_formatted_date)
+
             worksheet.update_cell(int(client_row[1]), 1, formatted_updated_time)
             worksheet.update_cell(int(client_row[2]), 2, updated_full_name)
             worksheet.update_cell(int(client_row[3]), 3, updated_phone)
