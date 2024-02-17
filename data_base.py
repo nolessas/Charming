@@ -42,7 +42,7 @@ def show_clients_with_date_filter(selected_date):
 
 def delete_row_from_sheet(index, records):
     service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    spreadsheet_id = '1mLXjXkzVXh0pXndVZyLzihVcAeGiaqRbSAtH5TN6NHg'
     worksheet_name = 'Sheet1'
     try:
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
@@ -56,7 +56,7 @@ def delete_row_from_sheet(index, records):
 #######?
 def fetch_data_from_sheets():
     service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    spreadsheet_id = '1mLXjXkzVXh0pXndVZyLzihVcAeGiaqRbSAtH5TN6NHg'
     worksheet_name = 'Sheet1'  # Change this to 'Sheet1'
     try:
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
