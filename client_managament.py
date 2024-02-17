@@ -42,7 +42,7 @@ day_name_map = {
 def show_registered_clients():
     service = get_sheets_service()
     try:
-        spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+        spreadsheet_id = '1mLXjXkzVXh0pXndVZyLzihVcAeGiaqRbSAtH5TN6NHg'
         worksheet_name = 'Sheet1'
         
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
@@ -136,7 +136,7 @@ def register_client1():
 
 def write_to_sheets(data, value_input_option='USER_ENTERED'):
     service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    spreadsheet_id = '1mLXjXkzVXh0pXndVZyLzihVcAeGiaqRbSAtH5TN6NHg'
     worksheet_name = 'Sheet1'
     try:
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
@@ -149,7 +149,7 @@ def write_to_sheets(data, value_input_option='USER_ENTERED'):
 
 def delete_client(index):
     service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    spreadsheet_id = '1mLXjXkzVXh0pXndVZyLzihVcAeGiaqRbSAtH5TN6NHg'
     worksheet_name = 'Sheet1'
     try:
         worksheet = service.open_by_key(spreadsheet_id).worksheet(worksheet_name)
@@ -168,7 +168,7 @@ def delete_client(index):
 
 def edit_appointment_details(client_name_input):
     service = get_sheets_service()
-    spreadsheet_id = '1HR8NzxkcKKVaWCPTowXdYtDN5dVqkbBeXFsHW4nmWCQ'
+    spreadsheet_id = '1mLXjXkzVXh0pXndVZyLzihVcAeGiaqRbSAtH5TN6NHg'
     worksheet = service.open_by_key(spreadsheet_id).worksheet('Sheet1')
 
     client_row = None
